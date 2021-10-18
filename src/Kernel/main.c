@@ -6,6 +6,7 @@
 
 int main(int argc, char** argv)
 {
+    initMemManager();
     SDL_Init(SDL_INIT_VIDEO);
     Application app;
     initApplication(&app);
@@ -19,6 +20,7 @@ int main(int argc, char** argv)
 
     shutdownApplication(&app);
     SDL_Quit();
+    shutdownMemManager();
     
     return 0;
 }

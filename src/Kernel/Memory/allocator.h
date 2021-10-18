@@ -9,10 +9,12 @@
  * The only differences are in the transition from C++ to C.
  */
 
-typedef struct
+typedef struct allocator_flag
 {
-    size_t size;
+    unsigned int size;
     unsigned int offset;
+    struct allocator_flag* next;
+    struct allocator_flag* prev;
 } allocator_flag;
 
 typedef struct
@@ -22,18 +24,17 @@ typedef struct
     size_t heap_size;
     size_t mem_used;
 
-    // Dynamic arrays
     allocator_flag* used_flags;
     allocator_flag* free_flags;
 } Allocator;
 
 void initAllocator(Allocator* allocator, size_t size);
 
-void* alloc(Allocator* allocator, size_t size);
+void* memalloc(Allocator* allocator, size_t size);
 bool canHold(Allocator* allocator, size_t size);
 bool contains(Allocator* allocator, void* ptr);
-void free(Allocator* allocator, void* ptr);
+void memfree(Allocator* allocator, void* ptr);
 
-void shutdownAllocator(Allocator* allocator);
+void destroyAllocator(Allocator* allocator);
 
 #endif // __ALLOCATOR__

@@ -1,4 +1,5 @@
 #include <IO/inputs.h>
+#include <Kernel/Memory/memory.h>
 
 void initInput(Inputs *in)
 {
