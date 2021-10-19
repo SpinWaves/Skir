@@ -6,7 +6,6 @@
 
 int main(int argc, char** argv)
 {
-    initMemManager();
     SDL_Init(SDL_INIT_VIDEO);
     Application app;
     initApplication(&app);

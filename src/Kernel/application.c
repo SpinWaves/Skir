@@ -16,11 +16,8 @@ bool initApplication(Application *app)
     }
 
     app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
-    app->inputs = custom_malloc(sizeof(Inputs));
-    int* test = custom_malloc(8);
-    printf("%p, %p\n", app->inputs, test);
-    fflush(stdout);
-    custom_free(test);
+    app->inputs = (Inputs*)custom_malloc(sizeof(Inputs));
+    app->inputs->quit = false;
     initInput(app->inputs);
     app->run = true;
 

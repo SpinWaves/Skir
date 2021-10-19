@@ -5,22 +5,22 @@
 #include <stdbool.h>
 
 /**
- * This allocator is based on Akel JamAllocator (https://github.com/SpinWaves/Akel).
- * The only differences are in the transition from C++ to C.
+ * This allocator is based on Akel JamAllocator logic (https://github.com/SpinWaves/Akel).
  */
 
 typedef struct allocator_flag
 {
     unsigned int size;
     unsigned int offset;
+
+    // Linked list of flags
     struct allocator_flag* next;
-    struct allocator_flag* prev;
 } allocator_flag;
 
 typedef struct
 {
-    void* heap;
-    void* heap_end;
+    const char* heap;
+    const char* heap_end;
     size_t heap_size;
     size_t mem_used;
 
@@ -28,13 +28,14 @@ typedef struct
     allocator_flag* free_flags;
 } Allocator;
 
-void initAllocator(Allocator* allocator, size_t size);
 
 void* memalloc(Allocator* allocator, size_t size);
 bool canHold(Allocator* allocator, size_t size);
 bool contains(Allocator* allocator, void* ptr);
 void memfree(Allocator* allocator, void* ptr);
 
-void destroyAllocator(Allocator* allocator);
+#define new_allocator(name, size)   static char pool_##name[size] = {0}; \
+                                    static Allocator name = {pool_##name, (void*)(pool_##name + size), size, 0, NULL, NULL};
+                                    
 
 #endif // __ALLOCATOR__

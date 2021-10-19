@@ -3,13 +3,9 @@
 
 #include <Kernel/Memory/allocator.h>
 
-static Allocator __allocator;
-
-void initMemManager();
+new_allocator(__allocator, 1024 * 1024)
 
 void* custom_malloc(size_t size);
 void custom_free(void* ptr);
-
-void shutdownMemManager();
 
 #endif // __MEMORY_MANAGER__
