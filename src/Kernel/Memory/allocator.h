@@ -37,5 +37,4 @@ void memfree(Allocator* allocator, void* ptr);
 #define new_allocator(name, size)   static char pool_##name[size] = {0}; \
                                     static Allocator name = {pool_##name, (void*)(pool_##name + size), size, 0, NULL, NULL};
                                     
-
 #endif // __ALLOCATOR__

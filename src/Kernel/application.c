@@ -16,9 +16,7 @@ bool initApplication(Application *app)
     }
 
     app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
-    app->inputs = (Inputs*)custom_malloc(sizeof(Inputs));
-    app->inputs->quit = false;
-    initInput(app->inputs);
+    initInput(&app->inputs);
     app->run = true;
 
     return true;
@@ -26,7 +24,6 @@ bool initApplication(Application *app)
 
 void shutdownApplication(Application *app)
 {
-    custom_free(app->inputs);
     SDL_DestroyRenderer(app->renderer);
     SDL_DestroyWindow(app->window);
     app->window = NULL;
@@ -34,10 +31,10 @@ void shutdownApplication(Application *app)
 
 void update(Application *app)
 {
-    updateInput(app->inputs);
-    if(getKey(app->inputs, SDL_SCANCODE_ESCAPE))
-        app->inputs->quit = true;
+    updateInput(&app->inputs);
+    if(getKey(&app->inputs, SDL_SCANCODE_ESCAPE))
+        app->inputs.quit = true;
 
-    if(app->inputs->quit)
+    if(app->inputs.quit)
         app->run = false;
 }

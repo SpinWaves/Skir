@@ -8,7 +8,7 @@ typedef struct
 {
     SDL_Window* window;
     SDL_Renderer* renderer;
-    Inputs* inputs;
+    Inputs inputs;
     bool run;
 } Application;
 

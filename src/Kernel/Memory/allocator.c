@@ -55,9 +55,6 @@ void* memalloc(Allocator* allocator, size_t size)
     ptr = (void*)(allocator->heap + allocator->mem_used + sizeof(allocator_flag));
     allocator->mem_used += sizeof(allocator_flag) + size;
 
-    printf("size: %d / %d  %p\n", size, allocator->mem_used, ptr);
-    fflush( stdout );
-
     return ptr;
 }
 bool canHold(Allocator* allocator, size_t size)

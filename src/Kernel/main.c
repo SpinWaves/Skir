@@ -19,7 +19,6 @@ int main(int argc, char** argv)
 
     shutdownApplication(&app);
     SDL_Quit();
-    shutdownMemManager();
     
     return 0;
 }
