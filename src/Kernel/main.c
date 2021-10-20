@@ -6,6 +6,7 @@
 
 int main(int argc, char** argv)
 {
+    printf("calling path : %s\n", argv[0]);
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
     Application app;
