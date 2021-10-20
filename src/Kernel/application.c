@@ -41,6 +41,8 @@ void update(Application *app)
 
     if(app->inputs.quit)
         app->run = false;
+
+    updateFloor(&app->floor);
 }
 
 void render(Application *app)

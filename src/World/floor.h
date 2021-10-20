@@ -9,6 +9,7 @@ typedef struct
     SDL_Rect floors[5];
     unsigned int speed;
     SDL_Texture* texture;
+    unsigned int screen_w;
 } Floor;
 
 void initFloor(Floor* floor, SDL_Renderer* renderer, const char* text_path, unsigned int screen_w, unsigned int screen_h);

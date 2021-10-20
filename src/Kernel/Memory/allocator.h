@@ -28,13 +28,17 @@ typedef struct
     allocator_flag* free_flags;
 } Allocator;
 
-
 void* memalloc(Allocator* allocator, size_t size);
 bool canHold(Allocator* allocator, size_t size);
 bool contains(Allocator* allocator, void* ptr);
 void memfree(Allocator* allocator, void* ptr);
 
-#define new_allocator(name, size)   static char pool_##name[size] = {0}; \
-                                    static Allocator name = {pool_##name, (void*)(pool_##name + size), size, 0, NULL, NULL};
-                                    
+#ifndef USE_HEAP_ALLOCATOR
+    #define new_allocator(name, size)   static char pool_##name[size] = {0}; \
+                                        static Allocator name = {pool_##name, (void*)(pool_##name + size), size, 0, NULL, NULL};
+#else
+    #define new_allocator(name, size)   static char* pool_##name = malloc(size); \
+                                        static Allocator name = {pool_##name, (void*)(pool_##name + size), size, 0, NULL, NULL};
+#endif
+
 #endif // __ALLOCATOR__
