@@ -27,10 +27,10 @@ void updateFloor(Floor* floor)
 {
     for(int i = 0; i < sizeof(floor->floors)/sizeof(floor->floors[0]); i++)
     {
-        floor->floors[i].x -= 10;
-        if(floor->floors[i].x < -(floor->screen_w / 5))
-            floor->floors[i].x = screen_w
-        floor->floors[i].w = floor->floors[i].x + floor->screen_w / 5
+        floor->floors[i].x -= 5;
+        if(floor->floors[i].x < floor->screen_w/5)
+            floor->floors[i].x = floor->screen_w;
+        floor->floors[i].w = floor->floors[i].x + floor->screen_w / 5;
     }
 }
 void renderFloor(Floor* floor, SDL_Renderer* renderer)

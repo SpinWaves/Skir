@@ -1,13 +1,13 @@
 #ifndef __LOG__
 #define __LOG__
 
-enum log_type
+typedef enum
 {
     MESSAGE,
     WARNING,
     ERROR,
     FATAL_ERROR
-};
+} log_type;
 
 void log_report(log_type type, const char* msg);
 
