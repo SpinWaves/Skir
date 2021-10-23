@@ -4,6 +4,8 @@
 #include <SDL2/SDL.h>
 #include <IO/inputs.h>
 #include <World/world.h>
+#include <Utils/fps.h>
+#include <Kernel/text_manager.h>
 
 typedef struct
 {
@@ -11,12 +13,13 @@ typedef struct
     SDL_Renderer* renderer;
     Inputs inputs;
     Floor floor;
+    FPS_counter fps;
+    TextManager text_manager;
     bool run;
 } Application;
 
 bool initApplication(Application *app);
 void shutdownApplication(Application *app);
 void update(Application *app);
-void render(Application *app);
 
 #endif // __APPLICATION__

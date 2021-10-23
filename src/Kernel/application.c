@@ -18,9 +18,12 @@ bool initApplication(Application *app)
         return false;
     }
 
-    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
     initInput(&app->inputs);
     initFloor(&app->floor, app->renderer, "/home/bilbo/Documents/Programmation/c/keep_running/src/Assets/test.png", WIDTH, HEIGHT);
+    initFPS(&app->fps);
+    initTextManager(&app->text_manager, app->renderer);
+    newText(&app->text_manager, "FPS: 0", 10, 10);
     app->run = true;
 
     return true;
@@ -28,6 +31,7 @@ bool initApplication(Application *app)
 
 void shutdownApplication(Application *app)
 {
+    shutdownTextManager(&app->text_manager);
     shutdownFloor(&app->floor);
     SDL_DestroyRenderer(app->renderer);
     SDL_DestroyWindow(app->window);
@@ -35,17 +39,21 @@ void shutdownApplication(Application *app)
 
 void update(Application *app)
 {
-    updateInput(&app->inputs);
-    if(getKey(&app->inputs, SDL_SCANCODE_ESCAPE))
-        app->inputs.quit = true;
+    updateFPS(&app->fps);
+    if(app->fps.make_update)
+    {
+        updateInput(&app->inputs);
+        if(getKey(&app->inputs, SDL_SCANCODE_ESCAPE))
+            app->inputs.quit = true;
 
-    if(app->inputs.quit)
-        app->run = false;
+        if(app->inputs.quit)
+            app->run = false;
 
-    //updateFloor(&app->floor);
-}
-
-void render(Application *app)
-{
-    renderFloor(&app->floor, app->renderer);
+        updateFloor(&app->floor);
+    }
+    else
+    {
+        renderFloor(&app->floor, app->renderer);
+        renderTextManager(&app->text_manager);
+    }
 }

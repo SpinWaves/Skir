@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 
 #include <Kernel/kernel.h>
 
@@ -8,6 +10,8 @@ int main(int argc, char** argv)
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
+    TTF_Init();
+    
     Application app;
     initApplication(&app);
 
@@ -17,12 +21,12 @@ int main(int argc, char** argv)
         SDL_RenderClear(app.renderer);
         
         update(&app);
-        render(&app);
         
         SDL_RenderPresent(app.renderer);
     }
 
     shutdownApplication(&app);
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
     

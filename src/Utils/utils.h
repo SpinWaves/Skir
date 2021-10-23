@@ -1,8 +1,7 @@
 #ifndef __UTILS__
 #define __UTILS__
 
-#define getVarName(var) #var
-
 #include <Utils/c_output.h>
+#include <Utils/fps.h>
 
 #endif // __UTILS__

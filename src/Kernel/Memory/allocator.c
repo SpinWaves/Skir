@@ -1,4 +1,5 @@
 #include <Kernel/Memory/allocator.h>
+#include <Kernel/log.h>
 #include <Utils/utils.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -6,9 +7,9 @@
 void* memalloc(Allocator* allocator, size_t size)
 {
     if(allocator->heap == NULL)
-        return;
+        log_report(FATAL_ERROR, "Allocator: heap is not initialised"); 
     if(!canHold(allocator, size))
-        return;
+        log_report(FATAL_ERROR, "Allocator: not enough free memory"); 
     void* ptr = NULL;
     if(allocator->free_flags != NULL)
     {
@@ -68,10 +69,16 @@ bool contains(Allocator* allocator, void* ptr)
 void memfree(Allocator* allocator, void* ptr)
 {
     if(!contains(allocator, ptr))
+    {
+        log_report(ERROR, "Allocator: cannot free a pointer allocated by another allocator"); 
         return;
+    }
     
     if(allocator->used_flags == NULL)
+    {
+        log_report(ERROR, "Allocator: something went wrong with the free of a pointer (used_flags == NULL)"); 
         return;
+    }
 
     unsigned int offset = (char*)ptr - allocator->heap;
     allocator_flag* flag = allocator->used_flags;
