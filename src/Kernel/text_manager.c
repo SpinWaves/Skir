@@ -1,12 +1,13 @@
 #include <Kernel/text_manager.h>
 #include <Kernel/Memory/memory.h>
 #include <Kernel/log.h>
+#include <string.h>
 
 void initTextManager(TextManager* manager, SDL_Renderer* renderer)
 {
     manager->renderer = renderer;
     manager->head = NULL;
-    manager->default_font = TTF_OpenFont(MAIN_DIR"src/fonts/OpenSans-Regular.ttf", 25);
+    manager->default_font = TTF_OpenFont(MAIN_DIR"src/fonts/OpenSans-Regular.ttf", 15);
     if(manager->default_font == NULL)
         log_report(FATAL_ERROR, "Text Manager: cannot open default font");
 }
@@ -36,6 +37,21 @@ void passText(TextManager* manager, Text* text)
     t->text = *text;
     t->next = manager->head;
     manager->head = t;
+}
+void updateText_TM(TextManager* manager, const char* text_before, const char* text_update)
+{
+    updateText(getText(manager, text_before), manager->renderer, text_update);
+}
+Text* getText(TextManager* manager, const char* text)
+{
+    text_link* buffer = manager->head;
+    while(buffer != NULL)
+    {
+        if(strcmp(buffer->text.text, text) == 0)
+            return &buffer->text;
+        buffer = buffer->next;
+    }
+    return NULL;
 }
 void renderTextManager(TextManager* manager)
 {

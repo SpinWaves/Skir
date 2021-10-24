@@ -24,6 +24,7 @@ bool initApplication(Application *app)
     initFPS(&app->fps);
     initTextManager(&app->text_manager, app->renderer);
     newText(&app->text_manager, "FPS: 0", 10, 10);
+    newText(&app->text_manager, "UPS: 0", 10, 35);
     app->run = true;
 
     return true;
@@ -36,6 +37,9 @@ void shutdownApplication(Application *app)
     SDL_DestroyRenderer(app->renderer);
     SDL_DestroyWindow(app->window);
 }
+
+static char* oldFPS = "FPS: 0";
+static char* oldUPS = "UPS: 0";
 
 void update(Application *app)
 {
@@ -50,6 +54,15 @@ void update(Application *app)
             app->run = false;
 
         updateFloor(&app->floor);
+        char newFPS[12];
+        sprintf(newFPS, "FPS: %d", app->fps.out_fps);
+        updateText_TM(&app->text_manager, oldFPS, newFPS);
+        oldFPS = newFPS;
+
+        char newUPS[12];
+        sprintf(newUPS, "UPS: %d", app->fps.out_ticks);
+        updateText_TM(&app->text_manager, oldUPS, newUPS);
+        oldUPS = newUPS;
     }
     else
     {
