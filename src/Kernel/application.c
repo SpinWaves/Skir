@@ -18,13 +18,12 @@ bool initApplication(Application *app)
         return false;
     }
 
-    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC |SDL_RENDERER_TARGETTEXTURE);
     initInput(&app->inputs);
     initFloor(&app->floor, app->renderer, "/home/bilbo/Documents/Programmation/c/keep_running/src/Assets/test.png", WIDTH, HEIGHT);
     initFPS(&app->fps);
     initTextManager(&app->text_manager, app->renderer);
     newText(&app->text_manager, "FPS: 0", 10, 10);
-    newText(&app->text_manager, "UPS: 0", 10, 35);
     app->run = true;
 
     return true;
@@ -39,7 +38,6 @@ void shutdownApplication(Application *app)
 }
 
 static char* oldFPS = "FPS: 0";
-static char* oldUPS = "UPS: 0";
 
 void update(Application *app)
 {
@@ -58,15 +56,7 @@ void update(Application *app)
         sprintf(newFPS, "FPS: %d", app->fps.out_fps);
         updateText_TM(&app->text_manager, oldFPS, newFPS);
         oldFPS = newFPS;
-
-        char newUPS[12];
-        sprintf(newUPS, "UPS: %d", app->fps.out_ticks);
-        updateText_TM(&app->text_manager, oldUPS, newUPS);
-        oldUPS = newUPS;
     }
-    else
-    {
-        renderFloor(&app->floor, app->renderer);
-        renderTextManager(&app->text_manager);
-    }
+    renderFloor(&app->floor);
+    renderTextManager(&app->text_manager);
 }
