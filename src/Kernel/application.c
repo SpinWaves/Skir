@@ -20,7 +20,7 @@ bool initApplication(Application *app)
 
     app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC |SDL_RENDERER_TARGETTEXTURE);
     initInput(&app->inputs);
-    initFloor(&app->floor, app->renderer, "/home/bilbo/Documents/Programmation/c/keep_running/src/Assets/test.png", WIDTH, HEIGHT);
+    initFloor(&app->floor, app->renderer, MAIN_DIR"src/Assets/test.png", WIDTH, HEIGHT);
     initFPS(&app->fps);
     initTextManager(&app->text_manager, app->renderer);
     newText(&app->text_manager, "FPS: 0", 10, 10);

@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 /**
- * This allocator is based on Akel JamAllocator logic (https://github.com/SpinWaves/Akel).
+ * This allocator is based on Akel's JamAllocator logic (https://github.com/SpinWaves/Akel).
  */
 
 typedef struct allocator_flag
@@ -28,12 +28,11 @@ typedef struct
     allocator_flag* free_flags;
 } Allocator;
 
+void initAllocator(Allocator* allocator, size_t size);
 void* memalloc(Allocator* allocator, size_t size);
 bool canHold(Allocator* allocator, size_t size);
 bool contains(Allocator* allocator, void* ptr);
 void memfree(Allocator* allocator, void* ptr);
-
-#define new_allocator(name, size)   static char pool_##name[size] = {0}; \
-                                    static Allocator name = {pool_##name, (void*)(pool_##name + size), size, 0, NULL, NULL};
+void destroyAllocator(Allocator* allocator);
 
 #endif // __ALLOCATOR__

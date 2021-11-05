@@ -11,6 +11,8 @@ int main(int argc, char** argv)
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
     TTF_Init();
+
+    initMemManager();
     
     Application app;
     initApplication(&app);
@@ -21,11 +23,12 @@ int main(int argc, char** argv)
         SDL_RenderClear(app.renderer);
         
         update(&app);
-        
+
         SDL_RenderPresent(app.renderer);
     }
 
     shutdownApplication(&app);
+    shutdownMemManager();
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();

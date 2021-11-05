@@ -4,6 +4,23 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
+void initAllocator(Allocator* allocator, size_t size)
+{
+    allocator->heap = malloc(size);
+    if(allocator->heap == NULL)
+        log_report(FATAL_ERROR, "Unable to create heap allocator");
+    allocator->heap_end = allocator->heap + size;
+    allocator->heap_size = size;
+    allocator->mem_used = 0;
+    allocator->used_flags = NULL;
+    allocator->free_flags = NULL;
+}
+void destroyAllocator(Allocator* allocator)
+{
+    free(allocator->heap);
+}
+
 void* memalloc(Allocator* allocator, size_t size)
 {
     if(allocator->heap == NULL)
