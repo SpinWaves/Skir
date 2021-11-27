@@ -56,7 +56,7 @@ void update(Application *app)
             app->run = false;
 
         updateFloor(&app->floor);
-        updatePlayer(&app->player);
+        updatePlayer(&app->player, &app->inputs);
         char newFPS[12];
         sprintf(newFPS, "FPS: %d", app->fps.out_fps);
         updateText_TM(&app->text_manager, oldFPS, newFPS);

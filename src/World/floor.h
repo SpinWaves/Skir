@@ -7,6 +7,7 @@
 typedef struct
 {
     Sprite* floors[5];
+    float downs[5];
     unsigned int speed;
     unsigned int screen_w;
     unsigned int screen_h;

@@ -24,6 +24,10 @@ void renderSprite(Sprite* sprite)
 {
     SDL_RenderCopy(sprite->renderer, sprite->texture, NULL, sprite->coords);
 }
+void renderRotateSprite(Sprite* sprite)
+{
+    SDL_RenderCopyEx(sprite->renderer, sprite->texture, NULL, sprite->coords, sprite->angle, NULL, SDL_FLIP_NONE);
+}
 void destroySprite(Sprite* sprite)
 {
     SDL_DestroyTexture(sprite->texture);
