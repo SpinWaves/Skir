@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
 void initAllocator(Allocator* allocator, size_t size)
 {
     allocator->heap = malloc(size);

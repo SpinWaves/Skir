@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
@@ -19,7 +17,7 @@ int main(int argc, char** argv)
 
     while(app.run)
     {
-        SDL_SetRenderDrawColor(app.renderer, 0,  0, 0, 100);
+        SDL_SetRenderDrawColor(app.renderer, 90, 90, 180, 255);
         SDL_RenderClear(app.renderer);
         
         update(&app);
@@ -28,10 +26,10 @@ int main(int argc, char** argv)
     }
 
     shutdownApplication(&app);
-    shutdownMemManager();
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
+    shutdownMemManager();
     
     return 0;
 }

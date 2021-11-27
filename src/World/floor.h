@@ -2,7 +2,6 @@
 #define __FLOOR__
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <Kernel/sprite.h>
 
 typedef struct
@@ -10,6 +9,7 @@ typedef struct
     Sprite* floors[5];
     unsigned int speed;
     unsigned int screen_w;
+    unsigned int screen_h;
 } Floor;
 
 void initFloor(Floor* floor, SDL_Renderer* renderer, const char* text_path, unsigned int screen_w, unsigned int screen_h);

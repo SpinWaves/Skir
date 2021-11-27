@@ -15,6 +15,7 @@ typedef struct
     Floor floor;
     FPS_counter fps;
     TextManager text_manager;
+    Player player;
     bool run;
 } Application;
 

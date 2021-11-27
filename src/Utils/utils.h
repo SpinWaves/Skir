@@ -3,5 +3,6 @@
 
 #include <Utils/c_output.h>
 #include <Utils/fps.h>
+#include <Utils/easings.h>
 
 #endif // __UTILS__

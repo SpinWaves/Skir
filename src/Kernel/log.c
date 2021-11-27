@@ -2,6 +2,7 @@
 #include <Utils/c_output.h>
 #include <stdio.h>
 #include <time.h>
+#include <Kernel/Memory/memory.h>
 
 void log_report(log_type type, const char* msg)
 {
@@ -29,5 +30,8 @@ void log_report(log_type type, const char* msg)
     fclose(file);
 
     if(type == FATAL_ERROR)
+    {
+        shutdownMemManager();
         abort();
+    }
 }
