@@ -39,7 +39,7 @@ void updateFloor(Floor* floor)
             floor->downs[i] = 0.0f;
             floor->floors[i]->angle = 0;
         }
-        if(floor->floors[i]->coords->x < floor->screen_w/10)
+        if(floor->floors[i]->coords->x < (int)(floor->screen_w/10) && floor->floors[i]->coords->y < (int)floor->screen_h)
         {
             floor->downs[i] += 0.1f;
             floor->floors[i]->coords->y += easeInBack(floor->downs[i]);
