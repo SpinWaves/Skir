@@ -6,6 +6,7 @@
 #include <World/world.h>
 #include <Utils/fps.h>
 #include <Kernel/text_manager.h>
+#include <Physics/physics.h>
 
 typedef struct
 {
@@ -16,6 +17,7 @@ typedef struct
     FPS_counter fps;
     TextManager text_manager;
     Player player;
+    Obstacle obs[2];
     bool run;
 } Application;
 

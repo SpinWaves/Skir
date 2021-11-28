@@ -3,5 +3,6 @@
 
 #include <World/floor.h>
 #include <World/player.h>
+#include <World/obstacles.h>
 
 #endif // __WORLD__

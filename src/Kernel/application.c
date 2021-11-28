@@ -5,8 +5,8 @@
 
 #include <Utils/c_output.h>
 
-#define WIDTH 720/2
-#define HEIGHT 1280/2
+#define WIDTH (720/2)
+#define HEIGHT (1280/2)
 
 bool initApplication(Application *app)
 {
@@ -25,20 +25,13 @@ bool initApplication(Application *app)
     newText(&app->text_manager, "FPS: 0", 10, 10);
 
     const char* player_textures[3] = {MAIN_DIR"src/Assets/player_0.png", MAIN_DIR"src/Assets/player_1.png", MAIN_DIR"src/Assets/player_2.png"};
-    initPlayer(&app->player, app->renderer, player_textures, WIDTH/2, HEIGHT - WIDTH/4);
+    initPlayer(&app->player, app->renderer, player_textures, WIDTH/3, HEIGHT - WIDTH/4);
+
+    initObstacle(&app->obs[0], app->renderer, WIDTH, MAIN_DIR"src/Assets/rock_0.png", WIDTH, HEIGHT);
 
     app->run = true;
 
     return true;
-}
-
-void shutdownApplication(Application *app)
-{
-    shutdownTextManager(&app->text_manager);
-    shutdownFloor(&app->floor);
-    shutdownPlayer(&app->player);
-    SDL_DestroyRenderer(app->renderer);
-    SDL_DestroyWindow(app->window);
 }
 
 static char* oldFPS = "FPS: 0";
@@ -56,6 +49,7 @@ void update(Application *app)
             app->run = false;
 
         updateFloor(&app->floor);
+        updateObstacle(&app->obs[0]);
         updatePlayer(&app->player, &app->inputs);
         char newFPS[12];
         sprintf(newFPS, "FPS: %d", app->fps.out_fps);
@@ -63,6 +57,17 @@ void update(Application *app)
         oldFPS = newFPS;
     }
     renderPlayer(&app->player);
+    renderObstacle(&app->obs[0]);
     renderFloor(&app->floor);
     renderTextManager(&app->text_manager);
+}
+
+void shutdownApplication(Application *app)
+{
+    shutdownTextManager(&app->text_manager);
+    shutdownFloor(&app->floor);
+    shutdownPlayer(&app->player);
+    shutdownObstacle(&app->obs[0]);
+    SDL_DestroyRenderer(app->renderer);
+    SDL_DestroyWindow(app->window);
 }

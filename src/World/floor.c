@@ -27,6 +27,7 @@ void initFloor(Floor* floor, SDL_Renderer* renderer, const char* text_path, unsi
     floor->screen_w = screen_w;
     floor->screen_h = screen_h;
 }
+static unsigned int brrr = 0;
 void updateFloor(Floor* floor)
 {
     for(int i = 0; i < sizeof(floor->floors)/sizeof(floor->floors[0]); i++)
@@ -37,13 +38,19 @@ void updateFloor(Floor* floor)
             floor->floors[i]->coords->x = floor->screen_w;
             floor->floors[i]->coords->y = floor->screen_h - floor->floors[i]->coords->w;
             floor->downs[i] = 0.0f;
+            brrr = 0;
             floor->floors[i]->angle = 0;
         }
-        if(floor->floors[i]->coords->x < (int)(floor->screen_w/10) && floor->floors[i]->coords->y < (int)floor->screen_h)
+        if(floor->floors[i]->coords->x < (int)(floor->screen_w/20) && floor->floors[i]->coords->y < floor->screen_h) // To make the floor fall down
         {
             floor->downs[i] += 0.1f;
             floor->floors[i]->coords->y += easeInBack(floor->downs[i]);
             floor->floors[i]->angle--;
+        }
+        else if(floor->floors[i]->coords->x < (int)(floor->screen_w/4)) // To make the floor wiggle
+        {
+            floor->floors[i]->angle = cos(brrr) * 2;
+            brrr++;
         }
     }
 }

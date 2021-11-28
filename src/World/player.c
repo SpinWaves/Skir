@@ -6,14 +6,12 @@ void initPlayer(Player* player, SDL_Renderer* renderer, const char* tex[3], int 
 {
     SDL_Texture* texture = NULL;
     int w, h = 0;
-    player->pos_x = x;
-    player->pos_y = y;
     player->animation_frame = 0;
     for(int i = 0; i < sizeof(player->sprites)/sizeof(player->sprites[0]); i++)
     {
         texture = IMG_LoadTexture(renderer, tex[i]);
         if(texture == NULL)
-            printf("%sFloor: unable to create texture : %s %s\n", OUT_RED, tex[i], OUT_DEF);
+            printf("%sPlayer: unable to create texture : %s %s\n", OUT_RED, tex[i], OUT_DEF);
         SDL_QueryTexture(texture, NULL, NULL, &w, &h);
         if(i % 2 == 0)
             y += 4;
@@ -21,15 +19,17 @@ void initPlayer(Player* player, SDL_Renderer* renderer, const char* tex[3], int 
             y -= 8;
         player->sprites[i] = createSprite(renderer, texture, x - w/2, y - h, w, h);
     }
+    player->hide_box = newBoxCollider(x, y, player->sprites[0]->coords->w, player->sprites[0]->coords->h);
 }
 void renderPlayer(Player* player)
 {
     renderSprite(player->sprites[(int)(player->animation_frame/100)]);
 }
-static int jump = -15;
+static int jump = -14;
 void updatePlayer(Player* player, Inputs* inputs)
 {
-    if(jump == -15)
+    player->hide_box->y = player->sprites[(int)(player->animation_frame/100)]->coords->y;
+    if(jump == -14)
     {
         if(getKey(inputs, SDL_SCANCODE_SPACE) || getKey(inputs, SDL_SCANCODE_UP))
             jump = 15;
@@ -46,6 +46,7 @@ void updatePlayer(Player* player, Inputs* inputs)
 }
 void shutdownPlayer(Player* player)
 {
+    freeBoxCollider(player->hide_box);
     for(int i = 0; i < sizeof(player->sprites)/sizeof(player->sprites[0]); i++)
     {
         destroySprite(player->sprites[i]);
