@@ -5,8 +5,12 @@
 #include <Kernel/kernel.h>
 #include <Physics/physics.h>
 
+#include <time.h>
+#include <stdlib.h>
+
 int main(int argc, char** argv)
 {
+    srand(time(NULL));
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
     TTF_Init();

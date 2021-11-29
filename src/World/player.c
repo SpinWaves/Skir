@@ -20,7 +20,7 @@ void initPlayer(Player* player, SDL_Renderer* renderer, const char* tex[3], int 
             y -= 8;
         player->sprites[i] = createSprite(renderer, texture, x - w/2, y - h, w, h);
     }
-    player->hide_box = newBoxCollider(x, y, player->sprites[0]->coords->w, player->sprites[0]->coords->h);
+    player->hide_box = newBoxCollider(x + 15, y, player->sprites[0]->coords->w - 45, player->sprites[0]->coords->h - 10);
     pm_addCollider(player->hide_box);
 }
 void renderPlayer(Player* player)
@@ -46,7 +46,7 @@ void updatePlayer(Player* player, Inputs* inputs)
         player->sprites[(int)(player->animation_frame/100)]->coords->y -= jump;
     }
     if(player->hide_box->is_colliding == true)
-        printf("collide\n");
+        inputs->quit = true;
 }
 void shutdownPlayer(Player* player)
 {

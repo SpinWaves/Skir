@@ -12,6 +12,9 @@ typedef struct
     bool is_colliding;
 } BoxCollider;
 
+BoxCollider* newBoxCollider(int x, int y, int w, int h);
+void freeBoxCollider(BoxCollider* boxCollider);
+
 typedef struct colliders_node
 {
     BoxCollider* collider;

@@ -1,6 +1,21 @@
 #include <Physics/physics_engine.h>
 #include <Kernel/Memory/memory.h>
 
+BoxCollider* newBoxCollider(int x, int y, int w, int h)
+{
+    BoxCollider* box = custom_malloc(sizeof(BoxCollider));
+    box->x = x;
+    box->y = y;
+    box->w = w;
+    box->h = h;
+    box->is_colliding = false;
+    return box;
+}
+inline void freeBoxCollider(BoxCollider* boxCollider)
+{
+    custom_free(boxCollider);
+}
+
 void initPhysicsEngine(Physics_Engine* engine)
 {
     engine->head = NULL;

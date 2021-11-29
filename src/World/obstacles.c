@@ -26,7 +26,8 @@ void updateObstacle(Obstacle* obstacle)
 {
     obstacle->sprite->coords->x -= 5;
     obstacle->hide_box->x = obstacle->sprite->coords->x;
-    if(obstacle->sprite->coords->x <= -obstacle->sprite->coords->w && obs_can_respawn == true)
+    int random = rand() % 10;
+    if(obstacle->sprite->coords->x <= -obstacle->sprite->coords->w && obs_can_respawn == true && random == 5)
     {
         obstacle->sprite->coords->x = obstacle->screen_w + 5;
         obstacle->sprite->coords->y = obstacle->screen_h - obstacle->screen_w/4 - obstacle->sprite->coords->h + 10;
