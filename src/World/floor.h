@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <Kernel/sprite.h>
+#include <stdbool.h>
 
 typedef struct
 {
@@ -12,6 +13,8 @@ typedef struct
     unsigned int screen_w;
     unsigned int screen_h;
 } Floor;
+
+extern bool obs_can_respawn;
 
 void initFloor(Floor* floor, SDL_Renderer* renderer, const char* text_path, unsigned int screen_w, unsigned int screen_h);
 void updateFloor(Floor* floor);

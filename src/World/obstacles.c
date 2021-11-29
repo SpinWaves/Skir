@@ -1,4 +1,4 @@
-#include <World/obstacles.h>
+#include <World/world.h>
 #include <Utils/utils.h>
 #include <SDL2/SDL_image.h>
 #include <Utils/easings.h>
@@ -16,6 +16,7 @@ void initObstacle(Obstacle* obstacle, SDL_Renderer * renderer, int x, const char
     SDL_QueryTexture(texture, NULL, NULL, &w, &h);
     obstacle->sprite = createSprite(renderer, texture, x, screen_h - screen_w/4 - h + 10, w, h);
     obstacle->hide_box = newBoxCollider(x, screen_h - screen_w/4 - h + 10, w, h);
+    pm_addCollider(obstacle->hide_box);
 }
 void renderObstacle(Obstacle* obstacle)
 {
@@ -25,9 +26,9 @@ void updateObstacle(Obstacle* obstacle)
 {
     obstacle->sprite->coords->x -= 5;
     obstacle->hide_box->x = obstacle->sprite->coords->x;
-    if(obstacle->sprite->coords->x <= -obstacle->sprite->coords->w)
+    if(obstacle->sprite->coords->x <= -obstacle->sprite->coords->w && obs_can_respawn == true)
     {
-        obstacle->sprite->coords->x = obstacle->screen_w;
+        obstacle->sprite->coords->x = obstacle->screen_w + 5;
         obstacle->sprite->coords->y = obstacle->screen_h - obstacle->screen_w/4 - obstacle->sprite->coords->h + 10;
         obstacle->down = 0.0f;
         obstacle->wiggle = 0;

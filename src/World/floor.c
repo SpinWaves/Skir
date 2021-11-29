@@ -28,8 +28,10 @@ void initFloor(Floor* floor, SDL_Renderer* renderer, const char* text_path, unsi
     floor->screen_h = screen_h;
 }
 static unsigned int brrr = 0;
+bool obs_can_respawn = false;
 void updateFloor(Floor* floor)
 {
+    obs_can_respawn = false;
     for(int i = 0; i < sizeof(floor->floors)/sizeof(floor->floors[0]); i++)
     {
         floor->floors[i]->coords->x -= 5;
@@ -39,6 +41,7 @@ void updateFloor(Floor* floor)
             floor->floors[i]->coords->y = floor->screen_h - floor->floors[i]->coords->w;
             floor->downs[i] = 0.0f;
             brrr = 0;
+            obs_can_respawn = true;
             floor->floors[i]->angle = 0;
         }
         if(floor->floors[i]->coords->x < (int)(floor->screen_w/20) && floor->floors[i]->coords->y < floor->screen_h) // To make the floor fall down

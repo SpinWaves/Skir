@@ -51,6 +51,9 @@ void update(Application *app)
         updateFloor(&app->floor);
         updateObstacle(&app->obs[0]);
         updatePlayer(&app->player, &app->inputs);
+
+        pm_checkCollisions();
+
         char newFPS[12];
         sprintf(newFPS, "FPS: %d", app->fps.out_fps);
         updateText_TM(&app->text_manager, oldFPS, newFPS);

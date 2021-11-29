@@ -1,0 +1,45 @@
+#include <Physics/physics_engine.h>
+#include <Kernel/Memory/memory.h>
+
+void initPhysicsEngine(Physics_Engine* engine)
+{
+    engine->head = NULL;
+}
+void addCollider(Physics_Engine* engine, BoxCollider* collider)
+{
+    colliders_node* new_node = custom_malloc(sizeof(colliders_node));
+    new_node->collider = collider;
+    new_node->next = engine->head;
+    engine->head = new_node;
+}
+void checkCollisions(Physics_Engine* engine)
+{
+    colliders_node* buffer = engine->head;
+    while(buffer != NULL)
+    {
+        if(buffer->next != NULL)
+        {
+            /* AABB collision detection */
+            if( buffer->collider->x < buffer->next->collider->x + buffer->next->collider->w &&
+                buffer->collider->x + buffer->collider->w > buffer->next->collider->x       &&
+                buffer->collider->y < buffer->next->collider->y + buffer->next->collider->h &&
+                buffer->collider->y + buffer->collider->h > buffer->next->collider->y          )
+            {
+                buffer->collider->is_colliding = true;
+                buffer->next->collider->is_colliding = true;
+            }
+        }
+        buffer = buffer->next;
+    }
+}
+void shutdownPhysicsEngine(Physics_Engine* engine)
+{
+    colliders_node* buffer = engine->head;
+    colliders_node* double_buffer = NULL;
+    while(buffer != NULL)
+    {
+        double_buffer = buffer->next;
+        custom_free(buffer);
+        buffer = double_buffer;
+    }
+}

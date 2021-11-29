@@ -1,6 +1,7 @@
 #include <World/player.h>
 #include <Utils/c_output.h>
 #include <SDL2/SDL_image.h>
+#include <Physics/physics.h>
 
 void initPlayer(Player* player, SDL_Renderer* renderer, const char* tex[3], int x, int y)
 {
@@ -20,6 +21,7 @@ void initPlayer(Player* player, SDL_Renderer* renderer, const char* tex[3], int 
         player->sprites[i] = createSprite(renderer, texture, x - w/2, y - h, w, h);
     }
     player->hide_box = newBoxCollider(x, y, player->sprites[0]->coords->w, player->sprites[0]->coords->h);
+    pm_addCollider(player->hide_box);
 }
 void renderPlayer(Player* player)
 {
@@ -43,6 +45,8 @@ void updatePlayer(Player* player, Inputs* inputs)
         jump--;
         player->sprites[(int)(player->animation_frame/100)]->coords->y -= jump;
     }
+    if(player->hide_box->is_colliding == true)
+        printf("collide\n");
 }
 void shutdownPlayer(Player* player)
 {

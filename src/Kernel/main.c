@@ -3,6 +3,7 @@
 #include <SDL2/SDL_image.h>
 
 #include <Kernel/kernel.h>
+#include <Physics/physics.h>
 
 int main(int argc, char** argv)
 {
@@ -11,6 +12,7 @@ int main(int argc, char** argv)
     TTF_Init();
 
     initMemManager();
+    initPhysicsManager();
     
     Application app;
     initApplication(&app);
@@ -29,6 +31,7 @@ int main(int argc, char** argv)
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
+    shutdownPhysicsManager();
     shutdownMemManager();
     
     return 0;
