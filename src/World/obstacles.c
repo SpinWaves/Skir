@@ -49,5 +49,6 @@ void updateObstacle(Obstacle* obstacle)
 }
 void shutdownObstacle(Obstacle* obstacle)
 {
+    freeBoxCollider(obstacle->hide_box);
     destroySprite(obstacle->sprite);
 }
