@@ -15,7 +15,7 @@ void initObstacle(Obstacle* obstacle, SDL_Renderer * renderer, int x, const char
         printf("%sObstacle: unable to create texture : %s %s\n", OUT_RED, tex, OUT_DEF);
     SDL_QueryTexture(texture, NULL, NULL, &w, &h);
     obstacle->sprite = createSprite(renderer, texture, x, screen_h - screen_w/4 - h + 10, w, h);
-    obstacle->hide_box = newBoxCollider(x, screen_h - screen_w/4 - h + 10, w, h);
+    obstacle->hide_box = newBoxCollider(x + 10, screen_h - screen_w/4 - h + 10, w - 10, h);
     pm_addCollider(obstacle->hide_box);
 }
 void renderObstacle(Obstacle* obstacle)
