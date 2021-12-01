@@ -11,6 +11,8 @@ void initInput(Inputs *in)
     }
 
     in->quit = false;
+    in->mx = 0;
+    in->my = 0;
 }
 
 void updateInput(Inputs *in)
@@ -33,6 +35,11 @@ void updateInput(Inputs *in)
             
             default: break;
         }
+        if(in->events.type == SDL_MOUSEMOTION) // Mouvement de la souris
+        {
+                in->mx = in->events.motion.x;
+                in->my = in->events.motion.y;
+        }
     }
 }
 
@@ -43,4 +50,13 @@ bool getKey(Inputs *in, const SDL_Scancode key)
 bool getMouse(Inputs *in, const uint8_t button)
 {
     return in->mouse[button];
+}
+
+inline int getMouseX(Inputs* in)
+{
+    return in->mx;
+}
+inline int getMouseX(Inputs* in)
+{
+    return in->my;
 }
