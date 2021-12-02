@@ -8,6 +8,11 @@
 #define WIDTH (720/2)
 #define HEIGHT (1280/2)
 
+void button_do()
+{
+    printf("test\n");
+}
+
 bool initApplication(Application *app)
 {
     app->window = SDL_CreateWindow("Keep Running", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_ALLOW_HIGHDPI);
@@ -29,6 +34,9 @@ bool initApplication(Application *app)
 
     initObstacle(&app->obs[0], app->renderer, WIDTH, MAIN_DIR"src/Assets/rock_0.png", WIDTH, HEIGHT);
 
+    app->but = createButton(app->renderer, "Test", 100, 200, 100, 50, 255, 255, 255);
+    setFunctionCall(app->but, button_do);
+
     app->run = true;
 
     return true;
@@ -42,7 +50,7 @@ void update(Application *app)
     if(app->fps.make_update)
     {
         updateInput(&app->inputs);
-        if(getKey(&app->inputs, SDL_SCANCODE_ESCAPE))
+        if(getKey(&app->inputs, SDL_SCANCODE_ESCAPE, DOWN))
             app->inputs.quit = true;
 
         if(app->inputs.quit)
@@ -51,6 +59,7 @@ void update(Application *app)
         updateFloor(&app->floor);
         updateObstacle(&app->obs[0]);
         updatePlayer(&app->player, &app->inputs);
+        updateButton(app->but, &app->inputs);
 
         pm_checkCollisions();
 
@@ -59,6 +68,7 @@ void update(Application *app)
         updateText_TM(&app->text_manager, oldFPS, newFPS);
         oldFPS = newFPS;
     }
+    renderButton(app->but);
     renderPlayer(&app->player);
     renderObstacle(&app->obs[0]);
     renderFloor(&app->floor);
@@ -67,6 +77,7 @@ void update(Application *app)
 
 void shutdownApplication(Application *app)
 {
+    destroyButton(app->but);
     shutdownTextManager(&app->text_manager);
     shutdownFloor(&app->floor);
     shutdownPlayer(&app->player);

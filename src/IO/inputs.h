@@ -8,18 +8,20 @@
 typedef struct
 {
     SDL_Event events;
-    bool keyboard[SDL_NUM_SCANCODES];
-    bool mouse[8];
+    bool keyboard[SDL_NUM_SCANCODES][2];
+    bool mouse[8][2];
     bool quit;
     int mx;
     int my;
 } Inputs;
 
+typedef enum { UP = 1, DOWN = 0 } ButtonAction;
+
 void initInput(Inputs *in);
 void updateInput(Inputs *in);
-bool getKey(Inputs *in, const SDL_Scancode key);
-bool getMouse(Inputs *in, const uint8_t button);
+bool getKey(Inputs *in, const SDL_Scancode key, ButtonAction action);
+bool getMouse(Inputs *in, const uint8_t button, ButtonAction action);
 int getMouseX(Inputs* in);
-int getMouseX(Inputs* in);
+int getMouseY(Inputs* in);
 
 #endif // __INPUTS__

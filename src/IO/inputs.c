@@ -5,9 +5,13 @@ void initInput(Inputs *in)
 {
     for(int i = 0; i < SDL_NUM_SCANCODES; i++)
     {
-        in->keyboard[i] = false;
+        in->keyboard[i][0] = false;
+        in->keyboard[i][1] = false;
         if(i < 8)
-            in->mouse[i] = false;
+        {
+            in->mouse[i][0] = false;
+            in->mouse[i][1] = false;
+        }
     }
 
     in->quit = false;
@@ -19,9 +23,13 @@ void updateInput(Inputs *in)
 {
     for(int i = 0; i < SDL_NUM_SCANCODES; i++)
     {
-        in->keyboard[i] = false;
+        in->keyboard[i][0] = false;
+        in->keyboard[i][1] = false;
         if(i < 8)
-            in->mouse[i] = false;
+        {
+            in->mouse[i][0] = false;
+            in->mouse[i][1] = false;
+        }
     }
 
     while(SDL_PollEvent(&in->events))
@@ -30,8 +38,22 @@ void updateInput(Inputs *in)
             in->quit = true;
         switch(in->events.type)
         {
-            case SDL_KEYDOWN: in->keyboard[in->events.key.keysym.scancode] = true; break;
-            case SDL_MOUSEBUTTONDOWN: in->mouse[in->events.button.button] = true; break;
+            case SDL_KEYDOWN: 
+                in->keyboard[in->events.key.keysym.scancode][0] = true;
+                in->keyboard[in->events.key.keysym.scancode][1] = false;
+            break;
+            case SDL_KEYUP: 
+                in->keyboard[in->events.key.keysym.scancode][1] = true;
+                in->keyboard[in->events.key.keysym.scancode][0] = false;
+            break;
+            case SDL_MOUSEBUTTONDOWN:
+                in->mouse[in->events.button.button][0] = true;
+                in->mouse[in->events.button.button][1] = false;
+            break;
+            case SDL_MOUSEBUTTONUP:
+                in->mouse[in->events.button.button][1] = true;
+                in->mouse[in->events.button.button][0] = false;
+            break;
             
             default: break;
         }
@@ -43,20 +65,20 @@ void updateInput(Inputs *in)
     }
 }
 
-bool getKey(Inputs *in, const SDL_Scancode key)
+bool getKey(Inputs *in, const SDL_Scancode key, ButtonAction action)
 {
-    return in->keyboard[key];
+    return in->keyboard[key][action];
 }
-bool getMouse(Inputs *in, const uint8_t button)
+bool getMouse(Inputs *in, const uint8_t button, ButtonAction action)
 {
-    return in->mouse[button];
+    return in->mouse[button][action];
 }
 
 inline int getMouseX(Inputs* in)
 {
     return in->mx;
 }
-inline int getMouseX(Inputs* in)
+inline int getMouseY(Inputs* in)
 {
     return in->my;
 }

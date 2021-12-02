@@ -16,11 +16,12 @@ typedef struct
     void (*f)();
     SDL_Color* color;
     Text* text;
+    TTF_Font* font;
     SDL_Renderer* renderer;
     bool is_button_down;
 } Button;
 
-Button* createButton(SDL_Renderer* renderer, const char* text, int x, int t, int w, int h, int r, int g, int b);
+Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, int r, int g, int b);
 void setFunctionCall(Button* button, void (*f)());
 bool isDown(Button* button);
 void renderButton(Button* button);

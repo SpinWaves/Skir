@@ -7,6 +7,7 @@
 #include <Utils/fps.h>
 #include <Kernel/text_manager.h>
 #include <Physics/physics.h>
+#include <GUI/gui.h>
 
 typedef struct
 {
@@ -18,6 +19,7 @@ typedef struct
     TextManager text_manager;
     Player player;
     Obstacle obs[2];
+    Button* but;
     bool run;
 } Application;
 

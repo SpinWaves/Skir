@@ -33,7 +33,7 @@ void updatePlayer(Player* player, Inputs* inputs)
     player->hide_box->y = player->sprites[(int)(player->animation_frame/100)]->coords->y;
     if(jump == -14)
     {
-        if(getKey(inputs, SDL_SCANCODE_SPACE) || getKey(inputs, SDL_SCANCODE_UP))
+        if(getKey(inputs, SDL_SCANCODE_SPACE, DOWN) || getKey(inputs, SDL_SCANCODE_UP, DOWN))
             jump = 15;
 
         player->animation_frame += 15;
@@ -45,8 +45,8 @@ void updatePlayer(Player* player, Inputs* inputs)
         jump--;
         player->sprites[(int)(player->animation_frame/100)]->coords->y -= jump;
     }
-    if(player->hide_box->is_colliding == true)
-        inputs->quit = true;
+    //if(player->hide_box->is_colliding == true)
+    //    inputs->quit = true;
 }
 void shutdownPlayer(Player* player)
 {
