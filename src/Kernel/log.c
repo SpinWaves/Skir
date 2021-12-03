@@ -1,3 +1,9 @@
+// Copyright (C) 2021 SpinWaves (https://github.com/SpinWaves)
+// This file is a part of "Keep Running"
+// For conditions of distribution and use, see the LICENSE
+//
+// Author : kbz_8
+
 #include <Kernel/log.h>
 #include <Utils/c_output.h>
 #include <stdio.h>

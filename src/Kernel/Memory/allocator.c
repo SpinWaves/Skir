@@ -1,3 +1,9 @@
+// Copyright (C) 2021 SpinWaves (https://github.com/SpinWaves)
+// This file is a part of "Keep Running"
+// For conditions of distribution and use, see the LICENSE
+//
+// Author : kbz_8
+
 #include <Kernel/Memory/allocator.h>
 #include <Kernel/log.h>
 #include <Utils/utils.h>
