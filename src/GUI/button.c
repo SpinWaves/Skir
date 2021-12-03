@@ -95,7 +95,6 @@ void destroyButton(Button* button)
     deleteText(button->text);
     custom_free(button->color);
     custom_free(button->coords);
-    custom_free(button->text);
     TTF_CloseFont(button->font);
     custom_free(button);
 }

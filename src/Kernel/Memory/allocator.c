@@ -80,7 +80,7 @@ bool canHold(Allocator* allocator, size_t size)
 }
 bool contains(Allocator* allocator, void* ptr)
 {
-    return ptr > allocator->heap && ptr < allocator->heap_end;
+    return ptr >= allocator->heap && ptr <= allocator->heap_end;
 }
 void memfree(Allocator* allocator, void* ptr)
 {

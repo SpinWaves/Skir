@@ -49,4 +49,5 @@ void renderText(Text* t, SDL_Renderer* renderer)
 void deleteText(Text* t)
 {
     SDL_DestroyTexture(t->texture);
+    custom_free(t);
 }
