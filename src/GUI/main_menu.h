@@ -15,6 +15,7 @@ typedef struct
 
 void initMainMenu();
 void callMainMenu();
+void hangUpMainMenu():
 void updateMainMenu();
 void renderMainMenu();
 void shutdownMainMenu();
