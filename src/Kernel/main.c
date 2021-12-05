@@ -1,3 +1,9 @@
+// Copyright (C) 2021 SpinWaves (https://github.com/SpinWaves)
+// This file is a part of "Keep Running"
+// For conditions of distribution and use, see the LICENSE
+//
+// Author : kbz_8 (https://solo.to/kbz_8)
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
@@ -6,12 +12,6 @@
 #include <Physics/physics.h>
 
 #include <time.h>
-// Copyright (C) 2021 SpinWaves (https://github.com/SpinWaves)
-// This file is a part of "Keep Running"
-// For conditions of distribution and use, see the LICENSE
-//
-// Author : kbz_8
-
 #include <stdlib.h>
 
 int main(int argc, char** argv)

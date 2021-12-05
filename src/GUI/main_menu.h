@@ -2,27 +2,18 @@
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
-// Author : kbz_8
+// Author : kbz_8 (https://solo.to/kbz_8)
 
 #ifndef __MAIN_MENU__
 #define __MAIN_MENU__
 
-#include <GUI/button.h>
 #include <Kernel/kernel.h>
 
-typedef struct
-{
-    Buttons* butts[3];
-    Text* texts[2];
-    Sprite* bg;
-    TTF_font* font;
-    bool is_called;
-} Main_Menu;
-
-void initMainMenu();
+void initMainMenu(SDL_Renderer* renderer, int width, int height);
 void callMainMenu();
-void hangUpMainMenu():
-void updateMainMenu();
+void hangUpMainMenu();
+bool isMainMenuCalled();
+void updateMainMenu(Inputs *in);
 void renderMainMenu();
 void shutdownMainMenu();
 

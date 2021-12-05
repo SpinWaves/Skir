@@ -2,7 +2,7 @@
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
-// Author : kbz_8
+// Author : kbz_8 (https://solo.to/kbz_8)
 
 #ifndef __APPLICATION__
 #define __APPLICATION__
@@ -25,7 +25,6 @@ typedef struct
     TextManager text_manager;
     Player player;
     Obstacle obs[2];
-    Button* but;
     bool run;
 } Application;
 

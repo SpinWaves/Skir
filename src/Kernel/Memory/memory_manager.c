@@ -2,7 +2,7 @@
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
-// Author : kbz_8
+// Author : kbz_8 (https://solo.to/kbz_8)
 
 #include <Kernel/Memory/memory_manager.h>
 
@@ -19,7 +19,7 @@ void custom_free(void* ptr)
 
 void initMemManager()
 {
-    initAllocator(&__allocator, 1024);
+    initAllocator(&__allocator, 2048);
 }
 void shutdownMemManager()
 {

@@ -2,7 +2,7 @@
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
-// Author : kbz_8
+// Author : kbz_8 (https://solo.to/kbz_8)
 
 #include <Kernel/Memory/allocator.h>
 #include <Kernel/log.h>
@@ -86,7 +86,7 @@ bool canHold(Allocator* allocator, size_t size)
 }
 bool contains(Allocator* allocator, void* ptr)
 {
-    return ptr >= allocator->heap && ptr <= allocator->heap_end;
+    return (char*)ptr >= (char*)allocator->heap && (char*)ptr <= (char*)allocator->heap_end;
 }
 void memfree(Allocator* allocator, void* ptr)
 {

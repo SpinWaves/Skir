@@ -2,12 +2,13 @@
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
-// Author : kbz_8
+// Author : kbz_8 (https://solo.to/kbz_8)
 
 #include <World/player.h>
 #include <Utils/c_output.h>
 #include <SDL2/SDL_image.h>
 #include <Physics/physics.h>
+#include <GUI/main_menu.h>
 
 void initPlayer(Player* player, SDL_Renderer* renderer, const char* tex[3], int x, int y)
 {
@@ -51,8 +52,8 @@ void updatePlayer(Player* player, Inputs* inputs)
         jump--;
         player->sprites[(int)(player->animation_frame/100)]->coords->y -= jump;
     }
-    //if(player->hide_box->is_colliding == true)
-    //    inputs->quit = true;
+    if(player->hide_box->is_colliding == true)
+        callMainMenu();
 }
 void shutdownPlayer(Player* player)
 {

@@ -2,7 +2,7 @@
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
-// Author : kbz_8
+// Author : kbz_8 (https://solo.to/kbz_8)
 
 #include <Kernel/application.h>
 
@@ -13,11 +13,6 @@
 
 #define WIDTH (720/2)
 #define HEIGHT (1280/2)
-
-void button_do()
-{
-    printf("test\n");
-}
 
 bool initApplication(Application *app)
 {
@@ -40,8 +35,8 @@ bool initApplication(Application *app)
 
     initObstacle(&app->obs[0], app->renderer, WIDTH, MAIN_DIR"src/Assets/rock_0.png", WIDTH, HEIGHT);
 
-    app->but = createButton(app->renderer, "Test", 100, 200, 100, 50, 255, 255, 255);
-    setFunctionCall(app->but, button_do);
+    initMainMenu(app->renderer, WIDTH, HEIGHT);
+    callMainMenu();
 
     app->run = true;
 
@@ -57,33 +52,41 @@ void update(Application *app)
     {
         updateInput(&app->inputs);
         if(getKey(&app->inputs, SDL_SCANCODE_ESCAPE, DOWN))
-            app->inputs.quit = true;
+            callMainMenu();
 
         if(app->inputs.quit)
             app->run = false;
 
-        updateFloor(&app->floor);
-        updateObstacle(&app->obs[0]);
-        updatePlayer(&app->player, &app->inputs);
-        updateButton(app->but, &app->inputs);
+        if(!isMainMenuCalled())
+        {
+            updateFloor(&app->floor);
+            updateObstacle(&app->obs[0]);
+            updatePlayer(&app->player, &app->inputs);
 
-        pm_checkCollisions();
+            pm_checkCollisions();
+        }
+        else
+            updateMainMenu(&app->inputs);
 
         char newFPS[12];
         sprintf(newFPS, "FPS: %d", app->fps.out_fps);
         updateText_TM(&app->text_manager, oldFPS, newFPS);
         oldFPS = newFPS;
     }
-    renderButton(app->but);
-    renderPlayer(&app->player);
-    renderObstacle(&app->obs[0]);
-    renderFloor(&app->floor);
-    renderTextManager(&app->text_manager);
+    if(!isMainMenuCalled())
+    {
+        renderPlayer(&app->player);
+        renderObstacle(&app->obs[0]);
+        renderFloor(&app->floor);
+        renderTextManager(&app->text_manager);
+    }
+    else
+        renderMainMenu();
 }
 
 void shutdownApplication(Application *app)
 {
-    destroyButton(app->but);
+    shutdownMainMenu();
     shutdownTextManager(&app->text_manager);
     shutdownFloor(&app->floor);
     shutdownPlayer(&app->player);

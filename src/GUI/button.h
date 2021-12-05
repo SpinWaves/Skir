@@ -2,7 +2,7 @@
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
-// Author : kbz_8
+// Author : kbz_8 (https://solo.to/kbz_8)
 
 #ifndef __BUTTON__
 #define __BUTTON__
@@ -24,7 +24,6 @@ typedef struct
     Text* text;
     TTF_Font* font;
     SDL_Renderer* renderer;
-    bool is_button_down;
 } Button;
 
 Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, int r, int g, int b);
