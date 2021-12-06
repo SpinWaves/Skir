@@ -59,19 +59,23 @@ void update(Application *app)
 
         if(!isMainMenuCalled())
         {
+            pm_checkCollisions();
             updateFloor(&app->floor);
             updateObstacle(&app->obs[0]);
             updatePlayer(&app->player, &app->inputs);
 
-            pm_checkCollisions();
+            char newFPS[12];
+            sprintf(newFPS, "FPS: %d", app->fps.out_fps);
+            updateText_TM(&app->text_manager, oldFPS, newFPS);
+            oldFPS = newFPS;
         }
         else
+        {
             updateMainMenu(&app->inputs);
-
-        char newFPS[12];
-        sprintf(newFPS, "FPS: %d", app->fps.out_fps);
-        updateText_TM(&app->text_manager, oldFPS, newFPS);
-        oldFPS = newFPS;
+            app->obs[0].sprite->coords->x = WIDTH + 100;
+            app->obs[0].hide_box->x = app->obs[0].sprite->coords->x;
+            obs_can_respawn = false;
+        }
     }
     if(!isMainMenuCalled())
     {

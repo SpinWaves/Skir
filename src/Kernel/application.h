@@ -29,7 +29,7 @@ typedef struct
 } Application;
 
 bool initApplication(Application *app);
-void shutdownApplication(Application *app);
 void update(Application *app);
+void shutdownApplication(Application *app);
 
 #endif // __APPLICATION__

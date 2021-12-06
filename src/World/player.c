@@ -53,7 +53,11 @@ void updatePlayer(Player* player, Inputs* inputs)
         player->sprites[(int)(player->animation_frame/100)]->coords->y -= jump;
     }
     if(player->hide_box->is_colliding == true)
+    {
+        player->hide_box->is_colliding = false;
+        jump = -14;
         callMainMenu();
+    }
 }
 void shutdownPlayer(Player* player)
 {
