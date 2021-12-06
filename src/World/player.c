@@ -54,7 +54,6 @@ void updatePlayer(Player* player, Inputs* inputs)
     }
     if(player->hide_box->is_colliding == true)
     {
-        player->hide_box->is_colliding = false;
         jump = -14;
         callMainMenu();
     }

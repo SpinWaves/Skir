@@ -49,6 +49,11 @@ void checkCollisions(Physics_Engine* engine)
                 buffer->collider->is_colliding = true;
                 buffer->next->collider->is_colliding = true;
             }
+            else
+            {
+                buffer->collider->is_colliding = false;
+                buffer->next->collider->is_colliding = false;
+            }
         }
         buffer = buffer->next;
     }
