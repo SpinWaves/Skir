@@ -13,15 +13,12 @@ void initTextManager(TextManager* manager, SDL_Renderer* renderer)
 {
     manager->renderer = renderer;
     manager->head = NULL;
-    manager->default_font = TTF_OpenFont(MAIN_DIR"src/fonts/OpenSans-Regular.ttf", 15);
-    if(manager->default_font == NULL)
-        log_report(FATAL_ERROR, "Text Manager: cannot open default font");
 }
 void newText(TextManager* manager, const char* text, int x, int y)
 {
     text_link* t = (text_link*)custom_malloc(sizeof(text_link));
     SDL_Color white = { 255, 255, 255 };
-    initText(&t->text, manager->renderer, text, &white, manager->default_font);
+    initText(&t->text, manager->renderer, text, &white, default_font);
     int texW = 0;
     int texH = 0;
     SDL_QueryTexture(t->text.texture, NULL, NULL, &texW, &texH);
@@ -32,7 +29,7 @@ void newText(TextManager* manager, const char* text, int x, int y)
 void newText_complete(TextManager* manager, const char* text, int x, int y, int w, int h, SDL_Color* color)
 {
     text_link* t = (text_link*)custom_malloc(sizeof(text_link));
-    initText(&t->text, manager->renderer, text, color, manager->default_font);
+    initText(&t->text, manager->renderer, text, color, default_font);
     scaleText(&t->text, x, y, w, h);
     t->next = manager->head;
     manager->head = t;
@@ -79,5 +76,4 @@ void shutdownTextManager(TextManager* manager)
         if(buffer2 != NULL)
             buffer2 = buffer2->next;
     }
-    TTF_CloseFont(manager->default_font);
 }

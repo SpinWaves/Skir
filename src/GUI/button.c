@@ -6,6 +6,7 @@
 
 #include <GUI/button.h>
 #include <Kernel/Memory/memory.h>
+#include <Kernel/text_manager.h>
 
 Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, int r, int g, int b)
 {
@@ -29,8 +30,7 @@ Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int
 
     SDL_Color white = { 255, 255, 255, 255 };
     button->text = custom_malloc(sizeof(Text));
-    button->font = TTF_OpenFont(MAIN_DIR"src/fonts/OpenSans-Regular.ttf", 15);
-    initText(button->text, button->renderer, text, &white, button->font);
+    initText(button->text, button->renderer, text, &white, default_font);
 
     int rect_text_x = button->coords->x + (button->coords->w - button->text->rect.w)/2;
     int rect_text_y = button->coords->y + (button->coords->h - button->text->rect.h)/2 + 1;
@@ -96,6 +96,5 @@ void destroyButton(Button* button)
     custom_free(button->text);
     custom_free(button->color);
     custom_free(button->coords);
-    TTF_CloseFont(button->font);
     custom_free(button);
 }

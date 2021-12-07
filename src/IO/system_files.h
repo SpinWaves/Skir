@@ -4,10 +4,9 @@
 //
 // Author : kbz_8 (https://solo.to/kbz_8)
 
-#ifndef __IO__
-#define __IO__
+#ifndef __SYSTEM_FILES__
+#define __SYSTEM_FILES__
 
-#include <IO/inputs.h>
-#include <IO/system_files.h>
+char** get_config_file(const char* path);
 
-#endif // __IO__
+#endif // __SYSTEM_FILES__

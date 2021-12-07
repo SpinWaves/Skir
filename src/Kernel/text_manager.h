@@ -17,7 +17,6 @@ typedef struct text_link
 
 typedef struct
 {
-    TTF_Font* default_font;
     text_link* head;
     SDL_Renderer* renderer;
 } TextManager;

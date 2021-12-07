@@ -24,10 +24,11 @@ bool initApplication(Application *app)
     }
 
     app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC |SDL_RENDERER_TARGETTEXTURE);
+    initTextManager(&app->text_manager, app->renderer);
+    printf("%p\n", default_font);
     initInput(&app->inputs);
     initFloor(&app->floor, app->renderer, MAIN_DIR"src/Assets/floor.png", WIDTH, HEIGHT);
     initFPS(&app->fps);
-    initTextManager(&app->text_manager, app->renderer);
     newText(&app->text_manager, "FPS: 0", 10, 10);
 
     const char* player_textures[3] = {MAIN_DIR"src/Assets/player_0.png", MAIN_DIR"src/Assets/player_1.png", MAIN_DIR"src/Assets/player_2.png"};

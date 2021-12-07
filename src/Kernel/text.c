@@ -13,8 +13,8 @@ void initText(Text* t, SDL_Renderer* renderer, const char* text, SDL_Color* colo
     t->font = font;
     t->color = *color;
     if(font == NULL)
-        log_report(FATAL_ERROR, "Text: font is NULL");    
-    SDL_Surface* surface = TTF_RenderText_Solid(font, text, *color);
+        log_report(FATAL_ERROR, "Text: font is NULL");
+    SDL_Surface* surface = TTF_RenderUTF8_Blended(font, text, *color);
     if(!surface)
         log_report(ERROR, "Text: unable to create surface from text");
     t->texture = SDL_CreateTextureFromSurface(renderer, surface);

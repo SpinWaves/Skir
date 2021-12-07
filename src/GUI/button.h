@@ -22,7 +22,6 @@ typedef struct
     void (*f)();
     SDL_Color* color;
     Text* text;
-    TTF_Font* font;
     SDL_Renderer* renderer;
 } Button;
 

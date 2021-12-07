@@ -12,7 +12,6 @@ typedef struct
     Button* butts[3];
     Text* texts[2];
     Sprite* bg;
-    TTF_Font* font;
     bool is_called;
     SDL_Renderer* renderer;
 } Main_Menu;
@@ -21,6 +20,7 @@ static Main_Menu* __menu = NULL;
 
 void play_button()
 {
+    __menu->butts[0]->is_activated = false;
     hangUpMainMenu();
 }
 void settings_button()
@@ -44,7 +44,6 @@ void initMainMenu(SDL_Renderer* renderer, int width, int height)
         __menu->butts[i] = createButton(renderer, buttons_texts[i], 50, (height / 8) * (i + 1) + height / 5, width - 100, height / 10, 75, 75, 75);
         setFunctionCall(__menu->butts[i], buttons_tasks[i]);
     }
-    __menu->font = TTF_OpenFont(MAIN_DIR"src/fonts/OpenSans-Regular.ttf", 15);
 }
 void callMainMenu()
 {
@@ -79,7 +78,10 @@ void shutdownMainMenu()
     }
     const char* buttons_texts[] = {"Play", "Settings", "About"};
     for(int i = 0; i < sizeof(__menu->butts) / sizeof(__menu->butts[0]); i++)
+    {
         destroyButton(__menu->butts[i]);
+        custom_free(__menu->butts[i]);
+    }
 
     custom_free(__menu);
 }
