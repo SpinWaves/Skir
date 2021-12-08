@@ -23,12 +23,11 @@ int main(int argc, char** argv)
 
     initMemManager();
     initPhysicsManager();
+    initConfigInfoManager();
 
     default_font = TTF_OpenFont(MAIN_DIR"src/fonts/OpenSans-Regular.ttf", 15);
     if(default_font == NULL)
         log_report(FATAL_ERROR, "Text Manager: cannot open default font");
-    
-    get_config_file(MAIN_DIR"Languages/en.cfg");
     
     Application app;
     initApplication(&app);
@@ -44,6 +43,7 @@ int main(int argc, char** argv)
     }
 
     shutdownApplication(&app);
+    shutdownConfigInfoManager();
     TTF_CloseFont(default_font);
     TTF_Quit();
     IMG_Quit();

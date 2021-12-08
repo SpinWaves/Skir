@@ -10,17 +10,25 @@
 #include <stdio.h>
 #include <string.h>
 
-char** get_config_file(const char* path)
+static config_infos* __config_manager = NULL
+
+void initConfigInfoManager()
+{
+    __config_manager = NULL;
+}
+void openConfigFile(const char* path)
 {
     FILE* fp = fopen(path, "r");
     if(fp == NULL)
         log_report(FATAL_ERROR, "Couldn't open config file");
 
-    char** get = custom_malloc(1024);
-    
-    char line[1024] = { 0 };
+    char line[1024] = {0};
     while(!feof(fp))
     {
+        config_infos* inf = custom_malloc(sizeof(config_infos));
+        inf->next = __config_manager;
+        __config_manager = inf;
+
         memset(line, 0, 1024);
         fgets(line, 1024, fp);
         if(line[0] == '#')
@@ -30,23 +38,44 @@ char** get_config_file(const char* path)
         char *pos = strchr(line, '=');
         if(pos == NULL)
             continue;
-
-        char key[64] = { 0 };
-        char val[64] = { 0 };
+        
+        memset(inf->key, 0, 64);
+        memset(inf->val, 0, 960);
 
         int offset = 1;
         if(line[len - 1] == '\n')
             offset = 2;
 
-        strncpy(key, line, pos - line);
+        strncpy(inf->key, line, pos - line);
         if(pos[1] == ' ')
-            strncpy(val, pos + 2, line + len - offset - pos);
+            strncpy(inf->val, pos + 2, line + len - offset - pos);
         else
-            strncpy(val, pos + 1, line + len - offset - pos);
-        if(key[strlen(key) - 1] == ' ')
-            key[strlen(key) - 1] = 0;
+            strncpy(inf->val, pos + 1, line + len - offset - pos);
+        if(inf->key[strlen(inf->key) - 1] == ' ')
+            inf->key[strlen(inf->key) - 1] = 0;
 
-        printf("%s -> %s\n", key, val);
+        printf("%s -> %s\n", inf->key, inf->val); // for tests
     }
     fclose(fp);
+}
+config_infos* get_info(const char* key)
+{
+    config_infos* buffer = __config_manager;
+    while(buffer != NULL)
+    {
+        if(strcmp(buffer->key, key) == 0)
+            return buffer;
+    }
+    return NULL;
+}
+void shutdownConfigInfoManager()
+{
+    config_infos* buffer = __config_manager;
+    config_infos* double_buffer = NULL;
+    while(buffer != NULL)
+    {
+        double_buffer = buffer->next;
+        custom_free(buffer);
+        buffer = double_buffer;
+    }
 }
