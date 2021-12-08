@@ -9,14 +9,14 @@
 
 typedef struct config_infos
 {
-    char key[0];
-    char val[960];
+    char* key;
+    char* val;
     struct config_infos* next;
 } config_infos;
 
 void initConfigInfoManager();
 void openConfigFile(const char* path);
-config_infos* get_info(const char* key);
+char* get_info(const char* key);
 void shutdownConfigInfoManager();
 
 #endif // __SYSTEM_FILES__

@@ -29,6 +29,8 @@ int main(int argc, char** argv)
     if(default_font == NULL)
         log_report(FATAL_ERROR, "Text Manager: cannot open default font");
     
+    openConfigFile(MAIN_DIR"Languages/en.cfg");
+
     Application app;
     initApplication(&app);
 

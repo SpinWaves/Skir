@@ -38,33 +38,38 @@ void openConfigFile(const char* path)
         char *pos = strchr(line, '=');
         if(pos == NULL)
             continue;
-        
-        memset(inf->key, 0, 64);
-        memset(inf->val, 0, 960);
 
         int offset = 1;
         if(line[len - 1] == '\n')
             offset = 2;
 
+        int key_len = (int)(pos - line);
+        inf->key = custom_malloc(key_len);
+        int val_len = (int)(line + len - offset - pos);
+        inf->val = custom_malloc(val_len);
+ 
+        memset(inf->key, 0, key_len - 1);
+        memset(inf->val, 0, val_len - 1);
+
         strncpy(inf->key, line, pos - line);
+        if(inf->key[strlen(inf->key) - 1] == ' ')
+            inf->key[strlen(inf->key) - 1] = 0;
         if(pos[1] == ' ')
             strncpy(inf->val, pos + 2, line + len - offset - pos);
         else
             strncpy(inf->val, pos + 1, line + len - offset - pos);
-        if(inf->key[strlen(inf->key) - 1] == ' ')
-            inf->key[strlen(inf->key) - 1] = 0;
 
         printf("%s -> %s\n", inf->key, inf->val); // for tests
     }
     fclose(fp);
 }
-config_infos* get_info(const char* key)
+char* get_info(const char* key)
 {
     config_infos* buffer = __config_manager;
     while(buffer != NULL)
     {
         if(strcmp(buffer->key, key) == 0)
-            return buffer;
+            return buffer->val;
     }
     return NULL;
 }
@@ -75,6 +80,8 @@ void shutdownConfigInfoManager()
     while(buffer != NULL)
     {
         double_buffer = buffer->next;
+        custom_free(buffer->key);
+        custom_free(buffer->val);
         custom_free(buffer);
         buffer = double_buffer;
     }
