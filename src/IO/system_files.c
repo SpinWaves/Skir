@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static config_infos* __config_manager = NULL
+static config_infos* __config_manager = NULL;
 
 void initConfigInfoManager()
 {
