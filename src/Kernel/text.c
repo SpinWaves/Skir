@@ -7,6 +7,8 @@
 #include <Kernel/text.h>
 #include <Kernel/log.h>
 
+TTF_Font* default_font = NULL;
+
 void initText(Text* t, SDL_Renderer* renderer, const char* text, SDL_Color* color, TTF_Font* font)
 {
     t->text = text;

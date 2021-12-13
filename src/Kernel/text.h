@@ -19,7 +19,7 @@ typedef struct
     SDL_Color color;
 } Text;
 
-static TTF_Font* default_font = NULL;
+extern TTF_Font* default_font;
 
 void initText(Text* t, SDL_Renderer* renderer, const char* text, SDL_Color* color, TTF_Font* font);
 void scaleText(Text* t, int x, int y, int w, int h);
