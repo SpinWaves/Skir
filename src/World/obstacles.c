@@ -11,7 +11,6 @@
 
 void initObstacle(Obstacle* obstacle, SDL_Renderer * renderer, int x, const char* tex, unsigned int screen_w, unsigned int screen_h)
 {
-    int w, h = 0;
     obstacle->down = 0.0f;
     obstacle->wiggle = 0;
     obstacle->screen_w = screen_w;
@@ -19,9 +18,9 @@ void initObstacle(Obstacle* obstacle, SDL_Renderer * renderer, int x, const char
     SDL_Texture* texture = IMG_LoadTexture(renderer, tex);
     if(texture == NULL)
         printf("%sObstacle: unable to create texture : %s %s\n", OUT_RED, tex, OUT_DEF);
-    SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-    obstacle->sprite = createSprite(renderer, texture, x, screen_h - screen_w/4 - h + 10, w, h);
-    obstacle->hide_box = newBoxCollider(x + 10, screen_h - screen_w/4 - h + 10, w - 10, h);
+    int wh = screen_w / 6;
+    obstacle->sprite = createSprite(renderer, texture, x, screen_h - screen_w/4 - wh + 10, wh, wh);
+    obstacle->hide_box = newBoxCollider(x + 10, screen_h - screen_w/4 - wh + 10, wh - 10, wh / 2);
     pm_addCollider(obstacle->hide_box);
 }
 void renderObstacle(Obstacle* obstacle)

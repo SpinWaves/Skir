@@ -90,12 +90,6 @@ bool contains(Allocator* allocator, void* ptr)
 }
 void memfree(Allocator* allocator, void* ptr)
 {
-    if(!contains(allocator, ptr))
-    {
-        log_report(ERROR, "Allocator: cannot free a pointer allocated by another allocator"); 
-        return;
-    }
-    
     if(allocator->used_flags == NULL)
     {
         log_report(ERROR, "Allocator: something went wrong with the free of a pointer (used_flags == NULL)"); 

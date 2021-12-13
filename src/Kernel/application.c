@@ -25,7 +25,6 @@ bool initApplication(Application *app)
 
     app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC |SDL_RENDERER_TARGETTEXTURE);
     initTextManager(&app->text_manager, app->renderer);
-    printf("%p\n", default_font);
     initInput(&app->inputs);
     initFloor(&app->floor, app->renderer, MAIN_DIR"src/Assets/floor.png", WIDTH, HEIGHT);
     initFPS(&app->fps);

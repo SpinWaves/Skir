@@ -29,7 +29,15 @@ int main(int argc, char** argv)
     if(default_font == NULL)
         log_report(FATAL_ERROR, "Text Manager: cannot open default font");
     
+    char* ptr = NULL;
     openConfigFile(MAIN_DIR"Languages/en.cfg");
+    ptr = get_info("play");
+    //if(ptr != NULL)
+    //    printf("%s\n", ptr);
+    openConfigFile(MAIN_DIR"Languages/fr.cfg");
+    ptr = get_info("play");
+    if(ptr != NULL)
+        printf("%s\n", ptr);
 
     Application app;
     initApplication(&app);

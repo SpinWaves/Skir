@@ -16,6 +16,20 @@ void initConfigInfoManager()
 {
     __config_manager = NULL;
 }
+config_infos* exists(const char* key)
+{
+    config_infos* buffer = __config_manager;
+    while(buffer != NULL)
+    {
+        if(buffer->key != NULL && key != NULL)
+        {
+            if(strcmp(buffer->key, key) == 0)
+                return buffer;
+        }
+        buffer = buffer->next;
+    }
+    return NULL;
+}
 void openConfigFile(const char* path)
 {
     FILE* fp = fopen(path, "r");
@@ -23,11 +37,11 @@ void openConfigFile(const char* path)
         log_report(FATAL_ERROR, "Couldn't open config file");
 
     char line[1024] = {0};
+    config_infos* buffer = NULL;
     while(!feof(fp))
     {
         config_infos* inf = custom_malloc(sizeof(config_infos));
         inf->next = __config_manager;
-        __config_manager = inf;
 
         memset(line, 0, 1024);
         fgets(line, 1024, fp);
@@ -35,7 +49,7 @@ void openConfigFile(const char* path)
             continue;
 
         int len = strlen(line);
-        char *pos = strchr(line, '=');
+        char* pos = strchr(line, '=');
         if(pos == NULL)
             continue;
 
@@ -47,19 +61,29 @@ void openConfigFile(const char* path)
         inf->key = custom_malloc(key_len);
         int val_len = (int)(line + len - offset - pos);
         inf->val = custom_malloc(val_len);
+
+        memset(inf->key, 0, key_len);
+        memset(inf->val, 0, val_len);
  
-        memset(inf->key, 0, key_len - 1);
-        memset(inf->val, 0, val_len - 1);
-
-        strncpy(inf->key, line, pos - line);
-        if(inf->key[strlen(inf->key) - 1] == ' ')
-            inf->key[strlen(inf->key) - 1] = 0;
-        if(pos[1] == ' ')
-            strncpy(inf->val, pos + 2, line + len - offset - pos);
+        if(line[key_len - 1] == ' ')
+            strncpy(inf->key, line, key_len - 1);
         else
-            strncpy(inf->val, pos + 1, line + len - offset - pos);
+            strncpy(inf->key, line, key_len);
 
-        printf("%s -> %s\n", inf->key, inf->val); // for tests
+        if(pos[1] == ' ')
+            strncpy(inf->val, pos + 2, val_len - 1);
+        else
+            strncpy(inf->val, pos + 1, val_len);
+        
+        if((buffer = exists(inf->key)) != NULL)
+        {
+            custom_free(buffer->val);
+            buffer->val = inf->val;
+            custom_free(inf->key);
+            custom_free(inf);
+        }
+        else
+            __config_manager = inf;
     }
     fclose(fp);
 }
@@ -68,8 +92,12 @@ char* get_info(const char* key)
     config_infos* buffer = __config_manager;
     while(buffer != NULL)
     {
-        if(strcmp(buffer->key, key) == 0)
-            return buffer->val;
+        if(buffer->key != NULL && key != NULL)
+        {
+            if(strcmp(buffer->key, key) == 0)
+                return buffer->val;
+        }
+        buffer = buffer->next;
     }
     return NULL;
 }
