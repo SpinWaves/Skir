@@ -32,9 +32,9 @@ Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int
     button->text = custom_malloc(sizeof(Text));
     initText(button->text, button->renderer, text, &white, default_font);
 
-    int rect_text_x = button->coords->x + (button->coords->w - button->text->rect.w)/2;
-    int rect_text_y = button->coords->y + (button->coords->h - button->text->rect.h)/2 + 1;
-    scaleText(button->text, rect_text_x, rect_text_y, button->text->rect.w, button->text->rect.h);
+    int rect_text_x = button->coords->x + (button->coords->w - button->text->texts->rect.w)/2;
+    int rect_text_y = button->coords->y + (button->coords->h - button->text->texts->rect.h)/2 + 1;
+    scaleText(button->text, rect_text_x, rect_text_y, button->text->texts->rect.w, button->text->texts->rect.h);
 
     return button;
 }

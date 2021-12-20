@@ -6,6 +6,7 @@
 
 #include <GUI/button.h>
 #include <GUI/about.h>
+#include <IO/system_files.h>
 
 typedef struct
 {
@@ -23,21 +24,20 @@ void initAboutPage(SDL_Renderer* renderer, int width, int height)
     __about_page->is_called = false;
     __about_page->renderer = renderer;
     __about_page->text = custom_malloc(sizeof(Text));
-    const char* text = NULL;
     SDL_Color white = { 255, 255, 255};
-    initText(__about_page->text, renderer, text, &white, default_font);
-    __about_page->back = createButton(renderer, "Back", 50, height / 8, width - 100, height / 10, 75, 75, 75);
+    initText(__about_page->text, renderer, get_config_value("about_text"), &white, default_font);
+    __about_page->back = createButton(renderer, get_config_value("back"), 50, height / 8, width - 100, height / 10, 75, 75, 75);
     setFunctionCall(__about_page->back, hangUpAboutPage);
 }
-void callAboutPage()
+inline void callAboutPage()
 {
     __about_page->is_called = true;
 }
-void hangUpAboutPage()
+inline void hangUpAboutPage()
 {
     __about_page->is_called = false;
 }
-bool isAboutPageCalled()
+inline bool isAboutPageCalled()
 {
     return __about_page->is_called;
 }
@@ -52,6 +52,7 @@ void renderAboutPage()
 }
 void shutdownAboutPage()
 {
+    shutdownAboutPage();
     deleteText(__about_page->text);
     custom_free(__about_page->text);
     destroyButton(__about_page->back);

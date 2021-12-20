@@ -7,6 +7,8 @@
 #ifndef __LOG__
 #define __LOG__
 
+#include <stdarg.h>
+
 typedef enum
 {
     MESSAGE,
@@ -15,6 +17,6 @@ typedef enum
     FATAL_ERROR
 } log_type;
 
-void log_report(log_type type, const char* msg);
+void log_report(log_type type, const char* msg, ...);
 
 #endif // __LOG__

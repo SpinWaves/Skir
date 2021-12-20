@@ -10,8 +10,15 @@
 #include <time.h>
 #include <Kernel/Memory/memory.h>
 
-void log_report(log_type type, const char* msg)
+void log_report(log_type type, const char* msg, ...)
 {
+    int msg_size = strlen(msg);
+    char buffer[msg_size + 255];
+    va_list args;
+    va_start(args, msg);
+    vsprintf(buffer, msg, args);
+    va_end(args);
+
     char path[sizeof(LOG_DIR) + 48];
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
@@ -25,14 +32,14 @@ void log_report(log_type type, const char* msg)
     }
     switch(type)
     {
-        case MESSAGE: fprintf(file, "%d-%d-%d-%d:%d -- Message ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_BLUE, msg, OUT_DEF); break;
-        case WARNING: fprintf(file, "%d-%d-%d-%d:%d -- Warning ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_MAGENTA, msg, OUT_DEF); break;
-        case ERROR: fprintf(file, "%d-%d-%d-%d:%d -- Error ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900,  tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_RED, msg, OUT_DEF); break;
-        case FATAL_ERROR: fprintf(file, "%d-%d-%d-%d:%d -- Fatal error ---- ",tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_RED, msg, OUT_DEF); break;
+        case MESSAGE: fprintf(file, "%d-%d-%d-%d:%d -- Message ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_BLUE, buffer, OUT_DEF); break;
+        case WARNING: fprintf(file, "%d-%d-%d-%d:%d -- Warning ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_MAGENTA, buffer, OUT_DEF); break;
+        case ERROR: fprintf(file, "%d-%d-%d-%d:%d -- Error ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900,  tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_RED, buffer, OUT_DEF); break;
+        case FATAL_ERROR: fprintf(file, "%d-%d-%d-%d:%d -- Fatal error ---- ",tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_RED, buffer, OUT_DEF); break;
 
         default: break;
     }
-    fprintf(file, "%s\n", msg);
+    fprintf(file, "%s\n", buffer);
     fclose(file);
 
     if(type == FATAL_ERROR)

@@ -29,6 +29,7 @@ void settings_button()
 }
 void about_button()
 {
+    callAboutPage();
 }
 
 void initMainMenu(SDL_Renderer* renderer, int width, int height)
@@ -45,6 +46,8 @@ void initMainMenu(SDL_Renderer* renderer, int width, int height)
         __menu->butts[i] = createButton(renderer, buttons_texts[i], 50, (height / 8) * (i + 1) + height / 5, width - 100, height / 10, 75, 75, 75);
         setFunctionCall(__menu->butts[i], buttons_tasks[i]);
     }
+
+    initAboutPage(renderer, width, height);
 }
 void callMainMenu()
 {
@@ -60,15 +63,25 @@ bool isMainMenuCalled()
 }
 void updateMainMenu(Inputs *in)
 {
-    //for(int i = 0; i < sizeof(__menu->texts) / sizeof(__menu->texts[0]); i++)
-    //    update
-    for(int i = 0; i < sizeof(__menu->butts) / sizeof(__menu->butts[0]); i++)
-        updateButton(__menu->butts[i], in);
+    if(isAboutPageCalled())
+        updateAboutPage(in);
+    else
+    {
+        //for(int i = 0; i < sizeof(__menu->texts) / sizeof(__menu->texts[0]); i++)
+        //    update
+        for(int i = 0; i < sizeof(__menu->butts) / sizeof(__menu->butts[0]); i++)
+            updateButton(__menu->butts[i], in);
+    }
 }
 void renderMainMenu()
 {
-    for(int i = 0; i < sizeof(__menu->butts) / sizeof(__menu->butts[0]); i++)
-        renderButton(__menu->butts[i]);
+    if(isAboutPageCalled())
+        renderAboutPage();
+    else
+    {
+        for(int i = 0; i < sizeof(__menu->butts) / sizeof(__menu->butts[0]); i++)
+            renderButton(__menu->butts[i]);
+    }
 }
 void shutdownMainMenu()
 {

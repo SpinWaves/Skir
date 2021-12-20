@@ -21,7 +21,7 @@ void newText(TextManager* manager, const char* text, int x, int y)
     initText(&t->text, manager->renderer, text, &white, default_font);
     int texW = 0;
     int texH = 0;
-    SDL_QueryTexture(t->text.texture, NULL, NULL, &texW, &texH);
+    SDL_QueryTexture(t->text.texts->texture, NULL, NULL, &texW, &texH);
     scaleText(&t->text, x, y, texW, texH);
     t->next = manager->head;
     manager->head = t;

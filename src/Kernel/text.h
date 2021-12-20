@@ -10,12 +10,18 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL.h>
 
+typedef struct lines_texture
+{
+    SDL_Texture* texture;
+    SDL_Rect rect;
+    struct lines_texture* next;
+} lines_texture;
+
 typedef struct
 {
     char* text;
     TTF_Font* font;
-    SDL_Texture* texture;
-    SDL_Rect rect;
+    lines_texture* texts;
     SDL_Color color;
 } Text;
 
