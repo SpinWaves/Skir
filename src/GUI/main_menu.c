@@ -6,6 +6,7 @@
 
 #include <GUI/button.h>
 #include <GUI/main_menu.h>
+#include <IO/system_files.h>
 
 typedef struct
 {
@@ -37,7 +38,7 @@ void initMainMenu(SDL_Renderer* renderer, int width, int height)
     __menu->renderer = renderer;
     for(int i = 0; i < sizeof(__menu->texts) / sizeof(__menu->texts[0]); i++)
         __menu->texts[i] = custom_malloc(sizeof(Text));
-    const char* buttons_texts[] = {"Play", "Settings", "About"};
+    const char* buttons_texts[] = {get_config_value("play"), get_config_value("settings"), get_config_value("about")};
     void (*buttons_tasks[])() = {play_button, settings_button, about_button};
     for(int i = 0; i < sizeof(__menu->butts) / sizeof(__menu->butts[0]); i++)
     {

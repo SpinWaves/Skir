@@ -16,7 +16,7 @@ typedef struct config_infos
 
 void initConfigInfoManager();
 void openConfigFile(const char* path);
-char* get_info(const char* key);
+const char* get_config_value(const char* key);
 void shutdownConfigInfoManager();
 
 #endif // __SYSTEM_FILES__
