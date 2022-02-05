@@ -11,19 +11,25 @@
 
 #include <Utils/c_output.h>
 
-#define WIDTH (720/2)
-#define HEIGHT (1280/2)
+#define WIDTH 360
+#define HEIGHT 640
 
 bool initApplication(Application *app)
 {
     app->window = SDL_CreateWindow("Keep Running", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_ALLOW_HIGHDPI);
     if(app->window == NULL)
     {
-        printf("%sSomething went wrong with the creation of the window: %s%s\n", OUT_RED, SDL_GetError(), OUT_DEF);
+        log_report(ERROR, "Something went wrong with the creation of the window");
         return false;
     }
 
-    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC |SDL_RENDERER_TARGETTEXTURE);
+    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+    if(app->renderer == NULL)
+    {
+        log_report(ERROR, "Something went wrong with the creation of the renderer");
+        return false;
+    }
+
     initTextManager(&app->text_manager, app->renderer);
     initInput(&app->inputs);
     initFloor(&app->floor, app->renderer, MAIN_DIR"src/Assets/floor.png", WIDTH, HEIGHT);
@@ -63,11 +69,6 @@ void update(Application *app)
             updateFloor(&app->floor);
             updateObstacle(&app->obs[0]);
             updatePlayer(&app->player, &app->inputs);
-
-            char newFPS[12];
-            sprintf(newFPS, "FPS: %d", app->fps.out_fps);
-            updateText_TM(&app->text_manager, oldFPS, newFPS);
-            oldFPS = newFPS;
         }
         else
         {
@@ -76,16 +77,20 @@ void update(Application *app)
             app->obs[0].hide_box->x = app->obs[0].sprite->coords->x;
             obs_can_respawn = false;
         }
+        char newFPS[12];
+        sprintf(newFPS, "FPS: %d", app->fps.out_fps);
+        updateText_TM(&app->text_manager, oldFPS, newFPS);
+        oldFPS = newFPS;
     }
     if(!isMainMenuCalled())
     {
         renderPlayer(&app->player);
         renderObstacle(&app->obs[0]);
         renderFloor(&app->floor);
-        renderTextManager(&app->text_manager);
     }
     else
         renderMainMenu();
+    renderTextManager(&app->text_manager);
 }
 
 void shutdownApplication(Application *app)

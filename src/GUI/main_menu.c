@@ -90,7 +90,6 @@ void shutdownMainMenu()
         deleteText(__menu->texts[i]);
         custom_free(__menu->texts[i]);
     }
-    const char* buttons_texts[] = {"Play", "Settings", "About"};
     for(int i = 0; i < sizeof(__menu->butts) / sizeof(__menu->butts[0]); i++)
     {
         destroyButton(__menu->butts[i]);

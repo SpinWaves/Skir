@@ -33,7 +33,11 @@ int main(int argc, char** argv)
     openConfigFile(MAIN_DIR"Languages/en.cfg");
 
     Application app;
-    initApplication(&app);
+    if(!initApplication(&app))
+    {
+        log_report(ERROR, "unable to create an application");
+        return -1;
+    }
 
     while(app.run)
     {

@@ -32,10 +32,10 @@ void log_report(log_type type, const char* msg, ...)
     }
     switch(type)
     {
-        case MESSAGE: fprintf(file, "%d-%d-%d-%d:%d -- Message ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_BLUE, buffer, OUT_DEF); break;
-        case WARNING: fprintf(file, "%d-%d-%d-%d:%d -- Warning ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_MAGENTA, buffer, OUT_DEF); break;
-        case ERROR: fprintf(file, "%d-%d-%d-%d:%d -- Error ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900,  tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_RED, buffer, OUT_DEF); break;
-        case FATAL_ERROR: fprintf(file, "%d-%d-%d-%d:%d -- Fatal error ---- ",tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s%s%s\n", OUT_RED, buffer, OUT_DEF); break;
+        case MESSAGE: fprintf(file, "%d-%d-%d-%d:%d -- Message ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s[Log Message] %s%s\n", OUT_BLUE, buffer, OUT_DEF); break;
+        case WARNING: fprintf(file, "%d-%d-%d-%d:%d -- Warning ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s[Log Warning] %s%s\n", OUT_MAGENTA, buffer, OUT_DEF); break;
+        case ERROR: fprintf(file, "%d-%d-%d-%d:%d -- Error ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900,  tm.tm_hour, tm.tm_min); printf("%s[Log Error] %s%s\n", OUT_RED, buffer, OUT_DEF); break;
+        case FATAL_ERROR: fprintf(file, "%d-%d-%d-%d:%d -- Fatal error ---- ",tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s[Log Fatal Error] %s%s\n", OUT_RED, buffer, OUT_DEF); break;
 
         default: break;
     }
