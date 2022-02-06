@@ -41,7 +41,7 @@ lines_texture* generate_texture(Text* t, SDL_Renderer* renderer, const char* tex
     }
     tex->rect.x = 0;
     tex->rect.y = 0;
-    SDL_QueryTexture(tex->texture, NULL, NULL, &tex->rect.x, &tex->rect.x);
+    SDL_QueryTexture(tex->texture, NULL, NULL, &tex->rect.w, &tex->rect.h);
     tex->next = NULL;
     return tex;
 }
@@ -105,6 +105,18 @@ void scaleText(Text* t, int x, int y, int w, int h)
         buffer->rect.y = y + TTF_FontLineSkip(t->font) * __lines_jump;
         buffer->rect.w = w;
         buffer->rect.h = h;
+        __lines_jump++;
+        buffer = buffer->next;
+    }
+    __lines_jump = 0;
+}
+void setPosText(Text* t, int x, int y)
+{
+    lines_texture* buffer = t->texts;
+    while(buffer != NULL)
+    {
+        buffer->rect.x = x;
+        buffer->rect.y = y + TTF_FontLineSkip(t->font) * __lines_jump;
         __lines_jump++;
         buffer = buffer->next;
     }

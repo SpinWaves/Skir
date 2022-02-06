@@ -57,6 +57,15 @@ void openConfigFile(const char* path)
         if(line[len - 1] == '\n')
             offset = 2;
 
+        char* newline = strstr(line, "\\n");
+        while(newline != NULL)
+        {
+            //strncpy(newline, " \n", 2);
+            newline[0] = ' ';
+            newline[1] = '\n';
+            newline = strstr(newline, "\\n");
+        }
+
         int key_len = (int)(pos - line);
         inf->key = custom_malloc(key_len);
         int val_len = (int)(line + len - offset - pos);
@@ -64,7 +73,7 @@ void openConfigFile(const char* path)
 
         memset(inf->key, 0, key_len);
         memset(inf->val, 0, val_len);
- 
+
         if(line[key_len - 1] == ' ')
             strncpy(inf->key, line, key_len - 1);
         else
@@ -75,6 +84,7 @@ void openConfigFile(const char* path)
         else
             strncpy(inf->val, pos + 1, val_len);
         
+
         if((buffer = exists(inf->key)) != NULL)
         {
             custom_free(buffer->val);

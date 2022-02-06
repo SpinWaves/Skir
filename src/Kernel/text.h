@@ -29,6 +29,7 @@ extern TTF_Font* default_font;
 
 void initText(Text* t, SDL_Renderer* renderer, const char* text, SDL_Color* color, TTF_Font* font);
 void scaleText(Text* t, int x, int y, int w, int h);
+void setPosText(Text* t, int x, int y);
 void updateText(Text* t, SDL_Renderer* renderer, const char* text);
 void renderText(Text* t, SDL_Renderer* renderer);
 void deleteText(Text* t);
