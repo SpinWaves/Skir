@@ -49,7 +49,7 @@ bool initApplication(Application *app)
     return true;
 }
 
-static char* oldFPS = "FPS: 0";
+static char oldFPS[12] = "FPS: 0";
 
 void update(Application *app)
 {
@@ -77,10 +77,14 @@ void update(Application *app)
             app->obs[0].hide_box->x = app->obs[0].sprite->coords->x;
             obs_can_respawn = false;
         }
-        char newFPS[12];
+        static char newFPS[12];
         sprintf(newFPS, "FPS: %d", app->fps.out_fps);
-        updateText_TM(&app->text_manager, oldFPS, newFPS);
-        oldFPS = newFPS;
+        //printf("%s, %s\n", newFPS, oldFPS);
+        if(strcmp(oldFPS, newFPS) != 0)
+        {
+            updateText_TM(&app->text_manager, oldFPS, newFPS);
+            strcpy(oldFPS, newFPS);
+        }
     }
     if(!isMainMenuCalled())
     {

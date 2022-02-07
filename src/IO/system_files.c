@@ -60,10 +60,9 @@ void openConfigFile(const char* path)
         char* newline = strstr(line, "\\n");
         while(newline != NULL)
         {
-            //strncpy(newline, " \n", 2);
             newline[0] = ' ';
             newline[1] = '\n';
-            newline = strstr(newline, "\\n");
+            newline = strstr(newline + 2, "\\n");
         }
 
         int key_len = (int)(pos - line);

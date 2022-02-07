@@ -131,6 +131,7 @@ void updateText(Text* t, SDL_Renderer* renderer, const char* text)
     }
     deleteText(t);
     t->text = text;
+    printf("ui\n");
 
     char* finder = strstr(text, "\n");
     if(finder == NULL)

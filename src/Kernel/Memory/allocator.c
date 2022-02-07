@@ -33,8 +33,10 @@ void* memalloc(Allocator* allocator, size_t size)
     if(!canHold(allocator, size))
         log_report(FATAL_ERROR, "Allocator: not enough free memory"); 
     void* ptr = NULL;
+    printf("allocation - ");
     if(allocator->free_flags != NULL)
     {
+        printf("free\n");
         allocator_flag* flag = allocator->free_flags;
         if(flag->size >= size)
         {
@@ -70,6 +72,7 @@ void* memalloc(Allocator* allocator, size_t size)
             flag = flag->next;
         }
     }
+    printf("not free\n");
     allocator_flag* flag = (allocator_flag*)(allocator->heap + allocator->mem_used);
     flag->size = size;
     flag->offset = allocator->mem_used + sizeof(allocator_flag);

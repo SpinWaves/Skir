@@ -11,6 +11,7 @@
 #include <Kernel/kernel.h>
 #include <Physics/physics.h>
 #include <IO/io.h>
+#include <Utils/c_output.h>
 
 #include <time.h>
 #include <stdlib.h>
@@ -30,7 +31,7 @@ int main(int argc, char** argv)
     if(default_font == NULL)
         log_report(FATAL_ERROR, "Text Manager: cannot open default font");
     
-    openConfigFile(MAIN_DIR"Languages/en.cfg");
+    openConfigFile(MAIN_DIR"Languages/fr.cfg");
 
     Application app;
     if(!initApplication(&app))
@@ -57,6 +58,8 @@ int main(int argc, char** argv)
     SDL_Quit();
     shutdownPhysicsManager();
     shutdownMemManager();
+
+    printf("%sProgram finished%s\n", OUT_BG_GREEN, OUT_BG_DEF);
     
     return 0;
 }

@@ -50,10 +50,12 @@ Text* getText(TextManager* manager, const char* text)
     text_link* buffer = manager->head;
     while(buffer != NULL)
     {
+        printf("%s, %s\n", buffer->text.text, text);
         if(strcmp(buffer->text.text, text) == 0)
             return &buffer->text;
         buffer = buffer->next;
     }
+    log_report(ERROR, "Text Manager: Couldn't find the text : %s", text);
     return NULL;
 }
 void renderTextManager(TextManager* manager)
