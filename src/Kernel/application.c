@@ -11,9 +11,6 @@
 
 #include <Utils/c_output.h>
 
-#define WIDTH 360
-#define HEIGHT 640
-
 bool initApplication(Application *app)
 {
     app->window = SDL_CreateWindow("Keep Running", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_ALLOW_HIGHDPI);
@@ -58,7 +55,10 @@ void update(Application *app)
     {
         updateInput(&app->inputs);
         if(getKey(&app->inputs, SDL_SCANCODE_ESCAPE, DOWN))
+        {
             callMainMenu();
+            resetPlayer(&app->player, HEIGHT - WIDTH/4);
+        }
 
         if(app->inputs.quit)
             app->run = false;

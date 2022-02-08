@@ -26,6 +26,8 @@ target("Keep_Running")
 	add_defines("LOG_DIR=\"$(projectdir)/logs\"")
 	add_defines("MAIN_DIR=\"$(projectdir)/\"")
 	add_defines("SDL_MAIN_HANDLED")
+	add_defines("WIDTH=360")
+	add_defines("HEIGHT=640")
 
 	add_packages("libsdl_image", "libsdl", "libsdl_ttf", "libsndfile", "openal-soft")
 target_end() -- optional but I think the code is cleaner with this

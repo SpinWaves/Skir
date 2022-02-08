@@ -20,6 +20,7 @@ typedef struct
 } Player;
 
 void initPlayer(Player* player, SDL_Renderer* renderer, const char* tex[3], int x, int y);
+void resetPlayer(Player* player, int y);
 void renderPlayer(Player* player);
 void updatePlayer(Player* player, Inputs* inputs);
 void shutdownPlayer(Player* player);

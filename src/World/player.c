@@ -30,6 +30,19 @@ void initPlayer(Player* player, SDL_Renderer* renderer, const char* tex[3], int 
     player->hide_box = newBoxCollider(x + 15, y, player->sprites[0]->coords->w - 45, player->sprites[0]->coords->h - 10);
     pm_addCollider(player->hide_box);
 }
+void resetPlayer(Player* player, int y)
+{
+    player->animation_frame = 0;
+    for(int i = 0; i < sizeof(player->sprites)/sizeof(player->sprites[0]); i++)
+    {
+        if(i % 2 == 0)
+            y += 4;
+        else
+            y -= 8;
+        player->sprites[i]->coords->y = y - player->sprites[i]->coords->h;
+    }
+    player->hide_box->y = player->sprites[0]->coords->y;
+}
 void renderPlayer(Player* player)
 {
     renderSprite(player->sprites[(int)(player->animation_frame/100)]);
@@ -56,6 +69,7 @@ void updatePlayer(Player* player, Inputs* inputs)
     {
         jump = -14;
         callMainMenu();
+        resetPlayer(player, HEIGHT - WIDTH/4);
     }
 }
 void shutdownPlayer(Player* player)
