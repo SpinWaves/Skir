@@ -1,4 +1,4 @@
-// Copyright (C) 2021 SpinWaves (https://github.com/SpinWaves)
+// Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
@@ -27,7 +27,7 @@ void initAboutPage(SDL_Renderer* renderer, int width, int height)
     SDL_Color white = { 255, 255, 255};
     initText(__about_page->text, renderer, get_config_value("about_text"), &white, default_font);
     setPosText(__about_page->text, 20, 300);
-    __about_page->back = createButton(renderer, get_config_value("back"), 50, height / 8, width - 100, height / 10, 75, 75, 75);
+    __about_page->back = createButton(renderer, get_config_value("back"), width / 4, height / 8, width / 2, height / 10, 75, 75, 75);
     setFunctionCall(__about_page->back, hangUpAboutPage);
 }
 inline void callAboutPage()

@@ -1,4 +1,4 @@
-// Copyright (C) 2021 SpinWaves (https://github.com/SpinWaves)
+// Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
@@ -47,6 +47,7 @@ bool initApplication(Application *app)
 }
 
 static char oldFPS[12] = "FPS: 0";
+static char newFPS[12];
 
 void update(Application *app)
 {
@@ -65,7 +66,7 @@ void update(Application *app)
 
         if(!isMainMenuCalled())
         {
-            pm_checkCollisions();
+            //pm_checkCollisions();
             updateFloor(&app->floor);
             updateObstacle(&app->obs[0]);
             updatePlayer(&app->player, &app->inputs);
@@ -77,9 +78,7 @@ void update(Application *app)
             app->obs[0].hide_box->x = app->obs[0].sprite->coords->x;
             obs_can_respawn = false;
         }
-        static char newFPS[12];
         sprintf(newFPS, "FPS: %d", app->fps.out_fps);
-        //printf("%s, %s\n", newFPS, oldFPS);
         if(strcmp(oldFPS, newFPS) != 0)
         {
             updateText_TM(&app->text_manager, oldFPS, newFPS);

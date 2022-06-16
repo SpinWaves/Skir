@@ -1,4 +1,4 @@
-// Copyright (C) 2021 SpinWaves (https://github.com/SpinWaves)
+// Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
@@ -39,11 +39,11 @@ void initMainMenu(SDL_Renderer* renderer, int width, int height)
     __menu->renderer = renderer;
     for(int i = 0; i < sizeof(__menu->texts) / sizeof(__menu->texts[0]); i++)
         __menu->texts[i] = custom_malloc(sizeof(Text));
-    const char* buttons_texts[] = {get_config_value("play"), get_config_value("settings"), get_config_value("about")};
+    const char* buttons_texts[] = { get_config_value("play"), get_config_value("settings"), get_config_value("about") };
     void (*buttons_tasks[])() = {play_button, settings_button, about_button};
     for(int i = 0; i < sizeof(__menu->butts) / sizeof(__menu->butts[0]); i++)
     {
-        __menu->butts[i] = createButton(renderer, buttons_texts[i], 50, (height / 8) * (i + 1) + height / 5, width - 100, height / 10, 75, 75, 75);
+        __menu->butts[i] = createButton(renderer, buttons_texts[i], width / 4, (height / 8) * (i + 1) + height / 5, width / 2, height / 10, 75, 75, 75);
         setFunctionCall(__menu->butts[i], buttons_tasks[i]);
     }
 

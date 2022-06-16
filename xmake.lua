@@ -1,4 +1,4 @@
--- Copyright (C) 2021 SpinWaves (https://github.com/SpinWaves)
+-- Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
 -- This file is a part of "Keep Running"
 -- For conditions of distribution and use, see the LICENSE
 --
@@ -26,8 +26,8 @@ target("Keep_Running")
 	add_defines("LOG_DIR=\"$(projectdir)/logs\"")
 	add_defines("MAIN_DIR=\"$(projectdir)/\"")
 	add_defines("SDL_MAIN_HANDLED")
-	add_defines("WIDTH=360")
-	add_defines("HEIGHT=640")
+	add_defines("WIDTH=1480")
+	add_defines("HEIGHT=720")
 
 	add_packages("libsdl_image", "libsdl", "libsdl_ttf", "libsndfile", "openal-soft")
 target_end() -- optional but I think the code is cleaner with this

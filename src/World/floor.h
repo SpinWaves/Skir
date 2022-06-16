@@ -1,4 +1,4 @@
-// Copyright (C) 2021 SpinWaves (https://github.com/SpinWaves)
+// Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
@@ -13,8 +13,9 @@
 
 typedef struct
 {
-    Sprite* floors[5];
-    float downs[5];
+    Sprite* floors[15];
+    float downs[15];
+    float wiggles[15];
     unsigned int speed;
     unsigned int screen_w;
     unsigned int screen_h;
