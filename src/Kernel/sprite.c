@@ -17,8 +17,12 @@ Sprite* createSprite(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y,
     sprite->coords->y = y;
     sprite->coords->w = w;
     sprite->coords->h = h;
+    sprite->angle = 0.0;
+    sprite->flip_horizontal = false;
+    sprite->flip_vertical = false;
     return sprite;
 }
+
 void setCoords(Sprite *sprite, int x, int y, int w, int h)
 {
     sprite->coords->x = x;
@@ -26,14 +30,23 @@ void setCoords(Sprite *sprite, int x, int y, int w, int h)
     sprite->coords->w = w;
     sprite->coords->h = h;
 }
+
 void renderSprite(Sprite* sprite)
 {
     SDL_RenderCopy(sprite->renderer, sprite->texture, NULL, sprite->coords);
 }
+
 void renderRotateSprite(Sprite* sprite)
 {
-    SDL_RenderCopyEx(sprite->renderer, sprite->texture, NULL, sprite->coords, sprite->angle, NULL, SDL_FLIP_NONE);
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    if(sprite->flip_horizontal)
+        flip = SDL_FLIP_HORIZONTAL;
+    if(sprite->flip_vertical)
+        flip = flip == SDL_FLIP_NONE ? SDL_FLIP_VERTICAL : SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL;
+
+    SDL_RenderCopyEx(sprite->renderer, sprite->texture, NULL, sprite->coords, sprite->angle, NULL, flip);
 }
+
 void destroySprite(Sprite* sprite)
 {
     SDL_DestroyTexture(sprite->texture);

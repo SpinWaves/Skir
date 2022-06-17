@@ -5,78 +5,138 @@
 // Author : kbz_8 (https://solo.to/kbz_8)
 
 #include <World/player.h>
-#include <Utils/c_output.h>
+#include <Utils/utils.h>
 #include <SDL2/SDL_image.h>
 #include <Physics/physics.h>
 #include <GUI/main_menu.h>
+#include <Kernel/log.h>
 
-void initPlayer(Player* player, SDL_Renderer* renderer, const char* tex[3], int x, int y)
+float mov_x;
+float mov_y;
+
+void initPlayer(Player* player, SDL_Renderer* renderer, int x, int y)
 {
     SDL_Texture* texture = NULL;
     int w, h = 0;
     player->animation_frame = 0;
-    for(int i = 0; i < sizeof(player->sprites)/sizeof(player->sprites[0]); i++)
+
+    mov_x = -500;
+    mov_y = -700;
+    
+    const char* player_idle_textures[3] = {
+        MAIN_DIR"ressources/Assets/player/player_idle_0.png",
+        MAIN_DIR"ressources/Assets/player/player_idle_1.png",
+        MAIN_DIR"ressources/Assets/player/player_idle_2.png"
+    };
+
+    for(int i = 0; i < ARRAY_SIZE(player->idle_sprites); i++)
     {
-        texture = IMG_LoadTexture(renderer, tex[i]);
+        texture = IMG_LoadTexture(renderer, player_idle_textures[i]);
         if(texture == NULL)
-            printf("%sPlayer: unable to create texture : %s %s\n", OUT_RED, tex[i], OUT_DEF);
+            log_report(ERROR, "Player : unable to create texture : %s", player_idle_textures[i]);
         SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-        if(i % 2 == 0)
-            y += 4;
-        else
-            y -= 8;
-        player->sprites[i] = createSprite(renderer, texture, x - w/2, y - h, w, h);
+        player->idle_sprites[i] = createSprite(renderer, texture, x - w / 2, y - h, w * 2, h * 2);
     }
-    player->hide_box = newBoxCollider(x + 15, y, player->sprites[0]->coords->w - 45, player->sprites[0]->coords->h - 10);
+
+    const char* player_running_textures[6] = {
+        MAIN_DIR"ressources/Assets/player/player_running_0.png",
+        MAIN_DIR"ressources/Assets/player/player_running_1.png",
+        MAIN_DIR"ressources/Assets/player/player_running_2.png",
+        MAIN_DIR"ressources/Assets/player/player_running_3.png",
+        MAIN_DIR"ressources/Assets/player/player_running_4.png",
+        MAIN_DIR"ressources/Assets/player/player_running_5.png",
+    };
+
+    for(int i = 0; i < ARRAY_SIZE(player->running_sprites); i++)
+    {
+        texture = IMG_LoadTexture(renderer, player_running_textures[i]);
+        if(texture == NULL)
+            log_report(ERROR, "Player : unable to create texture : %s", player_running_textures[i]);
+        SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+        player->running_sprites[i] = createSprite(renderer, texture, x - w / 2, y - h, w * 2, h * 2);
+    }
+
+    player->hide_box = newBoxCollider(player->idle_sprites[0]->coords->x, player->idle_sprites[0]->coords->y, player->idle_sprites[0]->coords->w, player->idle_sprites[0]->coords->h - 8, true);
     pm_addCollider(player->hide_box);
 }
-void resetPlayer(Player* player, int y)
-{
-    player->animation_frame = 0;
-    for(int i = 0; i < sizeof(player->sprites)/sizeof(player->sprites[0]); i++)
-    {
-        if(i % 2 == 0)
-            y += 4;
-        else
-            y -= 8;
-        player->sprites[i]->coords->y = y - player->sprites[i]->coords->h;
-    }
-    player->hide_box->y = player->sprites[0]->coords->y;
-}
+
+static bool is_running = false;
+
 void renderPlayer(Player* player)
 {
-    renderSprite(player->sprites[(int)(player->animation_frame/100)]);
+    if(is_running)
+        renderRotateSprite(player->running_sprites[(int)(player->animation_frame / 100)]);
+    else
+        renderRotateSprite(player->idle_sprites[(int)((player->animation_frame > 300 ? 300 : player->animation_frame) / 100)]);
 }
-static int jump = -14;
+
+static float gravity = 0.0f;
+
 void updatePlayer(Player* player, Inputs* inputs)
 {
-    player->hide_box->y = player->sprites[(int)(player->animation_frame/100)]->coords->y;
-    if(jump == -14)
+    if(!player->hide_box->bottom_collision)
     {
-        if(getKey(inputs, SDL_SCANCODE_SPACE, DOWN) || getKey(inputs, SDL_SCANCODE_UP, DOWN))
-            jump = 15;
+        gravity += 0.2f;
+        gravity *= 1.01f;
+    }
+    else
+        gravity = 0.0f;
 
+    if(getKey(inputs, SDL_SCANCODE_SPACE, DOWN) && player->hide_box->bottom_collision)
+        gravity -= 5.0f;
+
+    if(is_running)
+    {
         player->animation_frame += 15;
-        if(player->animation_frame >= 300)
+        if(player->animation_frame >= 600)
             player->animation_frame = 0;
     }
     else
     {
-        jump--;
-        player->sprites[(int)(player->animation_frame/100)]->coords->y -= jump;
+        player->animation_frame += 7;
+        if(player->animation_frame >= 300)
+            player->animation_frame = 0;
     }
-    if(player->hide_box->is_colliding == true)
+
+    is_running = false;
+
+    if(getKey(inputs, SDL_SCANCODE_LEFT, DOWN) || getKey(inputs, SDL_SCANCODE_A, DOWN))
     {
-        jump = -14;
-        callMainMenu();
-        resetPlayer(player, HEIGHT - WIDTH/4);
+        is_running = true;
+        player->running_sprites[(int)(player->animation_frame / 100)]->flip_horizontal = false;
+
+        if(player->idle_sprites[0]->flip_horizontal == true)
+        {
+            for(int i = 0; i < ARRAY_SIZE(player->idle_sprites); i++)
+                player->idle_sprites[i]->flip_horizontal = false;
+        }
+
+        mov_x += 7;
     }
+
+    if(getKey(inputs, SDL_SCANCODE_RIGHT, DOWN) || getKey(inputs, SDL_SCANCODE_D, DOWN))
+    {
+        is_running = true;
+        player->running_sprites[(int)(player->animation_frame / 100)]->flip_horizontal = true;
+
+        if(player->idle_sprites[0]->flip_horizontal == false)
+        {
+            for(int i = 0; i < ARRAY_SIZE(player->idle_sprites); i++)
+                player->idle_sprites[i]->flip_horizontal = true;
+        }
+
+        mov_x -= 7;
+    }
+
+    mov_y -= gravity;
 }
+
 void shutdownPlayer(Player* player)
 {
     freeBoxCollider(player->hide_box);
-    for(int i = 0; i < sizeof(player->sprites)/sizeof(player->sprites[0]); i++)
-    {
-        destroySprite(player->sprites[i]);
-    }
+    for(int i = 0; i < ARRAY_SIZE(player->idle_sprites); i++)
+        destroySprite(player->idle_sprites[i]);
+
+    for(int i = 0; i < ARRAY_SIZE(player->running_sprites); i++)
+        destroySprite(player->running_sprites[i]);
 }

@@ -29,14 +29,12 @@ bool initApplication(Application *app)
 
     initTextManager(&app->text_manager, app->renderer);
     initInput(&app->inputs);
-    initFloor(&app->floor, app->renderer, MAIN_DIR"src/Assets/floor.png", WIDTH, HEIGHT);
     initFPS(&app->fps);
     newText(&app->text_manager, "FPS: 0", 10, 10);
 
-    const char* player_textures[3] = {MAIN_DIR"src/Assets/player_0.png", MAIN_DIR"src/Assets/player_1.png", MAIN_DIR"src/Assets/player_2.png"};
-    initPlayer(&app->player, app->renderer, player_textures, WIDTH/3, HEIGHT - WIDTH/4);
+    initPlayer(&app->player, app->renderer, WIDTH / 2, HEIGHT / 2);
 
-    initObstacle(&app->obs[0], app->renderer, WIDTH, MAIN_DIR"src/Assets/rock_0.png", WIDTH, HEIGHT);
+    initMap(&app->map, app->renderer);
 
     initMainMenu(app->renderer, WIDTH, HEIGHT);
     callMainMenu();
@@ -56,28 +54,18 @@ void update(Application *app)
     {
         updateInput(&app->inputs);
         if(getKey(&app->inputs, SDL_SCANCODE_ESCAPE, DOWN))
-        {
             callMainMenu();
-            resetPlayer(&app->player, HEIGHT - WIDTH/4);
-        }
 
         if(app->inputs.quit)
             app->run = false;
 
         if(!isMainMenuCalled())
         {
-            //pm_checkCollisions();
-            updateFloor(&app->floor);
-            updateObstacle(&app->obs[0]);
+            pm_checkCollisions();
             updatePlayer(&app->player, &app->inputs);
         }
         else
-        {
             updateMainMenu(&app->inputs);
-            app->obs[0].sprite->coords->x = WIDTH + 100;
-            app->obs[0].hide_box->x = app->obs[0].sprite->coords->x;
-            obs_can_respawn = false;
-        }
         sprintf(newFPS, "FPS: %d", app->fps.out_fps);
         if(strcmp(oldFPS, newFPS) != 0)
         {
@@ -88,8 +76,7 @@ void update(Application *app)
     if(!isMainMenuCalled())
     {
         renderPlayer(&app->player);
-        renderObstacle(&app->obs[0]);
-        renderFloor(&app->floor);
+        renderMap(&app->map);
     }
     else
         renderMainMenu();
@@ -100,9 +87,8 @@ void shutdownApplication(Application *app)
 {
     shutdownMainMenu();
     shutdownTextManager(&app->text_manager);
-    shutdownFloor(&app->floor);
     shutdownPlayer(&app->player);
-    shutdownObstacle(&app->obs[0]);
+    destroyMap(&app->map);
     SDL_DestroyRenderer(app->renderer);
     SDL_DestroyWindow(app->window);
 }

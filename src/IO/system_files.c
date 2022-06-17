@@ -36,7 +36,7 @@ void openConfigFile(const char* path)
     if(fp == NULL)
         log_report(FATAL_ERROR, "Couldn't open config file");
 
-    char line[1024] = {0};
+    char line[1024] = { 0 };
     config_infos* buffer = NULL;
     while(!feof(fp))
     {

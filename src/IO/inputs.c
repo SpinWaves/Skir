@@ -29,13 +29,9 @@ void updateInput(Inputs *in)
 {
     for(int i = 0; i < SDL_NUM_SCANCODES; i++)
     {
-        in->keyboard[i][0] = false;
         in->keyboard[i][1] = false;
         if(i < 8)
-        {
-            in->mouse[i][0] = false;
             in->mouse[i][1] = false;
-        }
     }
 
     while(SDL_PollEvent(&in->events))
@@ -49,24 +45,24 @@ void updateInput(Inputs *in)
                 in->keyboard[in->events.key.keysym.scancode][1] = false;
             break;
             case SDL_KEYUP: 
-                in->keyboard[in->events.key.keysym.scancode][1] = true;
                 in->keyboard[in->events.key.keysym.scancode][0] = false;
+                in->keyboard[in->events.key.keysym.scancode][1] = true;
             break;
             case SDL_MOUSEBUTTONDOWN:
                 in->mouse[in->events.button.button][0] = true;
                 in->mouse[in->events.button.button][1] = false;
             break;
             case SDL_MOUSEBUTTONUP:
-                in->mouse[in->events.button.button][1] = true;
                 in->mouse[in->events.button.button][0] = false;
+                in->mouse[in->events.button.button][1] = true;
             break;
             
             default: break;
         }
         if(in->events.type == SDL_MOUSEMOTION) // Mouvement de la souris
         {
-                in->mx = in->events.motion.x;
-                in->my = in->events.motion.y;
+            in->mx = in->events.motion.x;
+            in->my = in->events.motion.y;
         }
     }
 }

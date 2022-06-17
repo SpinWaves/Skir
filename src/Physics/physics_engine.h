@@ -15,10 +15,15 @@ typedef struct
     int y;
     int w;
     int h;
-    bool is_colliding;
+    bool left_collision;
+    bool right_collision;
+    bool top_collision;
+    bool bottom_collision;
+
+    bool important_collider;
 } BoxCollider;
 
-BoxCollider* newBoxCollider(int x, int y, int w, int h);
+BoxCollider* newBoxCollider(int x, int y, int w, int h, bool important_collider);
 void freeBoxCollider(BoxCollider* boxCollider);
 
 typedef struct colliders_node

@@ -20,11 +20,10 @@ typedef struct
     SDL_Window* window;
     SDL_Renderer* renderer;
     Inputs inputs;
-    Floor floor;
     FPS_counter fps;
     TextManager text_manager;
     Player player;
-    Obstacle obs[2];
+    Map map;
     bool run;
 } Application;
 

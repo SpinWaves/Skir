@@ -8,6 +8,7 @@
 #define __SPRITE__
 
 #include <SDL2/SDL.h>
+#include <stdbool.h>
 
 typedef struct
 {
@@ -15,12 +16,14 @@ typedef struct
     SDL_Renderer *renderer;
     SDL_Rect* coords;
     double angle;
+    bool flip_horizontal;
+    bool flip_vertical;
 } Sprite;
 
 Sprite* createSprite(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y, int w, int h);
 void setCoords(Sprite *sprite, int x, int y, int w, int h);
 void renderSprite(Sprite* sprite);
-void renderRotate(Sprite* sprite);
+void renderRotateSprite(Sprite* sprite);
 void destroySprite(Sprite* sprite);
 
 #endif // __SPRITE__

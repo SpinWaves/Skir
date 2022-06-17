@@ -7,14 +7,18 @@
 #include <Physics/physics_engine.h>
 #include <Kernel/Memory/memory.h>
 
-BoxCollider* newBoxCollider(int x, int y, int w, int h)
+BoxCollider* newBoxCollider(int x, int y, int w, int h, bool important_collider)
 {
     BoxCollider* box = custom_malloc(sizeof(BoxCollider));
     box->x = x;
     box->y = y;
     box->w = w;
     box->h = h;
-    box->is_colliding = false;
+    box->left_collision = false;
+    box->right_collision = false;
+    box->top_collision = false;
+    box->bottom_collision = false;
+    box->important_collider = important_collider;
     return box;
 }
 inline void freeBoxCollider(BoxCollider* boxCollider)
@@ -26,6 +30,7 @@ void initPhysicsEngine(Physics_Engine* engine)
 {
     engine->head = NULL;
 }
+
 void addCollider(Physics_Engine* engine, BoxCollider* collider)
 {
     colliders_node* new_node = custom_malloc(sizeof(colliders_node));
@@ -33,31 +38,63 @@ void addCollider(Physics_Engine* engine, BoxCollider* collider)
     new_node->next = engine->head;
     engine->head = new_node;
 }
+
 void checkCollisions(Physics_Engine* engine)
 {
     colliders_node* buffer = engine->head;
+    colliders_node* buffer2 = engine->head;
     while(buffer != NULL)
     {
-        if(buffer->next != NULL)
+        if(!buffer->collider->important_collider)
         {
-            /* AABB collision detection */
-            if( buffer->collider->x < buffer->next->collider->x + buffer->next->collider->w &&
-                buffer->collider->x + buffer->collider->w > buffer->next->collider->x       &&
-                buffer->collider->y < buffer->next->collider->y + buffer->next->collider->h &&
-                buffer->collider->y + buffer->collider->h > buffer->next->collider->y          )
-            {
-                buffer->collider->is_colliding = true;
-                buffer->next->collider->is_colliding = true;
-            }
-            else
-            {
-                buffer->collider->is_colliding = false;
-                buffer->next->collider->is_colliding = false;
-            }
+            buffer = buffer->next;
+            continue;
         }
+
+        buffer->collider->left_collision = false;
+        buffer->collider->right_collision = false;
+        buffer->collider->top_collision = false;
+        buffer->collider->bottom_collision = false;
+
+        buffer2 = engine->head;
+
+        while(buffer2 != NULL)
+        {
+            if(buffer2 == buffer)
+            {
+                buffer2 = buffer2->next;
+                continue;
+            }
+
+            /* AABB collision detection */
+            if(buffer->collider->x < buffer2->collider->x + buffer2->collider->w)
+            {
+                buffer->collider->left_collision = true;
+                buffer2->collider->right_collision = true;
+            }
+            if(buffer->collider->x + buffer->collider->w > buffer2->collider->x)
+            {
+                buffer->collider->right_collision = true;
+                buffer2->collider->left_collision = true;
+            }
+            if(buffer->collider->y < buffer2->collider->y + buffer2->collider->h)
+            {
+                buffer->collider->top_collision = true;
+                buffer2->collider->bottom_collision = true;
+            }
+            if(buffer->collider->y + buffer->collider->h > buffer2->collider->y)
+            {
+                buffer->collider->bottom_collision = true;
+                buffer2->collider->top_collision = true;
+            }
+
+            buffer2 = buffer2->next;
+        }
+
         buffer = buffer->next;
     }
 }
+
 void shutdownPhysicsEngine(Physics_Engine* engine)
 {
     colliders_node* buffer = engine->head;

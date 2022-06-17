@@ -13,14 +13,16 @@
 
 typedef struct
 {
-    Sprite* sprites[3];
+    Sprite* idle_sprites[3];
+    Sprite* running_sprites[6];
     BoxCollider* hide_box;
     int animation_frame;
-
 } Player;
 
-void initPlayer(Player* player, SDL_Renderer* renderer, const char* tex[3], int x, int y);
-void resetPlayer(Player* player, int y);
+extern float mov_x;
+extern float mov_y;
+
+void initPlayer(Player* player, SDL_Renderer* renderer, int x, int y);
 void renderPlayer(Player* player);
 void updatePlayer(Player* player, Inputs* inputs);
 void shutdownPlayer(Player* player);

@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 
     while(app.run)
     {
-        SDL_SetRenderDrawColor(app.renderer, 90, 90, 180, 255);
+        SDL_SetRenderDrawColor(app.renderer, 141, 186, 255, 255);
         SDL_RenderClear(app.renderer);
         
         update(&app);
