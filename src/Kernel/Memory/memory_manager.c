@@ -19,7 +19,7 @@ void custom_free(void* ptr)
 
 void initMemManager()
 {
-    initAllocator(&__allocator, 200000);
+    initAllocator(&__allocator, 20000000);
 }
 void shutdownMemManager()
 {

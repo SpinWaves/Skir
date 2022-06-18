@@ -10,6 +10,7 @@
 #include <Physics/physics.h>
 #include <GUI/main_menu.h>
 #include <Kernel/log.h>
+#include <Maths/maths.h>
 
 float mov_x;
 float mov_y;
@@ -56,7 +57,7 @@ void initPlayer(Player* player, SDL_Renderer* renderer, int x, int y)
         player->running_sprites[i] = createSprite(renderer, texture, x - w / 2, y - h, w * 2, h * 2);
     }
 
-    player->hide_box = newBoxCollider(player->idle_sprites[0]->coords->x, player->idle_sprites[0]->coords->y, player->idle_sprites[0]->coords->w, player->idle_sprites[0]->coords->h - 8, true);
+    player->hide_box = newBoxCollider(player->idle_sprites[0]->coords->x, player->idle_sprites[0]->coords->y, player->idle_sprites[0]->coords->w, player->idle_sprites[0]->coords->h - 12, true);
     pm_addCollider(player->hide_box);
 }
 
@@ -71,10 +72,11 @@ void renderPlayer(Player* player)
 }
 
 static float gravity = 0.0f;
+static bool noclip = false;
 
 void updatePlayer(Player* player, Inputs* inputs)
 {
-    if(!player->hide_box->bottom_collision)
+    if(!player->hide_box->bottom_collision && !noclip)
     {
         gravity += 0.2f;
         gravity *= 1.01f;
@@ -82,8 +84,19 @@ void updatePlayer(Player* player, Inputs* inputs)
     else
         gravity = 0.0f;
 
-    if(getKey(inputs, SDL_SCANCODE_SPACE, DOWN) && player->hide_box->bottom_collision)
-        gravity -= 5.0f;
+    if(getKey(inputs, SDL_SCANCODE_N, UP))
+        noclip = !noclip;
+
+    if(getKey(inputs, SDL_SCANCODE_SPACE, DOWN))
+    {
+        if(noclip)
+            gravity = -7;
+        else if(player->hide_box->bottom_collision)// && !player->hide_box->top_collision)
+            gravity -= 5.0f;
+    }
+
+    if((getKey(inputs, SDL_SCANCODE_LSHIFT, DOWN) || getKey(inputs, SDL_SCANCODE_RSHIFT, DOWN)) && noclip)
+        gravity = 7;
 
     if(is_running)
     {
@@ -111,12 +124,29 @@ void updatePlayer(Player* player, Inputs* inputs)
                 player->idle_sprites[i]->flip_horizontal = false;
         }
 
-        mov_x += 7;
+        if(noclip)
+            mov_x += 7;
+        else if(!player->hide_box->left_collision)
+        {
+            int hide_box_x_save = player->hide_box->x;
+            for(int i = 0; i < 700; i++)
+            {
+                pm_checkCollisionsCollider(player->hide_box);
+                if(!player->hide_box->left_collision)
+                {
+                    player->hide_box->x += 7 / 700;
+                    mov_x += 7 / 700;
+                }
+                else
+                    break;
+            }
+            player->hide_box->x = hide_box_x_save;
+        }
     }
 
     if(getKey(inputs, SDL_SCANCODE_RIGHT, DOWN) || getKey(inputs, SDL_SCANCODE_D, DOWN))
     {
-        is_running = true;
+        is_running = !is_running;
         player->running_sprites[(int)(player->animation_frame / 100)]->flip_horizontal = true;
 
         if(player->idle_sprites[0]->flip_horizontal == false)
@@ -125,10 +155,45 @@ void updatePlayer(Player* player, Inputs* inputs)
                 player->idle_sprites[i]->flip_horizontal = true;
         }
 
-        mov_x -= 7;
+        if(noclip)
+            mov_x -= 7;
+        else if(!player->hide_box->right_collision)
+        {
+            int hide_box_x_save = player->hide_box->x;
+            for(int i = 0; i < 700; i++)
+            {
+                pm_checkCollisionsCollider(player->hide_box);
+                if(!player->hide_box->right_collision)
+                {
+                    player->hide_box->x -= 7 / 700;
+                    mov_x -= 7 / 700;
+                }
+                else
+                    break;
+            }
+            player->hide_box->x = hide_box_x_save;
+        }
     }
 
-    mov_y -= gravity;
+    if(noclip)
+        mov_y -= gravity;
+    else
+    {
+        int gStep = m_abs((int)(gravity * 100));
+        int hide_box_y_save = player->hide_box->y;
+        for(int i = 0; i < gStep; i++)
+        {
+            pm_checkCollisionsCollider(player->hide_box);
+            if(!player->hide_box->bottom_collision)
+            {
+                player->hide_box->y -= gravity / gStep;
+                mov_y -= gravity / gStep;
+            }
+            else
+                break;
+        }
+        player->hide_box->y = hide_box_y_save;
+    }
 }
 
 void shutdownPlayer(Player* player)

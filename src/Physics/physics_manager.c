@@ -21,6 +21,10 @@ void pm_checkCollisions()
 {
     checkCollisions(&__pm);
 }
+void pm_checkCollisionsCollider(BoxCollider* collider)
+{
+    checkCollisionsCollider(&__pm, collider);
+}
 void shutdownPhysicsManager()
 {
     shutdownPhysicsEngine(&__pm);

@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     initPhysicsManager();
     initConfigInfoManager();
 
-    default_font = TTF_OpenFont(MAIN_DIR"src/fonts/OpenSans-Regular.ttf", 15);
+    default_font = TTF_OpenFont(MAIN_DIR"ressources/fonts/OpenSans-Regular.ttf", 15);
     if(default_font == NULL)
         log_report(FATAL_ERROR, "Text Manager: cannot open default font");
     

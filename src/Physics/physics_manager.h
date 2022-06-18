@@ -12,6 +12,7 @@
 void initPhysicsManager();
 void pm_addCollider(BoxCollider* collider);
 void pm_checkCollisions();
+void pm_checkCollisionsCollider(BoxCollider* collider);
 void shutdownPhysicsManager();
 
 #endif // __PHYSICS_MANAGER__

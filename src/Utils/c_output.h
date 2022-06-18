@@ -10,7 +10,7 @@
 #define OUT_RED "\033[1;31m"
 #define OUT_GREEN "\033[1;32m"
 #define OUT_BLUE "\033[1;34m"
-#define OUT_DEF "\033[1;39m"
+#define OUT_DEF "\033[1;00m"
 #define OUT_BLACK "\033[1;30m"
 #define OUT_YEL "\033[1;33m"
 #define OUT_MAGENTA "\033[1;35m"

@@ -45,6 +45,6 @@ void log_report(log_type type, const char* msg, ...)
     if(type == FATAL_ERROR)
     {
         shutdownMemManager();
-        abort();
+        exit(-1);
     }
 }

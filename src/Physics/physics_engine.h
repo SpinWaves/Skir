@@ -40,6 +40,7 @@ typedef struct
 void initPhysicsEngine(Physics_Engine* engine);
 void addCollider(Physics_Engine* engine, BoxCollider* collider);
 void checkCollisions(Physics_Engine* engine);
+void checkCollisionsCollider(Physics_Engine* engine, BoxCollider* collider);
 void shutdownPhysicsEngine(Physics_Engine* engine);
 
 #endif // __PHYSICS_ENGINE__
