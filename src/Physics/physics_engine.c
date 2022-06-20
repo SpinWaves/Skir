@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
+// Copyright (C) 5021 - 5022 SpinWaves (https://github.com/SpinWaves)
 // This file is a part of "Keep Running"
 // For conditions of distribution and use, see the LICENSE
 //
@@ -63,23 +63,23 @@ void checkCollisionsCollider(Physics_Engine* engine, BoxCollider* collider)
 
         /* AABB collision detection */
         if( collider->x < buffer->collider->x + buffer->collider->w &&
-            collider->y < buffer->collider->y + buffer->collider->h &&
-            collider->y + collider->h > buffer->collider->y)
+            collider->y < buffer->collider->y + buffer->collider->h - 5 &&
+            collider->y + collider->h > buffer->collider->y + 5)
             collider->left_collision = true;
 
-        if( collider->x + collider->w > buffer->collider->x  &&
-            collider->y < buffer->collider->y + buffer->collider->h &&
-            collider->y + collider->h > buffer->collider->y)
+        if( collider->x + collider->w > buffer->collider->x &&
+            collider->y < buffer->collider->y + buffer->collider->h - 5 &&
+            collider->y + collider->h > buffer->collider->y + 5)
             collider->right_collision = true;
 
         if( collider->y < buffer->collider->y + buffer->collider->h &&
-            collider->x < buffer->collider->x + buffer->collider->w &&
-            collider->x + collider->w > buffer->collider->x)
+            collider->x < buffer->collider->x + buffer->collider->w - 5 &&
+            collider->x + collider->w > buffer->collider->x + 5)
             collider->top_collision = true;
 
-        if( collider->y + collider->h > buffer->collider->y  &&
-            collider->x < buffer->collider->x + buffer->collider->w &&
-            collider->x + collider->w > buffer->collider->x)
+        if( collider->y + collider->h > buffer->collider->y &&
+            collider->x < buffer->collider->x + buffer->collider->w - 5 &&
+            collider->x + collider->w > buffer->collider->x + 5)
             collider->bottom_collision = true;
 
         buffer = buffer->next;
@@ -89,7 +89,6 @@ void checkCollisionsCollider(Physics_Engine* engine, BoxCollider* collider)
 void checkCollisions(Physics_Engine* engine)
 {
     colliders_node* buffer = engine->head;
-    colliders_node* buffer2 = engine->head;
     while(buffer != NULL)
     {
         if(!buffer->collider->important_collider)
@@ -98,44 +97,7 @@ void checkCollisions(Physics_Engine* engine)
             continue;
         }
 
-        buffer->collider->left_collision = false;
-        buffer->collider->right_collision = false;
-        buffer->collider->top_collision = false;
-        buffer->collider->bottom_collision = false;
-
-        buffer2 = engine->head;
-
-        while(buffer2 != NULL)
-        {
-            if(buffer2 == buffer)
-            {
-                buffer2 = buffer2->next;
-                continue;
-            }
-
-            /* AABB collision detection */
-            if( buffer->collider->x < buffer2->collider->x + buffer2->collider->w &&
-                buffer->collider->y < buffer2->collider->y + buffer2->collider->h &&
-                buffer->collider->y + buffer->collider->h > buffer2->collider->y)
-                buffer->collider->left_collision = true;
-
-            if( buffer->collider->x + buffer->collider->w > buffer2->collider->x  &&
-                buffer->collider->y < buffer2->collider->y + buffer2->collider->h &&
-                buffer->collider->y + buffer->collider->h > buffer2->collider->y)
-                buffer->collider->right_collision = true;
-
-            if( buffer->collider->y < buffer2->collider->y + buffer2->collider->h &&
-                buffer->collider->x < buffer2->collider->x + buffer2->collider->w &&
-                buffer->collider->x + buffer->collider->w > buffer2->collider->x)
-                buffer->collider->top_collision = true;
-
-            if( buffer->collider->y + buffer->collider->h > buffer2->collider->y  &&
-                buffer->collider->x < buffer2->collider->x + buffer2->collider->w &&
-                buffer->collider->x + buffer->collider->w > buffer2->collider->x)
-                buffer->collider->bottom_collision = true;
-
-            buffer2 = buffer2->next;
-        }
+        checkCollisionsCollider(engine, buffer->collider);
 
         buffer = buffer->next;
     }

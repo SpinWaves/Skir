@@ -91,7 +91,7 @@ void updatePlayer(Player* player, Inputs* inputs)
     {
         if(noclip)
             gravity = -7;
-        else if(player->hide_box->bottom_collision)// && !player->hide_box->top_collision)
+        else if(player->hide_box->bottom_collision && !player->hide_box->top_collision)
         {
             mov_y += 5;
             gravity -= 5;
@@ -129,23 +129,6 @@ void updatePlayer(Player* player, Inputs* inputs)
 
         if(noclip || !player->hide_box->left_collision)
             mov_x += 7;
-        /*else if(!player->hide_box->left_collision)
-        {
-            int hide_box_x_save = player->hide_box->x;
-            for(int i = 0; i < 700; i++)
-            {
-                pm_checkCollisionsCollider(player->hide_box);
-                if(!player->hide_box->left_collision)
-                {
-                    player->hide_box->x += 7 / 700;
-                    mov_x += 7 / 700;
-                }
-                else
-                    break;
-            }
-            player->hide_box->x = hide_box_x_save;
-        }
-        */
     }
 
     if(getKey(inputs, SDL_SCANCODE_RIGHT, DOWN) || getKey(inputs, SDL_SCANCODE_D, DOWN))
@@ -161,23 +144,6 @@ void updatePlayer(Player* player, Inputs* inputs)
 
         if(noclip || !player->hide_box->right_collision)
             mov_x -= 7;
-        /*else if(!player->hide_box->right_collision)
-        {
-            int hide_box_x_save = player->hide_box->x;
-            for(int i = 0; i < 700; i++)
-            {
-                pm_checkCollisionsCollider(player->hide_box);
-                if(!player->hide_box->right_collision)
-                {
-                    player->hide_box->x -= 7 / 700;
-                    mov_x -= 7 / 700;
-                }
-                else
-                    break;
-            }
-            player->hide_box->x = hide_box_x_save;
-        }
-        */
     }
 
     if(noclip)
