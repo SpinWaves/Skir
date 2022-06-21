@@ -8,10 +8,11 @@
 #define __PHYSICS_MANAGER__
 
 #include <Physics/physics_engine.h>
+#include <stdbool.h>
 
 void initPhysicsManager();
 void pm_addCollider(BoxCollider* collider);
-void pm_checkCollisions();
+void pm_checkCollisions(SDL_Renderer* renderer, bool drawHideBoxes);
 void pm_checkCollisionsCollider(BoxCollider* collider);
 void shutdownPhysicsManager();
 

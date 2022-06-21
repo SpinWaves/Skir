@@ -57,7 +57,7 @@ void initPlayer(Player* player, SDL_Renderer* renderer, int x, int y)
         player->running_sprites[i] = createSprite(renderer, texture, x - w / 2, y - h, w * 2, h * 2);
     }
 
-    player->hide_box = newBoxCollider(player->idle_sprites[0]->coords->x, player->idle_sprites[0]->coords->y, player->idle_sprites[0]->coords->w, player->idle_sprites[0]->coords->h - 12, true);
+    player->hide_box = newBoxCollider(player->idle_sprites[0]->coords->x + 7, player->idle_sprites[0]->coords->y, player->idle_sprites[0]->coords->w - 7, player->idle_sprites[0]->coords->h - 12, true);
     pm_addCollider(player->hide_box);
 }
 
@@ -91,7 +91,7 @@ void updatePlayer(Player* player, Inputs* inputs)
     {
         if(noclip)
             gravity = -7;
-        else if(player->hide_box->bottom_collision && !player->hide_box->top_collision)
+        else if(player->hide_box->bottom_collision)// && !player->hide_box->top_collision)
         {
             mov_y += 5;
             gravity -= 5;
@@ -146,23 +146,18 @@ void updatePlayer(Player* player, Inputs* inputs)
             mov_x -= 7;
     }
 
-    if(noclip)
-        mov_y -= gravity;
-    else
+    mov_y -= gravity;
+
+    if(player->hide_box->bottom_collision)
     {
-        int gStep = m_abs((int)(gravity * 100));
         int hide_box_y_save = player->hide_box->y;
-        for(int i = 0; i < gStep; i++)
+        while(player->hide_box->bottom_collision)
         {
+            mov_y++;
+            player->hide_box->y--;
             pm_checkCollisionsCollider(player->hide_box);
-            if(!player->hide_box->bottom_collision)
-            {
-                player->hide_box->y -= gravity / gStep;
-                mov_y -= gravity / gStep;
-            }
-            else
-                break;
         }
+        mov_y--;
         player->hide_box->y = hide_box_y_save;
     }
 }

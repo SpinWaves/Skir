@@ -23,9 +23,9 @@ typedef struct
     bool make_update;
 } FPS_counter;
 
-void initFPS(FPS_counter *counter);
-unsigned long getFPS(FPS_counter *counter);
-unsigned long getUPS(FPS_counter *counter);
-void updateFPS(FPS_counter *counter);
+void initFPS(FPS_counter* counter);
+unsigned long getFPS(FPS_counter* counter);
+unsigned long getUPS(FPS_counter* counter);
+void updateFPS(FPS_counter* counter);
 
 #endif // __FPS__

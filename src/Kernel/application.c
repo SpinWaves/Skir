@@ -11,9 +11,12 @@
 
 #include <Utils/c_output.h>
 
+int width = 1480;
+int height = 720;
+
 bool initApplication(Application *app)
 {
-    app->window = SDL_CreateWindow("Keep Running", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_ALLOW_HIGHDPI);
+    app->window = SDL_CreateWindow("Keep Running", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
     if(app->window == NULL)
     {
         log_report(ERROR, "Something went wrong with the creation of the window");
@@ -32,11 +35,11 @@ bool initApplication(Application *app)
     initFPS(&app->fps);
     newText(&app->text_manager, "FPS: 0", 10, 10);
 
-    initPlayer(&app->player, app->renderer, WIDTH / 2, HEIGHT / 2);
+    initPlayer(&app->player, app->renderer, width / 2, height / 2);
 
     initMap(&app->map, app->renderer);
 
-    initMainMenu(app->renderer, WIDTH, HEIGHT);
+    initMainMenu(app->renderer, width, height);
     callMainMenu();
 
     app->run = true;
@@ -46,6 +49,7 @@ bool initApplication(Application *app)
 
 static char oldFPS[12] = "FPS: 0";
 static char newFPS[12];
+static bool drawHideBoxes = false;
 
 void update(Application *app)
 {
@@ -56,12 +60,15 @@ void update(Application *app)
         if(getKey(&app->inputs, SDL_SCANCODE_ESCAPE, DOWN))
             callMainMenu();
 
+        if(getKey(&app->inputs, SDL_SCANCODE_T, UP))
+            drawHideBoxes = !drawHideBoxes;
+
         if(app->inputs.quit)
             app->run = false;
 
         if(!isMainMenuCalled())
         {
-            pm_checkCollisions();
+            pm_checkCollisions(app->renderer, drawHideBoxes);
             updatePlayer(&app->player, &app->inputs);
         }
         else

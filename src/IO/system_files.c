@@ -40,7 +40,7 @@ void openConfigFile(const char* path)
     config_infos* buffer = NULL;
     while(!feof(fp))
     {
-        config_infos* inf = custom_malloc(sizeof(config_infos));
+        config_infos* inf = memAlloc(sizeof(config_infos));
         inf->next = __config_manager;
 
         memset(line, 0, 1024);
@@ -66,9 +66,9 @@ void openConfigFile(const char* path)
         }
 
         int key_len = (int)(pos - line);
-        inf->key = custom_malloc(key_len);
+        inf->key = memAlloc(key_len);
         int val_len = (int)(line + len - offset - pos);
-        inf->val = custom_malloc(val_len);
+        inf->val = memAlloc(val_len);
 
         memset(inf->key, 0, key_len);
         memset(inf->val, 0, val_len);
@@ -86,10 +86,10 @@ void openConfigFile(const char* path)
 
         if((buffer = exists(inf->key)) != NULL)
         {
-            custom_free(buffer->val);
+            memFree(buffer->val);
             buffer->val = inf->val;
-            custom_free(inf->key);
-            custom_free(inf);
+            memFree(inf->key);
+            memFree(inf);
         }
         else
             __config_manager = inf;
@@ -110,9 +110,9 @@ void shutdownConfigInfoManager()
     while(buffer != NULL)
     {
         double_buffer = buffer->next;
-        custom_free(buffer->key);
-        custom_free(buffer->val);
-        custom_free(buffer);
+        memFree(buffer->key);
+        memFree(buffer->val);
+        memFree(buffer);
         buffer = double_buffer;
     }
 }

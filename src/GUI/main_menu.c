@@ -34,11 +34,11 @@ void about_button()
 
 void initMainMenu(SDL_Renderer* renderer, int width, int height)
 {
-    __menu = custom_malloc(sizeof(Main_Menu));
-    __menu->bg = custom_malloc(sizeof(Sprite));
+    __menu = memAlloc(sizeof(Main_Menu));
+    __menu->bg = memAlloc(sizeof(Sprite));
     __menu->renderer = renderer;
     for(int i = 0; i < sizeof(__menu->texts) / sizeof(__menu->texts[0]); i++)
-        __menu->texts[i] = custom_malloc(sizeof(Text));
+        __menu->texts[i] = memAlloc(sizeof(Text));
     const char* buttons_texts[] = { get_config_value("play"), get_config_value("settings"), get_config_value("about") };
     void (*buttons_tasks[])() = {play_button, settings_button, about_button};
     for(int i = 0; i < sizeof(__menu->butts) / sizeof(__menu->butts[0]); i++)
@@ -88,13 +88,13 @@ void shutdownMainMenu()
     for(int i = 0; i < sizeof(__menu->texts) / sizeof(__menu->texts[0]); i++)
     {
         deleteText(__menu->texts[i]);
-        custom_free(__menu->texts[i]);
+        memFree(__menu->texts[i]);
     }
     for(int i = 0; i < sizeof(__menu->butts) / sizeof(__menu->butts[0]); i++)
     {
         destroyButton(__menu->butts[i]);
-        custom_free(__menu->butts[i]);
+        memFree(__menu->butts[i]);
     }
 
-    custom_free(__menu);
+    memFree(__menu);
 }

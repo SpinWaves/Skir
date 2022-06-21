@@ -23,10 +23,10 @@ typedef struct
 
 typedef enum { UP = 1, DOWN = 0 } ButtonAction;
 
-void initInput(Inputs *in);
-void updateInput(Inputs *in);
-bool getKey(Inputs *in, const SDL_Scancode key, ButtonAction action);
-bool getMouse(Inputs *in, const uint8_t button, ButtonAction action);
+void initInput(Inputs* in);
+void updateInput(Inputs* in);
+bool getKey(Inputs* in, const SDL_Scancode key, ButtonAction action);
+bool getMouse(Inputs* in, const uint8_t button, ButtonAction action);
 int getMouseX(Inputs* in);
 int getMouseY(Inputs* in);
 

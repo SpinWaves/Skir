@@ -6,7 +6,7 @@
 
 #include "map.h"
 #include <Utils/utils.h>
-#include <Kernel/log.h>
+#include <Kernel/kernel.h>
 #include <SDL2/SDL_image.h>
 #include <ctype.h>
 #include "player.h"
@@ -142,7 +142,7 @@ void renderMap(Map* map)
 				map->hide_boxes[i][j]->y = SCALE * j + mov_y;
 			}
 
-			if(dirt[t - 1]->coords->x < -SCALE || dirt[t - 1]->coords->y < -SCALE || dirt[t - 1]->coords->x > WIDTH || dirt[t - 1]->coords->y > HEIGHT)
+			if(dirt[t - 1]->coords->x < -SCALE || dirt[t - 1]->coords->y < -SCALE || dirt[t - 1]->coords->x > width || dirt[t - 1]->coords->y > height)
 				continue;
 
 			if((t == 2 && map->tile_set[i + 1][j] == 0) || (t == 4 && map->tile_set[i + 1][j] == 0) || (t == 5 && map->tile_set[i + 1][j] == 0))

@@ -10,14 +10,14 @@
 
 Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, int r, int g, int b)
 {
-    Button* button = custom_malloc(sizeof(Button));
-    button->coords = custom_malloc(sizeof(SDL_Rect));
+    Button* button = memAlloc(sizeof(Button));
+    button->coords = memAlloc(sizeof(SDL_Rect));
     button->coords->x = x;
     button->coords->y = y;
     button->coords->w = w;
     button->coords->h = h;
 
-    button->color = custom_malloc(sizeof(SDL_Color));
+    button->color = memAlloc(sizeof(SDL_Color));
     button->color->r = r;
     button->color->g = g;
     button->color->b = b;
@@ -29,7 +29,7 @@ Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int
     button->trigger = false;
 
     SDL_Color white = { 255, 255, 255, 255 };
-    button->text = custom_malloc(sizeof(Text));
+    button->text = memAlloc(sizeof(Text));
     initText(button->text, button->renderer, text, &white, default_font);
 
     int rect_text_x = button->coords->x + (button->coords->w - button->text->texts->rect.w)/2;
@@ -93,8 +93,8 @@ void updateButton(Button* button, Inputs* inputs)
 void destroyButton(Button* button)
 {
     deleteText(button->text);
-    custom_free(button->text);
-    custom_free(button->color);
-    custom_free(button->coords);
-    custom_free(button);
+    memFree(button->text);
+    memFree(button->color);
+    memFree(button->coords);
+    memFree(button);
 }

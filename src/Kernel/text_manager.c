@@ -16,7 +16,7 @@ void initTextManager(TextManager* manager, SDL_Renderer* renderer)
 }
 void newText(TextManager* manager, const char* text, int x, int y)
 {
-    text_link* t = (text_link*)custom_malloc(sizeof(text_link));
+    text_link* t = (text_link*)memAlloc(sizeof(text_link));
     SDL_Color white = { 255, 255, 255 };
     initText(&t->text, manager->renderer, text, &white, default_font);
     int texW = 0;
@@ -28,7 +28,7 @@ void newText(TextManager* manager, const char* text, int x, int y)
 }
 void newText_complete(TextManager* manager, const char* text, int x, int y, int w, int h, SDL_Color* color)
 {
-    text_link* t = (text_link*)custom_malloc(sizeof(text_link));
+    text_link* t = (text_link*)memAlloc(sizeof(text_link));
     initText(&t->text, manager->renderer, text, color, default_font);
     scaleText(&t->text, x, y, w, h);
     t->next = manager->head;
@@ -36,7 +36,7 @@ void newText_complete(TextManager* manager, const char* text, int x, int y, int 
 }
 void passText(TextManager* manager, Text* text)
 {
-    text_link* t = (text_link*)custom_malloc(sizeof(text_link));
+    text_link* t = (text_link*)memAlloc(sizeof(text_link));
     t->text = *text;
     t->next = manager->head;
     manager->head = t;
@@ -73,7 +73,7 @@ void shutdownTextManager(TextManager* manager)
     text_link* buffer2 = manager->head->next;
     while(buffer1 != NULL)
     {
-        custom_free(buffer1);
+        memFree(buffer1);
         buffer1 = buffer2;
         if(buffer2 != NULL)
             buffer2 = buffer2->next;

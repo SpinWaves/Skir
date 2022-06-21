@@ -8,11 +8,11 @@
 
 static Allocator __allocator;
 
-void* custom_malloc(size_t size)
+void* memAlloc(size_t size)
 {
     return memalloc(&__allocator, size);
 }
-void custom_free(void* ptr)
+void memFree(void* ptr)
 {
     memfree(&__allocator, ptr);
 }

@@ -14,4 +14,7 @@
 #include <Kernel/text_manager.h>
 #include <Kernel/sprite.h>
 
+extern int width;
+extern int height;
+
 #endif // __KERNEL__

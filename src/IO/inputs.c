@@ -6,8 +6,9 @@
 
 #include <IO/inputs.h>
 #include <Kernel/Memory/memory.h>
+#include <Kernel/kernel.h>
 
-void initInput(Inputs *in)
+void initInput(Inputs* in)
 {
     for(int i = 0; i < SDL_NUM_SCANCODES; i++)
     {
@@ -25,7 +26,7 @@ void initInput(Inputs *in)
     in->my = 0;
 }
 
-void updateInput(Inputs *in)
+void updateInput(Inputs* in)
 {
     for(int i = 0; i < SDL_NUM_SCANCODES; i++)
     {
@@ -38,6 +39,13 @@ void updateInput(Inputs *in)
     {
         if(in->events.window.event == SDL_WINDOWEVENT_CLOSE)
             in->quit = true;
+
+        if(in->events.window.event == SDL_WINDOWEVENT_RESIZED || in->events.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+        {
+            width = in->events.window.data1;
+            height = in->events.window.data2;
+        }
+
         switch(in->events.type)
         {
             case SDL_KEYDOWN: 
@@ -59,7 +67,8 @@ void updateInput(Inputs *in)
             
             default: break;
         }
-        if(in->events.type == SDL_MOUSEMOTION) // Mouvement de la souris
+
+        if(in->events.type == SDL_MOUSEMOTION)
         {
             in->mx = in->events.motion.x;
             in->my = in->events.motion.y;
@@ -67,11 +76,11 @@ void updateInput(Inputs *in)
     }
 }
 
-bool getKey(Inputs *in, const SDL_Scancode key, ButtonAction action)
+bool getKey(Inputs* in, const SDL_Scancode key, ButtonAction action)
 {
     return in->keyboard[key][action];
 }
-bool getMouse(Inputs *in, const uint8_t button, ButtonAction action)
+bool getMouse(Inputs* in, const uint8_t button, ButtonAction action)
 {
     return in->mouse[button][action];
 }

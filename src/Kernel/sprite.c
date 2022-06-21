@@ -9,10 +9,10 @@
 
 Sprite* createSprite(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y, int w, int h)
 {
-    Sprite* sprite = custom_malloc(sizeof(Sprite));
+    Sprite* sprite = memAlloc(sizeof(Sprite));
     sprite->texture = texture;
     sprite->renderer = renderer;
-    sprite->coords = custom_malloc(sizeof(SDL_Rect));
+    sprite->coords = memAlloc(sizeof(SDL_Rect));
     sprite->coords->x = x;
     sprite->coords->y = y;
     sprite->coords->w = w;
@@ -50,6 +50,6 @@ void renderRotateSprite(Sprite* sprite)
 void destroySprite(Sprite* sprite)
 {
     SDL_DestroyTexture(sprite->texture);
-    custom_free(sprite->coords);
-    custom_free(sprite);
+    memFree(sprite->coords);
+    memFree(sprite);
 }

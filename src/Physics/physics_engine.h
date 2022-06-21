@@ -8,6 +8,7 @@
 #define __PHYSICS_ENGINE__
 
 #include <stdbool.h>
+#include <SDL2/SDL.h>
 
 typedef struct
 {
@@ -39,7 +40,7 @@ typedef struct
 
 void initPhysicsEngine(Physics_Engine* engine);
 void addCollider(Physics_Engine* engine, BoxCollider* collider);
-void checkCollisions(Physics_Engine* engine);
+void checkCollisions(Physics_Engine* engine, SDL_Renderer* renderer, bool drawHideBoxes);
 void checkCollisionsCollider(Physics_Engine* engine, BoxCollider* collider);
 void shutdownPhysicsEngine(Physics_Engine* engine);
 

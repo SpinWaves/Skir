@@ -8,7 +8,7 @@
 #include <SDL2/SDL.h>
 #include <time.h>
 
-static long get_nanos()
+long get_nanos()
 {
     struct timespec ts;
     timespec_get(&ts, TIME_UTC);
@@ -27,15 +27,18 @@ void initFPS(FPS_counter *counter)
     counter->out_ticks = 0;
     counter->make_update = true;
 }
-unsigned long getFPS(FPS_counter *counter)
+
+unsigned long getFPS(FPS_counter* counter)
 {
     return counter->out_fps;
 }
-unsigned long getUPS(FPS_counter *counter)
+
+unsigned long getUPS(FPS_counter* counter)
 {
     return counter->out_ticks;
 }
-void updateFPS(FPS_counter *counter)
+
+void updateFPS(FPS_counter* counter)
 {
     counter->now = get_nanos();
 

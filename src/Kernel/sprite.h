@@ -12,8 +12,8 @@
 
 typedef struct
 {
-    SDL_Texture *texture;
-    SDL_Renderer *renderer;
+    SDL_Texture* texture;
+    SDL_Renderer* renderer;
     SDL_Rect* coords;
     double angle;
     bool flip_horizontal;

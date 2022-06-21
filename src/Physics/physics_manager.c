@@ -17,9 +17,9 @@ void pm_addCollider(BoxCollider* collider)
 {
     addCollider(&__pm, collider);
 }
-void pm_checkCollisions()
+void pm_checkCollisions(SDL_Renderer* renderer, bool drawHideBoxes)
 {
-    checkCollisions(&__pm);
+    checkCollisions(&__pm, renderer, drawHideBoxes);
 }
 void pm_checkCollisionsCollider(BoxCollider* collider)
 {

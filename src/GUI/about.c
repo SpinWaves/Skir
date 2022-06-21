@@ -20,10 +20,10 @@ static About_Page* __about_page = NULL;
 
 void initAboutPage(SDL_Renderer* renderer, int width, int height)
 {
-    __about_page = custom_malloc(sizeof(About_Page));
+    __about_page = memAlloc(sizeof(About_Page));
     __about_page->is_called = false;
     __about_page->renderer = renderer;
-    __about_page->text = custom_malloc(sizeof(Text));
+    __about_page->text = memAlloc(sizeof(Text));
     SDL_Color white = { 255, 255, 255};
     initText(__about_page->text, renderer, get_config_value("about_text"), &white, default_font);
     setPosText(__about_page->text, 20, 300);
@@ -55,9 +55,9 @@ void shutdownAboutPage()
 {
     shutdownAboutPage();
     deleteText(__about_page->text);
-    custom_free(__about_page->text);
+    memFree(__about_page->text);
     destroyButton(__about_page->back);
-    custom_free(__about_page->back);
+    memFree(__about_page->back);
 
-    custom_free(__about_page);
+    memFree(__about_page);
 }

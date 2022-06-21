@@ -10,7 +10,7 @@
 #include <Kernel/Memory/allocator.h>
 
 void initMemManager();
-void* custom_malloc(size_t size);
+void* memAlloc(size_t size);
 void custom_free(void* ptr);
 void shutdownMemManager();
 

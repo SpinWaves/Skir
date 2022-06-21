@@ -23,12 +23,12 @@ lines_texture* generate_texture(Text* t, SDL_Renderer* renderer, const char* tex
         log_report(ERROR, "Text: unable to create texture for a text (bad renderer) : %s", text);
         return NULL;
     }
-    lines_texture* tex = custom_malloc(sizeof(lines_texture));
+    lines_texture* tex = memAlloc(sizeof(lines_texture));
     SDL_Surface* surface = TTF_RenderUTF8_Blended(t->font, text, t->color);
     if(surface == NULL)
     {
         log_report(ERROR, "Text: unable to create surface from text : %s", text);
-        custom_free(tex);
+        memFree(tex);
         return NULL;
     }
     tex->texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -36,7 +36,7 @@ lines_texture* generate_texture(Text* t, SDL_Renderer* renderer, const char* tex
     if(tex->texture == NULL)
     {
         log_report(ERROR, "Text: unable to create texture from surface : %s", text);
-        custom_free(tex);
+        memFree(tex);
         return NULL;
     }
     tex->rect.x = 0;
@@ -171,7 +171,7 @@ void deleteText(Text* t)
     {
         double_buffer = buffer->next;
         SDL_DestroyTexture(buffer->texture);
-        custom_free(buffer);
+        memFree(buffer);
         buffer = double_buffer;
     }
 }

@@ -35,10 +35,7 @@ int main(int argc, char** argv)
 
     Application app;
     if(!initApplication(&app))
-    {
-        log_report(ERROR, "unable to create an application");
-        return -1;
-    }
+        log_report(FATAL_ERROR, "unable to create an application");
 
     while(app.run)
     {
