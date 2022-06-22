@@ -10,6 +10,7 @@
 #include <Utils/c_output.h>
 #include <Utils/fps.h>
 #include <Utils/easings.h>
+#include <Utils/time.h>
 
 #define ARRAY_SIZE(array) sizeof(array) / sizeof(array[0])
 

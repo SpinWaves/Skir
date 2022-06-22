@@ -63,21 +63,25 @@ void checkCollisionsCollider(Physics_Engine* engine, BoxCollider* collider)
 
         /* AABB collision detection */
         if( collider->x < buffer->collider->x + buffer->collider->w &&
+            collider->x + collider->w > buffer->collider->x + 1 &&
             collider->y < buffer->collider->y + buffer->collider->h - 5 &&
             collider->y + collider->h > buffer->collider->y + 5)
             collider->left_collision = true;
 
         if( collider->x + collider->w > buffer->collider->x &&
+            collider->x < buffer->collider->x &&
             collider->y < buffer->collider->y + buffer->collider->h - 5 &&
             collider->y + collider->h > buffer->collider->y + 5)
             collider->right_collision = true;
 
         if( collider->y < buffer->collider->y + buffer->collider->h &&
+            collider->y + collider->h > buffer->collider->y + buffer->collider->h &&
             collider->x < buffer->collider->x + buffer->collider->w - 7 &&
             collider->x + collider->w > buffer->collider->x + 7)
             collider->top_collision = true;
 
         if( collider->y + collider->h > buffer->collider->y &&
+            collider->y < buffer->collider->y &&
             collider->x < buffer->collider->x + buffer->collider->w - 7 &&
             collider->x + collider->w > buffer->collider->x + 7)
             collider->bottom_collision = true;

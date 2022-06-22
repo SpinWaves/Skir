@@ -4,16 +4,9 @@
 //
 // Author : kbz_8 (https://solo.to/kbz_8)
 
-#include <Utils/fps.h>
+#include <Utils/utils.h>
 #include <SDL2/SDL.h>
 #include <time.h>
-
-long get_nanos()
-{
-    struct timespec ts;
-    timespec_get(&ts, TIME_UTC);
-    return (long)ts.tv_sec * 1000000000L + ts.tv_nsec;
-}
 
 void initFPS(FPS_counter *counter)
 {

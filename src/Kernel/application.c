@@ -36,8 +36,8 @@ bool initApplication(Application *app)
     newText(&app->text_manager, "FPS: 0", 10, 10);
 
     initPlayer(&app->player, app->renderer, width / 2, height / 2);
-
     initMap(&app->map, app->renderer);
+    initHouse(&app->house, app->renderer, 100, 100);
 
     initMainMenu(app->renderer, width, height);
     callMainMenu();
@@ -54,6 +54,16 @@ static bool drawHideBoxes = false;
 void update(Application *app)
 {
     updateFPS(&app->fps);
+    if(!isMainMenuCalled())
+    {
+        renderPlayer(&app->player);
+        renderHouse(&app->house);
+        renderMap(&app->map);
+    }
+    else
+        renderMainMenu();
+    renderTextManager(&app->text_manager);
+    
     if(app->fps.make_update)
     {
         updateInput(&app->inputs);
@@ -70,6 +80,7 @@ void update(Application *app)
         {
             pm_checkCollisions(app->renderer, drawHideBoxes);
             updatePlayer(&app->player, &app->inputs);
+            updateHouse(&app->house);
         }
         else
             updateMainMenu(&app->inputs);
@@ -80,14 +91,6 @@ void update(Application *app)
             strcpy(oldFPS, newFPS);
         }
     }
-    if(!isMainMenuCalled())
-    {
-        renderPlayer(&app->player);
-        renderMap(&app->map);
-    }
-    else
-        renderMainMenu();
-    renderTextManager(&app->text_manager);
 }
 
 void shutdownApplication(Application *app)
@@ -96,6 +99,7 @@ void shutdownApplication(Application *app)
     shutdownTextManager(&app->text_manager);
     shutdownPlayer(&app->player);
     destroyMap(&app->map);
+    destroyHouse(&app->house);
     SDL_DestroyRenderer(app->renderer);
     SDL_DestroyWindow(app->window);
 }

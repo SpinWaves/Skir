@@ -11,7 +11,7 @@
 
 void initMemManager();
 void* memAlloc(size_t size);
-void custom_free(void* ptr);
+void memFree(void* ptr);
 void shutdownMemManager();
 
 #endif // __MEMORY_MANAGER__

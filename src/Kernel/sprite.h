@@ -16,6 +16,7 @@ typedef struct
     SDL_Renderer* renderer;
     SDL_Rect* coords;
     double angle;
+    SDL_Point* rotation_point;
     bool flip_horizontal;
     bool flip_vertical;
 } Sprite;

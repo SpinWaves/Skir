@@ -7,7 +7,21 @@
 #ifndef __MATHS__
 #define __MATHS__
 
+#include <math.h>
+
 int m_abs(int a);
 float m_fabs(float a);
+int randint(int a, int b);
+
+int max(int num1, int num2);
+int min(int num1, int num2);
+
+float fsqrt(float x);
+
+#define DIV_BY_2(x) (x >> 1)
+
+#ifndef M_PI
+#define M_PI 3.141592653589793
+#endif
 
 #endif // __MATHS__

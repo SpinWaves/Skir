@@ -24,6 +24,7 @@ typedef struct
     TextManager text_manager;
     Player player;
     Map map;
+    House house;
     bool run;
 } Application;
 

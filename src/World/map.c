@@ -8,12 +8,14 @@
 #include <Utils/utils.h>
 #include <Kernel/kernel.h>
 #include <SDL2/SDL_image.h>
+#include <Maths/maths.h>
 #include <ctype.h>
 #include "player.h"
 
 #define SCALE 64
 
 static Sprite* dirt[5];
+static Sprite* grass[2];
 
 void initMap(Map* map, SDL_Renderer* renderer)
 {
@@ -27,12 +29,26 @@ void initMap(Map* map, SDL_Renderer* renderer)
 		MAIN_DIR"ressources/Assets/world/dirt_corner_down.png"
 	};
 
+	const char* grass_textures[2] = {
+		MAIN_DIR"ressources/Assets/world/grass_0.png",
+		MAIN_DIR"ressources/Assets/world/grass_1.png"
+	};
+
 	for(int i = 0; i < ARRAY_SIZE(dirt); i++)
 	{
 		texture = IMG_LoadTexture(renderer, dirt_textures[i]);
 		if(texture == NULL)
-			log_report(ERROR, "Map : unable to create texture : %s", dirt_textures[i]);
+			log_report(FATAL_ERROR, "Map : unable to create texture : %s", dirt_textures[i]);
 		dirt[i] = createSprite(renderer, texture, 0, 0, SCALE, SCALE);
+	}
+
+	for(int i = 0; i < ARRAY_SIZE(grass); i++)
+	{
+		texture = IMG_LoadTexture(renderer, grass_textures[i]);
+		if(texture == NULL)
+			log_report(FATAL_ERROR, "Map : unable to create texture : %s", grass_textures[i]);
+		grass[i] = createSprite(renderer, texture, 0, 0, SCALE / 1.2, SCALE / 1.2);
+		grass[i]->rotation_point->y = grass[i]->coords->h;
 	}
 
 	int temp[64][64] = {
@@ -52,17 +68,17 @@ void initMap(Map* map, SDL_Renderer* renderer)
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 6, 6, 6, 6, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 1, 1, 1, 1, 6, 6, 6, 4, 0, 0, 0, 0, 5, 2, 3, 3, 3, 3, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 4, 0, 0, 0, 0, 5, 2, 3, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 4, 0, 0, 0, 0, 0, 0, 0, 4, 1, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 1, 4, 0, 0, 0, 0, 4, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 4, 0, 0, 0, 0, 0, 0, 0, 4, 6, 6, 6, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 3, 3, 3, 3, 3, 6, 4, 0, 0, 0, 0, 4, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 2, 5, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 3, 3, 3, 3, 3, 3, 5, 0, 0, 0, 0, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 5, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -119,9 +135,14 @@ void initMap(Map* map, SDL_Renderer* renderer)
 	}
 }
 
+static double frame = 0;
+
 void renderMap(Map* map)
 {
 	int t = 0;
+
+	frame = frame > 10000 ? 0 : frame + 0.025;
+
 	for(int i = 0; i < ARRAY_SIZE(map->tile_set); i++)
 	{
 		for(int j = 0; j < ARRAY_SIZE(map->tile_set[i]); j++)
@@ -131,10 +152,38 @@ void renderMap(Map* map)
 			if(t == 0)
 				continue;
 
-			dirt[t - 1]->coords->x = SCALE * i + mov_x;
-			dirt[t - 1]->coords->y = SCALE * j + mov_y;
-			dirt[t - 1]->flip_horizontal = false;
-			dirt[t - 1]->angle = 0.0;
+			dirt[(t == 6 ? 1 : t) - 1]->coords->x = SCALE * i + mov_x;
+			dirt[(t == 6 ? 1 : t) - 1]->coords->y = SCALE * j + mov_y;
+			dirt[(t == 6 ? 1 : t) - 1]->flip_horizontal = false;
+			dirt[(t == 6 ? 1 : t) - 1]->angle = 0.0;
+
+			if(t == 6)
+			{
+				for(int k = 0; k < m_abs((sin(2 * i) + sin(M_PI * i)) * 50); k++)
+				{
+					int index = k % 2 == 0 ? 0 : 1;
+					int offset = m_abs((sin(2 * k) + sin(M_PI * k)) * 100);
+					
+					if(offset > dirt[(t == 6 ? 1 : t) - 1]->coords->w)
+						continue;
+
+					grass[index]->coords->x = SCALE * i + mov_x + offset;
+					grass[index]->coords->y = SCALE * j + mov_y - DIV_BY_2(SCALE);
+					grass[index]->angle = 8 * (sin(2 * frame + i) + sin(frame * M_PI + i)) + (sin(2 * k) + sin(M_PI * k)) * 30;
+					grass[index]->flip_horizontal = k % 4 == 0;
+
+					if(m_abs(grass[index]->coords->x - DIV_BY_2(width) + 24) < 40)
+					{
+						if(fsqrt(pow(DIV_BY_2(width) + 24 - grass[index]->coords->x, 2) + pow(DIV_BY_2(height) - grass[index]->coords->y, 2)) < 40)
+						{
+							int h_dis = DIV_BY_2(width) + 24 - grass[index]->coords->x;
+							grass[k % 2 == 0 ? 0 : 1]->angle = max(min(grass[index]->angle + h_dis <= 0 ? -50 - h_dis * 3.5 : 50 - h_dis * 3.5, 80), -80);
+						}
+					}
+
+					renderRotateSprite(grass[index]);
+				}
+			}
 
 			if(t != 3)
 			{
@@ -142,7 +191,7 @@ void renderMap(Map* map)
 				map->hide_boxes[i][j]->y = SCALE * j + mov_y;
 			}
 
-			if(dirt[t - 1]->coords->x < -SCALE || dirt[t - 1]->coords->y < -SCALE || dirt[t - 1]->coords->x > width || dirt[t - 1]->coords->y > height)
+			if(dirt[(t == 6 ? 1 : t) - 1]->coords->x < -SCALE || dirt[(t == 6 ? 1 : t) - 1]->coords->y < -SCALE || dirt[(t == 6 ? 1 : t) - 1]->coords->x > width || dirt[(t == 6 ? 1 : t) - 1]->coords->y > height)
 				continue;
 
 			if((t == 2 && map->tile_set[i + 1][j] == 0) || (t == 4 && map->tile_set[i + 1][j] == 0) || (t == 5 && map->tile_set[i + 1][j] == 0))
@@ -151,7 +200,7 @@ void renderMap(Map* map)
 			if(t == 2 && map->tile_set[i][j + 1] == 0)
 				dirt[t - 1]->angle = -90;
 
-			renderRotateSprite(dirt[t - 1]);
+			renderRotateSprite(dirt[(t == 6 ? 1 : t) - 1]);
 		}
 	}
 }

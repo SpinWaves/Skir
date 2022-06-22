@@ -34,9 +34,9 @@ void initPlayer(Player* player, SDL_Renderer* renderer, int x, int y)
     {
         texture = IMG_LoadTexture(renderer, player_idle_textures[i]);
         if(texture == NULL)
-            log_report(ERROR, "Player : unable to create texture : %s", player_idle_textures[i]);
+            log_report(FATAL_ERROR, "Player : unable to create texture : %s", player_idle_textures[i]);
         SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-        player->idle_sprites[i] = createSprite(renderer, texture, x - w / 2, y - h, w * 2, h * 2);
+        player->idle_sprites[i] = createSprite(renderer, texture, x - w, y - h, w * 2, h * 2);
     }
 
     const char* player_running_textures[6] = {
@@ -52,9 +52,9 @@ void initPlayer(Player* player, SDL_Renderer* renderer, int x, int y)
     {
         texture = IMG_LoadTexture(renderer, player_running_textures[i]);
         if(texture == NULL)
-            log_report(ERROR, "Player : unable to create texture : %s", player_running_textures[i]);
+            log_report(FATAL_ERROR, "Player : unable to create texture : %s", player_running_textures[i]);
         SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-        player->running_sprites[i] = createSprite(renderer, texture, x - w / 2, y - h, w * 2, h * 2);
+        player->running_sprites[i] = createSprite(renderer, texture, x - w, y - h, w * 2, h * 2);
     }
 
     player->hide_box = newBoxCollider(player->idle_sprites[0]->coords->x + 7, player->idle_sprites[0]->coords->y, player->idle_sprites[0]->coords->w - 7, player->idle_sprites[0]->coords->h - 12, true);
@@ -73,6 +73,11 @@ void renderPlayer(Player* player)
 
 static float gravity = 0.0f;
 static bool noclip = false;
+static char jump_number = 0;
+static bool jump_button_release = false;
+static float speed = 0;
+
+#define MAX_SPEED 7
 
 void updatePlayer(Player* player, Inputs* inputs)
 {
@@ -84,19 +89,28 @@ void updatePlayer(Player* player, Inputs* inputs)
     else
         gravity = 0.0f;
 
+    if(player->hide_box->bottom_collision)
+        jump_number = 0;
+
+    if(player->hide_box->top_collision)
+        gravity = 0.2f;
+
     if(getKey(inputs, SDL_SCANCODE_N, UP))
         noclip = !noclip;
 
     if(getKey(inputs, SDL_SCANCODE_SPACE, DOWN))
     {
         if(noclip)
-            gravity = -7;
-        else if(player->hide_box->bottom_collision)// && !player->hide_box->top_collision)
+            gravity = -MAX_SPEED;
+        else if(!player->hide_box->top_collision && jump_number < 2 && jump_button_release)
         {
-            mov_y += 5;
-            gravity -= 5;
+            jump_number++;
+            gravity = -5;
         }
+        jump_button_release = false;
     }
+    else if(!noclip)
+        jump_button_release = true; 
 
     if((getKey(inputs, SDL_SCANCODE_LSHIFT, DOWN) || getKey(inputs, SDL_SCANCODE_RSHIFT, DOWN)) && noclip)
         gravity = 7;
@@ -116,36 +130,6 @@ void updatePlayer(Player* player, Inputs* inputs)
 
     is_running = false;
 
-    if(getKey(inputs, SDL_SCANCODE_LEFT, DOWN) || getKey(inputs, SDL_SCANCODE_A, DOWN))
-    {
-        is_running = true;
-        player->running_sprites[(int)(player->animation_frame / 100)]->flip_horizontal = false;
-
-        if(player->idle_sprites[0]->flip_horizontal == true)
-        {
-            for(int i = 0; i < ARRAY_SIZE(player->idle_sprites); i++)
-                player->idle_sprites[i]->flip_horizontal = false;
-        }
-
-        if(noclip || !player->hide_box->left_collision)
-            mov_x += 7;
-    }
-
-    if(getKey(inputs, SDL_SCANCODE_RIGHT, DOWN) || getKey(inputs, SDL_SCANCODE_D, DOWN))
-    {
-        is_running = !is_running;
-        player->running_sprites[(int)(player->animation_frame / 100)]->flip_horizontal = true;
-
-        if(player->idle_sprites[0]->flip_horizontal == false)
-        {
-            for(int i = 0; i < ARRAY_SIZE(player->idle_sprites); i++)
-                player->idle_sprites[i]->flip_horizontal = true;
-        }
-
-        if(noclip || !player->hide_box->right_collision)
-            mov_x -= 7;
-    }
-
     mov_y -= gravity;
 
     if(player->hide_box->bottom_collision && !noclip)
@@ -160,6 +144,71 @@ void updatePlayer(Player* player, Inputs* inputs)
         mov_y--;
         player->hide_box->y = hide_box_y_save;
     }
+
+    if(getKey(inputs, SDL_SCANCODE_LEFT, DOWN) || getKey(inputs, SDL_SCANCODE_A, DOWN))
+    {
+        is_running = true;
+        player->running_sprites[(int)(player->animation_frame / 100)]->flip_horizontal = false;
+
+        if(player->idle_sprites[0]->flip_horizontal == true)
+        {
+            for(int i = 0; i < ARRAY_SIZE(player->idle_sprites); i++)
+                player->idle_sprites[i]->flip_horizontal = false;
+        }
+
+        if(speed < MAX_SPEED)
+            speed += 1.0f;
+
+        if(noclip || !player->hide_box->left_collision)
+            mov_x += speed;
+
+        if(player->hide_box->left_collision && !noclip)
+        {
+            int hide_box_x_save = player->hide_box->x;
+            while(player->hide_box->left_collision)
+            {
+                mov_x--;
+                player->hide_box->x++;
+                pm_checkCollisionsCollider(player->hide_box);
+            }
+            mov_x++;
+            player->hide_box->x = hide_box_x_save;
+        }
+    }
+    
+    if(getKey(inputs, SDL_SCANCODE_RIGHT, DOWN) || getKey(inputs, SDL_SCANCODE_D, DOWN))
+    {
+        is_running = !is_running;
+        player->running_sprites[(int)(player->animation_frame / 100)]->flip_horizontal = true;
+
+        if(player->idle_sprites[0]->flip_horizontal == false)
+        {
+            for(int i = 0; i < ARRAY_SIZE(player->idle_sprites); i++)
+                player->idle_sprites[i]->flip_horizontal = true;
+        }
+
+        if(speed < MAX_SPEED)
+            speed += 1.0f;
+
+        if(noclip || !player->hide_box->right_collision)
+            mov_x -= speed;
+
+        if(player->hide_box->right_collision && !noclip)
+        {
+            int hide_box_x_save = player->hide_box->x;
+            while(player->hide_box->right_collision)
+            {
+                mov_x++;
+                player->hide_box->x--;
+                pm_checkCollisionsCollider(player->hide_box);
+            }
+            mov_x--;
+            player->hide_box->x = hide_box_x_save;
+        }
+    }
+
+    if(!getKey(inputs, SDL_SCANCODE_RIGHT, DOWN) && !getKey(inputs, SDL_SCANCODE_D, DOWN) && !getKey(inputs, SDL_SCANCODE_LEFT, DOWN) && !getKey(inputs, SDL_SCANCODE_A, DOWN))
+        speed = 0.0f;
 }
 
 void shutdownPlayer(Player* player)
