@@ -94,7 +94,7 @@ void checkCollisions(Physics_Engine* engine, SDL_Renderer* renderer, bool drawHi
         if(drawHideBoxes)
         {
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-            SDL_Rect rect = {buffer->collider->x, buffer->collider->y, buffer->collider->w, buffer->collider->h};
+            SDL_Rect rect = { buffer->collider->x, buffer->collider->y, buffer->collider->w, buffer->collider->h };
             SDL_RenderDrawRect(renderer, &rect);
         }
 

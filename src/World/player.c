@@ -148,7 +148,7 @@ void updatePlayer(Player* player, Inputs* inputs)
 
     mov_y -= gravity;
 
-    if(player->hide_box->bottom_collision)
+    if(player->hide_box->bottom_collision && !noclip)
     {
         int hide_box_y_save = player->hide_box->y;
         while(player->hide_box->bottom_collision)
