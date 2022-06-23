@@ -16,7 +16,7 @@ int height = 720;
 
 bool initApplication(Application *app)
 {
-    app->window = SDL_CreateWindow("Keep Running", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
+    app->window = SDL_CreateWindow("Skir", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
     if(app->window == NULL)
     {
         log_report(ERROR, "Something went wrong with the creation of the window");
@@ -62,7 +62,7 @@ void update(Application *app)
     }
     else
         renderMainMenu();
-    
+
     renderTextManager(&app->text_manager);
     
     if(app->fps.make_update)
