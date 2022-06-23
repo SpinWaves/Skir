@@ -56,12 +56,13 @@ void update(Application *app)
     updateFPS(&app->fps);
     if(!isMainMenuCalled())
     {
-        renderPlayer(&app->player);
         renderHouse(&app->house);
+        renderPlayer(&app->player);
         renderMap(&app->map);
     }
     else
         renderMainMenu();
+    
     renderTextManager(&app->text_manager);
     
     if(app->fps.make_update)
@@ -80,7 +81,7 @@ void update(Application *app)
         {
             pm_checkCollisions(app->renderer, drawHideBoxes);
             updatePlayer(&app->player, &app->inputs);
-            updateHouse(&app->house);
+            updateHouse(&app->house, &app->inputs);
         }
         else
             updateMainMenu(&app->inputs);

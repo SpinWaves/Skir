@@ -13,8 +13,8 @@ int m_abs(int a);
 float m_fabs(float a);
 int randint(int a, int b);
 
-int max(int num1, int num2);
-int min(int num1, int num2);
+inline int max(int num1, int num2);
+inline int min(int num1, int num2);
 
 float fsqrt(float x);
 

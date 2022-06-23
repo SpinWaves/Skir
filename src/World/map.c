@@ -159,6 +159,7 @@ void renderMap(Map* map)
 
 			if(t == 6)
 			{
+				// Grass management
 				for(int k = 0; k < m_abs((sin(2 * i) + sin(M_PI * i)) * 50); k++)
 				{
 					int index = k % 2 == 0 ? 0 : 1;
@@ -169,10 +170,10 @@ void renderMap(Map* map)
 
 					grass[index]->coords->x = SCALE * i + mov_x + offset;
 					grass[index]->coords->y = SCALE * j + mov_y - DIV_BY_2(SCALE);
-					grass[index]->angle = 8 * (sin(2 * frame + i) + sin(frame * M_PI + i)) + (sin(2 * k) + sin(M_PI * k)) * 30;
+					grass[index]->angle = 8 * (sin(2 * frame + i) + sin(frame * M_PI + i)) /* wind effect */ + (sin(2 * k) + sin(M_PI * k)) * 30 /* natural angle of grass */;
 					grass[index]->flip_horizontal = k % 4 == 0;
 
-					if(m_abs(grass[index]->coords->x - DIV_BY_2(width) + 24) < 40)
+					if(m_abs(grass[index]->coords->x - DIV_BY_2(width) + 24) < 40) // flattening grass around the player
 					{
 						if(fsqrt(pow(DIV_BY_2(width) + 24 - grass[index]->coords->x, 2) + pow(DIV_BY_2(height) - grass[index]->coords->y, 2)) < 40)
 						{

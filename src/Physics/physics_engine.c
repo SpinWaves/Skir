@@ -7,6 +7,8 @@
 #include <Physics/physics_engine.h>
 #include <Kernel/Memory/memory.h>
 
+static int IDs = 0;
+
 BoxCollider* newBoxCollider(int x, int y, int w, int h, bool important_collider)
 {
     BoxCollider* box = memAlloc(sizeof(BoxCollider));
@@ -22,6 +24,9 @@ BoxCollider* newBoxCollider(int x, int y, int w, int h, bool important_collider)
     box->bottom_collision = false;
     
     box->important_collider = important_collider;
+
+    box->collider_id = IDs;
+    IDs++;
 
     return box;
 }
@@ -56,6 +61,51 @@ void checkCollisionsCollider(Physics_Engine* engine, BoxCollider* collider)
     while(buffer != NULL)
     {
         if(buffer->collider == collider)
+        {
+            buffer = buffer->next;
+            continue;
+        }
+
+        /* AABB collision detection */
+        if( collider->x < buffer->collider->x + buffer->collider->w &&
+            collider->x + collider->w > buffer->collider->x + 1 &&
+            collider->y < buffer->collider->y + buffer->collider->h - 5 &&
+            collider->y + collider->h > buffer->collider->y + 5)
+            collider->left_collision = true;
+
+        if( collider->x + collider->w > buffer->collider->x &&
+            collider->x < buffer->collider->x &&
+            collider->y < buffer->collider->y + buffer->collider->h - 5 &&
+            collider->y + collider->h > buffer->collider->y + 5)
+            collider->right_collision = true;
+
+        if( collider->y < buffer->collider->y + buffer->collider->h &&
+            collider->y + collider->h > buffer->collider->y + buffer->collider->h &&
+            collider->x < buffer->collider->x + buffer->collider->w - 7 &&
+            collider->x + collider->w > buffer->collider->x + 7)
+            collider->top_collision = true;
+
+        if( collider->y + collider->h > buffer->collider->y &&
+            collider->y < buffer->collider->y &&
+            collider->x < buffer->collider->x + buffer->collider->w - 7 &&
+            collider->x + collider->w > buffer->collider->x + 7)
+            collider->bottom_collision = true;
+
+        buffer = buffer->next;
+    }
+}
+
+void checkCollisionsColliderWithID(Physics_Engine* engine, BoxCollider* collider, int id)
+{
+    collider->left_collision = false;
+    collider->right_collision = false;
+    collider->top_collision = false;
+    collider->bottom_collision = false;
+
+    colliders_node* buffer = engine->head;
+    while(buffer != NULL)
+    {
+        if(buffer->collider->collider_id != id)
         {
             buffer = buffer->next;
             continue;

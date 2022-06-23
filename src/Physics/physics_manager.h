@@ -14,6 +14,7 @@ void initPhysicsManager();
 void pm_addCollider(BoxCollider* collider);
 void pm_checkCollisions(SDL_Renderer* renderer, bool drawHideBoxes);
 void pm_checkCollisionsCollider(BoxCollider* collider);
+void pm_checkCollisionsColliderWithID(BoxCollider* collider, int id);
 void shutdownPhysicsManager();
 
 #endif // __PHYSICS_MANAGER__

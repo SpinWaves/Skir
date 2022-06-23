@@ -8,15 +8,18 @@
 #define __HOUSE__
 
 #include <Kernel/sprite.h>
+#include <Physics/physics.h>
+#include <IO/inputs.h>
 
 typedef struct
 {
 	Sprite* sprite;
+	BoxCollider* door_trigger;
 } House;
 
 void initHouse(House* house, SDL_Renderer* renderer, int x, int y);
 void renderHouse(House* house);
-void updateHouse(House* house);
+void updateHouse(House* house, Inputs* inputs);
 void destroyHouse(House* house);
 
 #endif // __HOUSE__

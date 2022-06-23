@@ -22,6 +22,8 @@ typedef struct
     bool bottom_collision;
 
     bool important_collider;
+
+    int collider_id;
 } BoxCollider;
 
 BoxCollider* newBoxCollider(int x, int y, int w, int h, bool important_collider);
@@ -42,6 +44,7 @@ void initPhysicsEngine(Physics_Engine* engine);
 void addCollider(Physics_Engine* engine, BoxCollider* collider);
 void checkCollisions(Physics_Engine* engine, SDL_Renderer* renderer, bool drawHideBoxes);
 void checkCollisionsCollider(Physics_Engine* engine, BoxCollider* collider);
+void checkCollisionsColliderWithID(Physics_Engine* engine, BoxCollider* collider, int id);
 void shutdownPhysicsEngine(Physics_Engine* engine);
 
 #endif // __PHYSICS_ENGINE__
