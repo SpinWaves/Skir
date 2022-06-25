@@ -10,5 +10,6 @@
 #include <World/map.h>
 #include <World/player.h>
 #include <World/house.h>
+#include <World/water.h>
 
 #endif // __WORLD__

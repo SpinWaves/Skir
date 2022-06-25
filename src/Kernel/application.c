@@ -44,6 +44,8 @@ bool initApplication(Application *app)
     initMainMenu(app->renderer, width, height);
     callMainMenu();
 
+    initWaterPuddle(&app->puddle, 10, 10, 320, 100);
+
     app->run = true;
 
     return true;
@@ -65,6 +67,7 @@ void update(Application *app)
         if(!app->house.isInside)
             renderMap(&app->map);
         renderHouse2(&app->house);
+        renderWaterPuddle(&app->puddle, app->renderer);
     }
     else
         renderMainMenu();
@@ -98,6 +101,7 @@ void update(Application *app)
             updatePlayer(&app->player, &app->inputs);
             updateHouse(&app->house, &app->inputs);
             updateMap(&app->map, app->house.isInside);
+            updateWaterPuddle(&app->puddle);
         }
         else
             updateMainMenu(&app->inputs);
@@ -117,6 +121,7 @@ void shutdownApplication(Application *app)
     shutdownPlayer(&app->player);
     destroyMap(&app->map);
     destroyHouse(&app->house);
+    destroyWaterPuddle(&app->puddle);
     SDL_DestroyRenderer(app->renderer);
     SDL_DestroyWindow(app->window);
 }

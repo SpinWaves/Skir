@@ -19,7 +19,7 @@ void memFree(void* ptr)
 
 void initMemManager()
 {
-    initAllocator(&__allocator, 20000000);
+    initAllocator(&__allocator, 4096 * 4096);
 }
 void shutdownMemManager()
 {

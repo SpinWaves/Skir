@@ -25,6 +25,7 @@ typedef struct
     Player player;
     Map map;
     House house;
+    WaterPuddle puddle;
     bool run;
 } Application;
 
