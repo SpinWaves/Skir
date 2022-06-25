@@ -12,7 +12,7 @@ set_languages("c11")
 set_objectdir("build-int/$(os)_$(arch)")
 set_targetdir("build/$(os)_$(arch)")
 
-target("Keep_Running")
+target("Skir")
 	set_kind("binary")
 	add_files("src/**.c")
 	add_includedirs("src")

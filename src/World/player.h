@@ -17,6 +17,7 @@ typedef struct
     Sprite* running_sprites[6];
     BoxCollider* hide_box;
     int animation_frame;
+    bool stopMove;
 } Player;
 
 extern float mov_x;

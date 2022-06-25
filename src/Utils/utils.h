@@ -11,6 +11,7 @@
 #include <Utils/fps.h>
 #include <Utils/easings.h>
 #include <Utils/time.h>
+#include <Utils/color.h>
 
 #define ARRAY_SIZE(array) sizeof(array) / sizeof(array[0])
 

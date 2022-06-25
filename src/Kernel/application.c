@@ -30,6 +30,8 @@ bool initApplication(Application *app)
         return false;
     }
 
+    SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_BLEND);
+
     initTextManager(&app->text_manager, app->renderer);
     initInput(&app->inputs);
     initFPS(&app->fps);
@@ -51,6 +53,8 @@ static char oldFPS[12] = "FPS: 0";
 static char newFPS[12];
 static bool drawHideBoxes = false;
 
+int fading = 255;
+
 void update(Application *app)
 {
     updateFPS(&app->fps);
@@ -58,13 +62,22 @@ void update(Application *app)
     {
         renderHouse(&app->house);
         renderPlayer(&app->player);
-        renderMap(&app->map);
+        if(!app->house.isInside)
+            renderMap(&app->map);
+        renderHouse2(&app->house);
     }
     else
         renderMainMenu();
 
     renderTextManager(&app->text_manager);
-    
+
+    if(fading < 255)
+    {
+        SDL_Rect fadingRect = { 0, 0, width, height };
+        SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, -m_abs(fading == 0 ? 1 : fading > 255 ? 255 : fading < -255 ? -255 : fading));
+        SDL_RenderFillRect(app->renderer, &fadingRect);
+    }
+
     if(app->fps.make_update)
     {
         updateInput(&app->inputs);
@@ -74,6 +87,8 @@ void update(Application *app)
         if(getKey(&app->inputs, SDL_SCANCODE_T, UP))
             drawHideBoxes = !drawHideBoxes;
 
+        app->player.stopMove = fading < 255 ? true : false;
+
         if(app->inputs.quit)
             app->run = false;
 
@@ -82,6 +97,7 @@ void update(Application *app)
             pm_checkCollisions(app->renderer, drawHideBoxes);
             updatePlayer(&app->player, &app->inputs);
             updateHouse(&app->house, &app->inputs);
+            updateMap(&app->map, app->house.isInside);
         }
         else
             updateMainMenu(&app->inputs);

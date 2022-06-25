@@ -18,6 +18,7 @@ typedef struct
 
 void initMap(Map* map, SDL_Renderer* renderer);
 void renderMap(Map* map);
+void updateMap(Map* map, bool isInsideHouse);
 void destroyMap(Map* map);
 
 #endif // __MAP__

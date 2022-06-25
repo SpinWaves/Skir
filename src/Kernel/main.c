@@ -11,10 +11,12 @@
 #include <Kernel/kernel.h>
 #include <Physics/physics.h>
 #include <IO/io.h>
-#include <Utils/c_output.h>
+#include <Utils/utils.h>
 
 #include <time.h>
 #include <stdlib.h>
+
+ColorRGB clearColor = { 141, 186, 255 };
 
 int main(int argc, char** argv)
 {
@@ -39,7 +41,7 @@ int main(int argc, char** argv)
 
     while(app.run)
     {
-        SDL_SetRenderDrawColor(app.renderer, 141, 186, 255, 255);
+        SDL_SetRenderDrawColor(app.renderer, clearColor.r, clearColor.g, clearColor.b, 255);
         SDL_RenderClear(app.renderer);
         
         update(&app);

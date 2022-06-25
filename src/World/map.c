@@ -136,12 +136,61 @@ void initMap(Map* map, SDL_Renderer* renderer)
 }
 
 static double frame = 0;
+static char houseWallCounter = 0;
+
+static int houseWallHideBoxes[11][4] = {
+	{ 39, 162 - 12 / HOUSE_SCALE, 85, 2 },
+	{ 120, 127, 4, 35 },
+	{ 113, 123, 12, 4 },
+	{ 113, 58, 4, 65 },
+	{ 80, 96 - 12 / HOUSE_SCALE, 33, 3 },
+	{ 61, 56, 55, 2 },
+	{ 61, 58, 3, 23 },
+	{ 8, 79, 56, 2 },
+	{ 8, 81, 4, 42 },
+	{ 4, 123 - 12 / HOUSE_SCALE, 56, 4 },
+	{ 39, 127, 4, 35 }
+};
+
+void updateMap(Map* map, bool isInsideHouse)
+{
+	houseWallCounter = 0;
+	frame = frame > 10000 ? 0 : frame + 0.025;
+	for(int i = 0; i < ARRAY_SIZE(map->tile_set); i++)
+	{
+		for(int j = 0; j < ARRAY_SIZE(map->tile_set[i]); j++)
+		{
+			if(map->tile_set[i][j] != 3 && map->tile_set[i][j] != 0)
+			{
+				if(!isInsideHouse)
+				{
+					map->hide_boxes[i][j]->x = SCALE * i + mov_x;
+					map->hide_boxes[i][j]->y = SCALE * j + mov_y;
+					map->hide_boxes[i][j]->w = SCALE;
+					map->hide_boxes[i][j]->h = SCALE;
+				}
+				else
+				{
+					// Reuse of the map's hides boxes for the walls of the house
+					if(houseWallCounter > 10)
+					{
+						map->hide_boxes[i][j]->x = -10000;
+						continue;
+					}
+					map->hide_boxes[i][j]->x = HOUSE_SCALE * houseWallHideBoxes[houseWallCounter][0] + mov_x + 1000;
+					map->hide_boxes[i][j]->y = HOUSE_SCALE * houseWallHideBoxes[houseWallCounter][1] + mov_y + 436;
+					map->hide_boxes[i][j]->w = HOUSE_SCALE * houseWallHideBoxes[houseWallCounter][2];
+					map->hide_boxes[i][j]->h = HOUSE_SCALE * houseWallHideBoxes[houseWallCounter][3];
+					houseWallCounter++;
+				}
+			}
+		}
+	}
+}
 
 void renderMap(Map* map)
 {
 	int t = 0;
-
-	frame = frame > 10000 ? 0 : frame + 0.025;
 
 	for(int i = 0; i < ARRAY_SIZE(map->tile_set); i++)
 	{
@@ -184,12 +233,6 @@ void renderMap(Map* map)
 
 					renderRotateSprite(grass[index]);
 				}
-			}
-
-			if(t != 3)
-			{
-				map->hide_boxes[i][j]->x = SCALE * i + mov_x;
-				map->hide_boxes[i][j]->y = SCALE * j + mov_y;
 			}
 
 			if(dirt[(t == 6 ? 1 : t) - 1]->coords->x < -SCALE || dirt[(t == 6 ? 1 : t) - 1]->coords->y < -SCALE || dirt[(t == 6 ? 1 : t) - 1]->coords->x > width || dirt[(t == 6 ? 1 : t) - 1]->coords->y > height)

@@ -11,14 +11,20 @@
 #include <Physics/physics.h>
 #include <IO/inputs.h>
 
+#define HOUSE_SCALE 4.5
+
 typedef struct
 {
 	Sprite* sprite;
+	Sprite* indoor[3];
 	BoxCollider* door_trigger;
+	BoxCollider* bed_trigger;
+	bool isInside;
 } House;
 
 void initHouse(House* house, SDL_Renderer* renderer, int x, int y);
 void renderHouse(House* house);
+void renderHouse2(House* house);
 void updateHouse(House* house, Inputs* inputs);
 void destroyHouse(House* house);
 
