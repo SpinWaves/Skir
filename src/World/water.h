@@ -19,7 +19,7 @@ typedef struct
 	int w;
 	int h;
 	WaterPoint** points;
-	SDL_Vertex** vertices;
+	SDL_Vertex* vertices;
 } WaterPuddle;
 
 void initWaterPuddle(WaterPuddle* puddle, int x, int y, int w, int h);

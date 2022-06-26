@@ -44,7 +44,7 @@ bool initApplication(Application *app)
     initMainMenu(app->renderer, width, height);
     callMainMenu();
 
-    initWaterPuddle(&app->puddle, 10, 10, 320, 100);
+    initWaterPuddle(&app->puddle, 150, 150, 620, 100);
 
     app->run = true;
 
