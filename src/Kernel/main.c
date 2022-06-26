@@ -25,6 +25,7 @@ int main(int argc, char** argv)
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
     TTF_Init();
 
+    init_logs();
     initMemManager();
     initPhysicsManager();
     initConfigInfoManager();

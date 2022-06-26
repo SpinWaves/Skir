@@ -9,27 +9,33 @@
 #include <stdio.h>
 #include <time.h>
 #include <Kernel/Memory/memory.h>
+#include <Utils/file_helper.h>
+
+void init_logs()
+{
+    if(file_exists(LOG_DIR"/session.log"))
+        remove(LOG_DIR"/session.log");
+}
 
 void log_report(log_type type, const char* msg, ...)
 {
-    int msg_size = strlen(msg);
-    char buffer[msg_size + 255];
+    char buffer[strlen(msg) + 1024];
     va_list args;
     va_start(args, msg);
     vsprintf(buffer, msg, args);
     va_end(args);
 
-    char path[sizeof(LOG_DIR) + 48];
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
-    sprintf(path, "%s/session.txt", LOG_DIR, tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
 
-    FILE* file = fopen(path, "w");
+    FILE* file = fopen(LOG_DIR"/session.log", "a");
+
     if(!file)
     {
-        printf("%sLog: unable to open file: %s%s\n", OUT_RED, path, OUT_DEF);
+        printf("%sLog: unable to open file: %s%s\n", OUT_RED, LOG_DIR"/session.log", OUT_DEF);
         return;
     }
+
     switch(type)
     {
         case MESSAGE: fprintf(file, "%d-%d-%d-%d:%d -- Message ---- ", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min); printf("%s[Log Message] %s%s\n", OUT_BLUE, buffer, OUT_DEF); break;

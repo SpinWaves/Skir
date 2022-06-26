@@ -12,6 +12,7 @@
 #include <Utils/easings.h>
 #include <Utils/time.h>
 #include <Utils/color.h>
+#include <Utils/file_helper.h>
 
 #define ARRAY_SIZE(array) sizeof(array) / sizeof(array[0])
 

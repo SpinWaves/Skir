@@ -17,6 +17,7 @@ typedef enum
     FATAL_ERROR
 } log_type;
 
+void init_logs();
 void log_report(log_type type, const char* msg, ...);
 
 #endif // __LOG__

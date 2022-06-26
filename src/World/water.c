@@ -30,69 +30,99 @@ void initWaterPuddle(WaterPuddle* puddle, int x, int y, int w, int h)
 	puddle->w = w;
 	puddle->h = h;
 
-	puddle->points = (WaterPoint*)memAlloc(sizeof(WaterPoint) * (int)(w / 5));
+	puddle->points = (WaterPoint**)memAlloc(sizeof(WaterPoint*) * puddle->w);
 	if(puddle->points == NULL)
 		log_report(FATAL_ERROR, "Water Puddle : unable to alloc memory for points");
 
-	printf("%d\n", ARRAY_SIZE(puddle->points));
-	puddle->vertices = (SDL_Vertex*)memAlloc(sizeof(SDL_Vertex) * (ARRAY_SIZE(puddle->points) + 2));
+	puddle->vertices = (SDL_Vertex**)memAlloc(sizeof(SDL_Vertex*) * (puddle->w * 6));
 	if(puddle->vertices == NULL)
 		log_report(FATAL_ERROR, "Water Puddle : unable to alloc memory for vertices");
 
-	for(int i = 0; i < ARRAY_SIZE(puddle->points); i++)
+/*
+Vector2 p1 = new Vector2((i - 1) * scale, springs[i - 1].Height);
+Vector2 p2 = new Vector2(i * scale, springs[i].Height);
+Vector2 p3 = new Vector2(p2.X, bottom);
+Vector2 p4 = new Vector2(p1.X, bottom);
+
+primitiveBatch.AddVertex(p1, lightBlue);
+primitiveBatch.AddVertex(p2, lightBlue);
+primitiveBatch.AddVertex(p3, midnightBlue);
+
+primitiveBatch.AddVertex(p1, lightBlue);
+primitiveBatch.AddVertex(p3, midnightBlue);
+primitiveBatch.AddVertex(p4, midnightBlue);
+*/
+	int v = 0;
+	for(int i = 0; i < puddle->w; i++)
 	{
-		puddle->points[i].position.x = x + i * ARRAY_SIZE(puddle->points);
-		puddle->points[i].position.y = y;
-		puddle->points[i].velocity = 0.0f;
+		puddle->points[i] = memAlloc(sizeof(WaterPoint));
+		puddle->points[i]->position.x = x + i;
+		puddle->points[i]->position.y = y;
+		puddle->points[i]->velocity = 0.0f;
+ 
+		puddle->vertices[v] = memAlloc(sizeof(SDL_Vertex));
+		puddle->vertices[v]->position.x = puddle->points[i]->position.x;
+		puddle->vertices[v]->position.y = puddle->points[i]->position.y;
+		puddle->vertices[v]->color.r = 94; puddle->vertices[v]->color.g = 189; puddle->vertices[v]->color.b = 247; puddle->vertices[v]->color.a = 128;
+		v++;
+		puddle->vertices[v] = memAlloc(sizeof(SDL_Vertex));
+		puddle->vertices[v]->position.x = puddle->points[i]->position.x + 1;
+		puddle->vertices[v]->position.y = puddle->points[i]->position.y;
+		puddle->vertices[v]->color.r = 94; puddle->vertices[v]->color.g = 189; puddle->vertices[v]->color.b = 247; puddle->vertices[v]->color.a = 128;
+		v++;
+		puddle->vertices[v] = memAlloc(sizeof(SDL_Vertex));
+		puddle->vertices[v]->position.x = puddle->points[i]->position.x + 1;
+		puddle->vertices[v]->position.y = puddle->points[i]->position.y + h;
+		puddle->vertices[v]->color.r = 94; puddle->vertices[v]->color.g = 189; puddle->vertices[v]->color.b = 247; puddle->vertices[v]->color.a = 128;
 
-		puddle->vertices[i].position.x = puddle->points[i].position.x;
-		puddle->vertices[i].position.y = puddle->points[i].position.y;
-		puddle->vertices[i].color.r = 94;
-		puddle->vertices[i].color.g = 189;
-		puddle->vertices[i].color.b = 247;
-		puddle->vertices[i].color.a = 128;
+		v++;
+		puddle->vertices[v] = memAlloc(sizeof(SDL_Vertex));
+		puddle->vertices[v]->position.x = puddle->points[i]->position.x;
+		puddle->vertices[v]->position.y = puddle->points[i]->position.y;
+		puddle->vertices[v]->color.r = 94; puddle->vertices[v]->color.g = 189; puddle->vertices[v]->color.b = 247; puddle->vertices[v]->color.a = 128;
+		v++;
+		puddle->vertices[v] = memAlloc(sizeof(SDL_Vertex));
+		puddle->vertices[v]->position.x = puddle->points[i]->position.x + 1;
+		puddle->vertices[v]->position.y = puddle->points[i]->position.y + h;
+		puddle->vertices[v]->color.r = 94; puddle->vertices[v]->color.g = 189; puddle->vertices[v]->color.b = 247; puddle->vertices[v]->color.a = 128;
+		v++;
+		puddle->vertices[v] = memAlloc(sizeof(SDL_Vertex));
+		puddle->vertices[v]->position.x = puddle->points[i]->position.x;
+		puddle->vertices[v]->position.y = puddle->points[i]->position.y + h;
+		puddle->vertices[v]->color.r = 94; puddle->vertices[v]->color.g = 189; puddle->vertices[v]->color.b = 247; puddle->vertices[v]->color.a = 128;
+		v++;
 	}
-
-	int size = ARRAY_SIZE(puddle->points);
-
-	puddle->vertices[size].position.x = x;
-	puddle->vertices[size].position.y = y + h;
-	puddle->vertices[size].color.r = 94;
-	puddle->vertices[size].color.g = 189;
-	puddle->vertices[size].color.b = 247;
-	puddle->vertices[size].color.a = 128;
-
-	puddle->vertices[size + 1].position.x = x + w;
-	puddle->vertices[size + 1].position.y = y + h;
-	puddle->vertices[size + 1].color.r = 94;
-	puddle->vertices[size + 1].color.g = 189;
-	puddle->vertices[size + 1].color.b = 247;
-	puddle->vertices[size + 1].color.a = 128;
 }
 
 void updateWaterPuddle(WaterPuddle* puddle)
 {
 	/*
-	for(int i = 0; i < ARRAY_SIZE(puddle->points); i++)
+	for(int i = 0; i < puddle->w; i++)
 	{
-		puddle->points[i].position.x = puddle->x + i * ARRAY_SIZE(puddle->points);
-		puddle->points[i].position.y = puddle->y;
+		puddle->points[i]->position.x = puddle->x + i * puddle->w;
+		puddle->points[i]->position.y = puddle->y;
 
-		puddle->vertices[i].position.x = puddle->points[i].position.x;
-		puddle->vertices[i].position.y = puddle->points[i].position.y;
+		puddle->vertices[i]->position.x = puddle->points[i]->position.x;
+		puddle->vertices[i]->position.y = puddle->points[i]->position.y;
 	}
 	*/
 }
 
 void renderWaterPuddle(WaterPuddle* puddle, SDL_Renderer* renderer)
 {
-	printf("%d\n", ARRAY_SIZE(puddle->vertices));
-	if(SDL_RenderGeometry(renderer, NULL, puddle->vertices, ARRAY_SIZE(puddle->vertices), NULL, 0) == -1)
-		log_report(ERROR, "Water Puddle : unable to be rendered");
+	for(int i = 0; i < puddle->w; i++)
+		SDL_RenderGeometry(renderer, NULL, puddle->vertices[i * 3], 3, NULL, 0);
 }
 
 void destroyWaterPuddle(WaterPuddle* puddle)
 {
+	for(int i = 0; i < puddle->w; i++)
+	{
+		memFree(puddle->points[i]);
+		for(int j = 0; j < 6; j++)
+			memFree(puddle->vertices[(i * 6) + j]);
+	}
+
 	memFree(puddle->points);
 	memFree(puddle->vertices);
 }
