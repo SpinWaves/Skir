@@ -66,8 +66,8 @@ void update(Application *app)
         renderPlayer(&app->player);
         if(!app->house.isInside)
         {
-            renderMap(&app->map);
             renderWaterPuddle(&app->puddle, app->renderer);
+            renderMap(&app->map);
         }
         renderHouse2(&app->house);
     }
