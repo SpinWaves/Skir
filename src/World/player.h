@@ -14,14 +14,12 @@
 typedef struct
 {
     Sprite* idle_sprites[3];
+    Sprite* jump_sprites[3];
     Sprite* running_sprites[6];
     BoxCollider* hide_box;
     int animation_frame;
     bool stopMove;
 } Player;
-
-extern float mov_x;
-extern float mov_y;
 
 void initPlayer(Player* player, SDL_Renderer* renderer, int x, int y);
 void renderPlayer(Player* player);

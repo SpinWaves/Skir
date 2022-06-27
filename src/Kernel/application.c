@@ -44,7 +44,7 @@ bool initApplication(Application *app)
     initMainMenu(app->renderer, width, height);
     callMainMenu();
 
-    initWaterPuddle(&app->puddle, 150, 150, 620, 100);
+    initWaterPuddle(&app->puddle, 2228, 1625, 480, 120);
 
     app->run = true;
 
@@ -65,9 +65,11 @@ void update(Application *app)
         renderHouse(&app->house);
         renderPlayer(&app->player);
         if(!app->house.isInside)
+        {
             renderMap(&app->map);
+            renderWaterPuddle(&app->puddle, app->renderer);
+        }
         renderHouse2(&app->house);
-        renderWaterPuddle(&app->puddle, app->renderer);
     }
     else
         renderMainMenu();

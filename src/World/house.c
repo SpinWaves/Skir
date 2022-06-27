@@ -5,11 +5,13 @@
 // Author : kbz_8 (https://solo.to/kbz_8)
 
 #include "house.h"
-#include "player.h"
 #include <Kernel/kernel.h>
 #include <Utils/utils.h>
 #include <Maths/maths.h>
 #include <SDL2/SDL_image.h>
+
+extern float mov_x;
+extern float mov_y;
 
 void initHouse(House* house, SDL_Renderer* renderer, int x, int y)
 {

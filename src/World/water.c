@@ -7,18 +7,21 @@
 #include "water.h"
 #include <Kernel/kernel.h>
 #include <Utils/utils.h>
+#include <Maths/maths.h>
+
+extern float mov_x;
+extern float mov_y;
+
+#define RATIO 4
 
 struct __WaterPoint
 {
 	SDL_Point position;
 	float velocity;
+	float acceleration;
+	float leftDelta;
+	float rightDelta;
 };
-
-void updateWaterPoint(WaterPoint* point, float lastHeight, float newHeight)
-{
-	//point->position += point->velocity;
-	point->velocity += -0.025f * (lastHeight - newHeight);
-}
 
 void initWaterPuddle(WaterPuddle* puddle, int x, int y, int w, int h)
 {
@@ -30,88 +33,129 @@ void initWaterPuddle(WaterPuddle* puddle, int x, int y, int w, int h)
 	puddle->w = w;
 	puddle->h = h;
 
-	puddle->points = (WaterPoint**)memAlloc(sizeof(WaterPoint*) * puddle->w);
+	puddle->points = (WaterPoint*)memAlloc(sizeof(WaterPoint) * (puddle->w / RATIO));
 	if(puddle->points == NULL)
 		log_report(FATAL_ERROR, "Water Puddle : unable to alloc memory for points");
 
-	puddle->vertices = (SDL_Vertex*)memAlloc(sizeof(SDL_Vertex) * (puddle->w * 6));
+	puddle->vertices = (SDL_Vertex*)memAlloc(sizeof(SDL_Vertex) * ((puddle->w / RATIO) * 6));
 	if(puddle->vertices == NULL)
 		log_report(FATAL_ERROR, "Water Puddle : unable to alloc memory for vertices");
 
-/*
-Vector2 p1 = new Vector2((i - 1) * scale, springs[i - 1].Height);
-Vector2 p2 = new Vector2(i * scale, springs[i].Height);
-Vector2 p3 = new Vector2(p2.X, bottom);
-Vector2 p4 = new Vector2(p1.X, bottom);
-
-primitiveBatch.AddVertex(p1, lightBlue);
-primitiveBatch.AddVertex(p2, lightBlue);
-primitiveBatch.AddVertex(p3, midnightBlue);
-
-primitiveBatch.AddVertex(p1, lightBlue);
-primitiveBatch.AddVertex(p3, midnightBlue);
-primitiveBatch.AddVertex(p4, midnightBlue);
-*/
 	int v = 0;
-	for(int i = 0; i < puddle->w; i++)
+	for(int i = 0; i < puddle->w / RATIO; i++)
 	{
-		puddle->points[i] = memAlloc(sizeof(WaterPoint));
-		puddle->points[i]->position.x = x + i;
-		puddle->points[i]->position.y = y;
-		puddle->points[i]->velocity = 0.0f;
+		puddle->points[i].position.x = x + i * RATIO;
+		puddle->points[i].position.y = y;
+		puddle->points[i].velocity = 0.0f;
+		puddle->points[i].acceleration = 0.0f;
+		puddle->points[i].leftDelta = 0.0f;
+		puddle->points[i].rightDelta = 0.0f;
  
-		puddle->vertices[v].position.x = puddle->points[i]->position.x;
-		puddle->vertices[v].position.y = puddle->points[i]->position.y;
-		puddle->vertices[v].color.r = 94; puddle->vertices[v].color.g = 189; puddle->vertices[v].color.b = 247; puddle->vertices[v].color.a = 200;
+		puddle->vertices[v].position.x = puddle->points[i].position.x;
+		puddle->vertices[v].position.y = puddle->points[i].position.y;
+		puddle->vertices[v].color.r = 72; puddle->vertices[v].color.g = 165; puddle->vertices[v].color.b = 255; puddle->vertices[v].color.a = 225;
 		v++;
-		puddle->vertices[v].position.x = puddle->points[i]->position.x + 1;
-		puddle->vertices[v].position.y = puddle->points[i]->position.y;
-		puddle->vertices[v].color.r = 94; puddle->vertices[v].color.g = 189; puddle->vertices[v].color.b = 247; puddle->vertices[v].color.a = 200;
+		puddle->vertices[v].position.x = puddle->points[i].position.x + RATIO;
+		puddle->vertices[v].position.y = puddle->points[i].position.y;
+		puddle->vertices[v].color.r = 72; puddle->vertices[v].color.g = 165; puddle->vertices[v].color.b = 255; puddle->vertices[v].color.a = 225;
 		v++;
-		puddle->vertices[v].position.x = puddle->points[i]->position.x + 1;
-		puddle->vertices[v].position.y = puddle->points[i]->position.y + h;
-		puddle->vertices[v].color.r = 94; puddle->vertices[v].color.g = 189; puddle->vertices[v].color.b = 247; puddle->vertices[v].color.a = 200;
+		puddle->vertices[v].position.x = puddle->points[i].position.x + RATIO;
+		puddle->vertices[v].position.y = y + h;
+		puddle->vertices[v].color.r = 0; puddle->vertices[v].color.g = 100; puddle->vertices[v].color.b = 200; puddle->vertices[v].color.a = 225;
+		v++;
 
+		puddle->vertices[v].position.x = puddle->points[i].position.x;
+		puddle->vertices[v].position.y = puddle->points[i].position.y;
+		puddle->vertices[v].color.r = 72; puddle->vertices[v].color.g = 165; puddle->vertices[v].color.b = 255; puddle->vertices[v].color.a = 225;
 		v++;
-		puddle->vertices[v].position.x = puddle->points[i]->position.x;
-		puddle->vertices[v].position.y = puddle->points[i]->position.y;
-		puddle->vertices[v].color.r = 94; puddle->vertices[v].color.g = 189; puddle->vertices[v].color.b = 247; puddle->vertices[v].color.a = 200;
+		puddle->vertices[v].position.x = puddle->points[i].position.x + RATIO;
+		puddle->vertices[v].position.y = y + h;
+		puddle->vertices[v].color.r = 0; puddle->vertices[v].color.g = 100; puddle->vertices[v].color.b = 200; puddle->vertices[v].color.a = 225;
 		v++;
-		puddle->vertices[v].position.x = puddle->points[i]->position.x + 1;
-		puddle->vertices[v].position.y = puddle->points[i]->position.y + h;
-		puddle->vertices[v].color.r = 94; puddle->vertices[v].color.g = 189; puddle->vertices[v].color.b = 247; puddle->vertices[v].color.a = 200;
-		v++;
-		puddle->vertices[v].position.x = puddle->points[i]->position.x;
-		puddle->vertices[v].position.y = puddle->points[i]->position.y + h;
-		puddle->vertices[v].color.r = 94; puddle->vertices[v].color.g = 189; puddle->vertices[v].color.b = 247; puddle->vertices[v].color.a = 200;
+		puddle->vertices[v].position.x = puddle->points[i].position.x;
+		puddle->vertices[v].position.y = y + h;
+		puddle->vertices[v].color.r = 0; puddle->vertices[v].color.g = 100; puddle->vertices[v].color.b = 200; puddle->vertices[v].color.a = 225;
 		v++;
 	}
 }
 
+extern int width;
+extern int height;
+
+static float mov_y_save = 0.0f;
+
+const float springconstant = 0.02f;
+const float damping = 0.1f;
+const float spread = 0.4f;
+const float collisionVelocityFactor = 0.1f;
+
 void updateWaterPuddle(WaterPuddle* puddle)
 {
-	/*
-	for(int i = 0; i < puddle->w; i++)
+	for(int i = 0; i < puddle->w / RATIO; i++)
 	{
-		puddle->points[i]->position.x = puddle->x + i * puddle->w;
-		puddle->points[i]->position.y = puddle->y;
+		puddle->points[i].position.x = puddle->x + i * RATIO + mov_x;
+		puddle->points[i].position.y = puddle->y + mov_y;
 
-		puddle->vertices[i]->position.x = puddle->points[i]->position.x;
-		puddle->vertices[i]->position.y = puddle->points[i]->position.y;
+		if(fsqrt(pow(puddle->points[i].position.x + DIV_BY_2(RATIO) - DIV_BY_2(width), 2) + pow(puddle->points[i].position.y + DIV_BY_2(RATIO) - DIV_BY_2(height), 2)) < RATIO)
+			puddle->points[i].velocity = (mov_y - mov_y_save) * collisionVelocityFactor;
 	}
-	*/
+
+	for(int i = 0; i < puddle->w / RATIO; i++)
+	{
+		float force = springconstant * (puddle->points[i].position.y - puddle->y) + puddle->points[i].velocity * damping;
+		puddle->points[i].acceleration = -force;
+		puddle->points[i].position.y += puddle->points[i].velocity;
+		puddle->points[i].velocity += puddle->points[i].acceleration;
+	}
+
+	for(int i = 0; i < puddle->w / RATIO; i++)
+	{
+		if(i > 0)
+		{
+			puddle->points[i].leftDelta = spread * (puddle->points[i].position.y - puddle->points[i - 1].position.y);
+			puddle->points[i - 1].velocity += puddle->points[i].leftDelta;
+		}
+		if(i < puddle->w / RATIO - 1)
+		{
+			puddle->points[i].rightDelta = spread * (puddle->points[i].position.y - puddle->points[i + 1].position.y);
+			puddle->points[i + 1].velocity += puddle->points[i].rightDelta;
+		}
+	}
+
+	int v = 0;
+	for(int i = 0; i < puddle->w / RATIO; i++)
+	{
+		puddle->vertices[v].position.x = puddle->points[i].position.x;
+		puddle->vertices[v].position.y = puddle->points[i].position.y;
+		v++;
+		puddle->vertices[v].position.x = puddle->points[i].position.x + RATIO;
+		puddle->vertices[v].position.y = puddle->points[i].position.y;
+		v++;
+		puddle->vertices[v].position.x = puddle->points[i].position.x + RATIO;
+		puddle->vertices[v].position.y = puddle->y + puddle->h + mov_y;
+		v++;
+
+		puddle->vertices[v].position.x = puddle->points[i].position.x;
+		puddle->vertices[v].position.y = puddle->points[i].position.y;
+		v++;
+		puddle->vertices[v].position.x = puddle->points[i].position.x + RATIO;
+		puddle->vertices[v].position.y = puddle->y + puddle->h + mov_y;
+		v++;
+		puddle->vertices[v].position.x = puddle->points[i].position.x;
+		puddle->vertices[v].position.y = puddle->y + puddle->h + mov_y;
+		v++;
+	}
+
+	mov_y_save = mov_y;
 }
 
 void renderWaterPuddle(WaterPuddle* puddle, SDL_Renderer* renderer)
 {
-	SDL_RenderGeometry(renderer, NULL, puddle->vertices, puddle->w * 6, NULL, 0);
+	SDL_RenderGeometry(renderer, NULL, puddle->vertices, (puddle->w / RATIO) * 6, NULL, 0);
 }
 
 void destroyWaterPuddle(WaterPuddle* puddle)
 {
-	for(int i = 0; i < puddle->w; i++)
-		memFree(puddle->points[i]);
-
 	memFree(puddle->points);
 	memFree(puddle->vertices);
 }

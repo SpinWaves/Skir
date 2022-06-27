@@ -57,16 +57,35 @@ void initPlayer(Player* player, SDL_Renderer* renderer, int x, int y)
         player->running_sprites[i] = createSprite(renderer, texture, x - w, y - h, w * 2, h * 2);
     }
 
+    const char* player_jump_textures[3] = {
+        MAIN_DIR"ressources/Assets/player/player_jump_0.png",
+        MAIN_DIR"ressources/Assets/player/player_jump_1.png",
+        MAIN_DIR"ressources/Assets/player/player_jump_2.png"
+    };
+
+    for(int i = 0; i < ARRAY_SIZE(player->jump_sprites); i++)
+    {
+        texture = IMG_LoadTexture(renderer, player_jump_textures[i]);
+        if(texture == NULL)
+            log_report(FATAL_ERROR, "Player : unable to create texture : %s", player_jump_textures[i]);
+        SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+        player->jump_sprites[i] = createSprite(renderer, texture, x - w, y - h, w * 2, h * 2);
+    }
+
     player->hide_box = newBoxCollider(player->idle_sprites[0]->coords->x + 7, player->idle_sprites[0]->coords->y, player->idle_sprites[0]->coords->w - 7, player->idle_sprites[0]->coords->h - 12, true);
     pm_addCollider(player->hide_box);
     player->stopMove = false;
 }
 
 static bool is_running = false;
+static char jump_number = 0;
+static bool fall = false;
 
 void renderPlayer(Player* player)
 {
-    if(is_running)
+    if(jump_number != 0)
+        renderRotateSprite(player->jump_sprites[(int)((player->animation_frame > 200 ? 200 : player->animation_frame) / 100)]);
+    else if(is_running)
         renderRotateSprite(player->running_sprites[(int)(player->animation_frame / 100)]);
     else
         renderRotateSprite(player->idle_sprites[(int)((player->animation_frame > 300 ? 300 : player->animation_frame) / 100)]);
@@ -74,14 +93,12 @@ void renderPlayer(Player* player)
 
 static float gravity = 0.0f;
 static bool noclip = false;
-static char jump_number = 0;
 static bool jump_button_release = false;
 static float speed = 0;
 
 #define MAX_SPEED 7
 
 extern int fading;
-static bool fall = false;
 
 void updatePlayer(Player* player, Inputs* inputs)
 {
@@ -108,9 +125,13 @@ void updatePlayer(Player* player, Inputs* inputs)
     }
 
     if(player->hide_box->bottom_collision)
+    {
+        if(jump_number != 0)
+            player->animation_frame = 0;
         jump_number = 0;
+    }
 
-    if(player->hide_box->top_collision)
+    if(player->hide_box->top_collision && !noclip)
         gravity = 0.2f;
 
     if(getKey(inputs, SDL_SCANCODE_N, UP) && !player->stopMove)
@@ -133,7 +154,13 @@ void updatePlayer(Player* player, Inputs* inputs)
     if((getKey(inputs, SDL_SCANCODE_LSHIFT, DOWN) || getKey(inputs, SDL_SCANCODE_RSHIFT, DOWN)) && noclip && !player->stopMove)
         gravity = 7;
 
-    if(is_running)
+    if(jump_number != 0)
+    {
+        player->animation_frame += 7;
+        if(player->animation_frame >= 200)
+            player->animation_frame = 200;
+    }
+    else if(is_running)
     {
         player->animation_frame += 15;
         if(player->animation_frame >= 600)
@@ -186,6 +213,11 @@ void updatePlayer(Player* player, Inputs* inputs)
             for(int i = 0; i < ARRAY_SIZE(player->idle_sprites); i++)
                 player->idle_sprites[i]->flip_horizontal = false;
         }
+        if(player->jump_sprites[0]->flip_horizontal == true)
+        {
+            for(int i = 0; i < ARRAY_SIZE(player->jump_sprites); i++)
+                player->jump_sprites[i]->flip_horizontal = false;
+        }
 
         if(speed < MAX_SPEED)
             speed += 1.0f;
@@ -217,6 +249,11 @@ void updatePlayer(Player* player, Inputs* inputs)
             for(int i = 0; i < ARRAY_SIZE(player->idle_sprites); i++)
                 player->idle_sprites[i]->flip_horizontal = true;
         }
+        if(player->jump_sprites[0]->flip_horizontal == false)
+        {
+            for(int i = 0; i < ARRAY_SIZE(player->jump_sprites); i++)
+                player->jump_sprites[i]->flip_horizontal = true;
+        }
 
         if(speed < MAX_SPEED)
             speed += 1.0f;
@@ -247,6 +284,9 @@ void shutdownPlayer(Player* player)
     freeBoxCollider(player->hide_box);
     for(int i = 0; i < ARRAY_SIZE(player->idle_sprites); i++)
         destroySprite(player->idle_sprites[i]);
+
+    for(int i = 0; i < ARRAY_SIZE(player->jump_sprites); i++)
+        destroySprite(player->jump_sprites[i]);
 
     for(int i = 0; i < ARRAY_SIZE(player->running_sprites); i++)
         destroySprite(player->running_sprites[i]);
