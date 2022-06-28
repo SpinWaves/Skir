@@ -12,7 +12,7 @@
 extern float mov_x;
 extern float mov_y;
 
-#define RATIO 4
+#define RATIO 5
 
 struct __WaterPoint
 {
@@ -82,35 +82,31 @@ extern int height;
 
 static float mov_y_save = 0.0f;
 
-const float springconstant = 0.02f;
-const float damping = 0.1f;
+const float springconstant = 0.1f;
+const float damping = 0.2f;
 const float spread = 0.2f;
-const float collisionVelocityFactor = 1.4f;
+const float collisionVelocityFactor = 5.0f;
 
 static double frame = 0.0;
 
 void updateWaterPuddle(WaterPuddle* puddle)
 {
-	if(frame > 10000.0)
+	if(frame > 1000.0)
 		frame = 0.0;
 
 	for(int i = 0; i < puddle->w / RATIO; i++)
 	{
 		puddle->points[i].position.x = puddle->x + i * RATIO + mov_x;
-		puddle->points[i].position.y = puddle->y + mov_y + puddle->points[i].velocity;
+		puddle->points[i].position.y = puddle->y + mov_y + puddle->points[i].velocity + 4 * (sin(2 * frame + i * 2));
+		frame += 0.00025;
 
-		if(fsqrt(pow(puddle->points[i].position.x + DIV_BY_2(RATIO) - DIV_BY_2(width), 2) + pow(puddle->points[i].position.y + DIV_BY_2(RATIO) - DIV_BY_2(height), 2)) < RATIO)
-			puddle->points[i].velocity = (mov_y - mov_y_save) * collisionVelocityFactor;
-		else
-			puddle->points[i].velocity *= 0.1f;
+		if(fsqrt(pow(puddle->points[i].position.x + DIV_BY_2(RATIO) - DIV_BY_2(width), 2) + pow(puddle->points[i].position.y + DIV_BY_2(RATIO) - DIV_BY_2(height), 2)) < RATIO * 4)
+			puddle->points[i].velocity = (mov_y_save - mov_y) * collisionVelocityFactor;
 
-		frame += 0.05;
 
-		puddle->points[i].position.y += puddle->points[i].velocity;
 		puddle->points[i].velocity += -(springconstant * (puddle->points[i].position.y - (puddle->y + mov_y)) + puddle->points[i].velocity * damping);
 	}
 
-	int v = 0;
 	for(int i = 0; i < puddle->w / RATIO; i++)
 	{
 		if(i > 0)
@@ -123,7 +119,11 @@ void updateWaterPuddle(WaterPuddle* puddle)
 			puddle->points[i].rightDelta = spread * (puddle->points[i].position.y - puddle->points[i + 1].position.y);
 			puddle->points[i + 1].velocity += puddle->points[i].rightDelta;
 		}
+	}
 
+	int v = 0;
+	for(int i = 0; i < puddle->w / RATIO; i++)
+	{
 		puddle->vertices[v].position.x = puddle->points[i].position.x;
 		puddle->vertices[v].position.y = puddle->points[i].position.y;
 		v++;
