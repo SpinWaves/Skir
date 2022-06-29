@@ -1,5 +1,5 @@
 // Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
-// This file is a part of "Keep Running"
+// This file is a part of "Skir"
 // For conditions of distribution and use, see the LICENSE
 //
 // Author : kbz_8 (https://solo.to/kbz_8)
@@ -22,8 +22,8 @@ typedef struct
 } TextManager;
 
 void initTextManager(TextManager* manager, SDL_Renderer* renderer);
-void newText(TextManager* manager, const char* text, int x, int y);
-void newText_complete(TextManager* manager, const char* text, int x, int y, int w, int h, SDL_Color* color);
+void newText(TextManager* manager, const char* text, int x, int y, alignment align);
+void newText_complete(TextManager* manager, const char* text, int x, int y, int w, int h, SDL_Color* color, alignment align);
 void updateText_TM(TextManager* manager, const char* text_before, const char* text_update);
 Text* getText(TextManager* manager, const char* text);
 void passText(TextManager* manager, Text* text);

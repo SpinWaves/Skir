@@ -1,5 +1,5 @@
 // Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
-// This file is a part of "Keep Running"
+// This file is a part of "Skir"
 // For conditions of distribution and use, see the LICENSE
 //
 // Author : kbz_8 (https://solo.to/kbz_8)
@@ -14,11 +14,12 @@ void initTextManager(TextManager* manager, SDL_Renderer* renderer)
     manager->renderer = renderer;
     manager->head = NULL;
 }
-void newText(TextManager* manager, const char* text, int x, int y)
+
+void newText(TextManager* manager, const char* text, int x, int y, alignment align)
 {
     text_link* t = (text_link*)memAlloc(sizeof(text_link));
     SDL_Color white = { 255, 255, 255 };
-    initText(&t->text, manager->renderer, text, &white, default_font);
+    initText(&t->text, manager->renderer, text, &white, default_font, align);
     int texW = 0;
     int texH = 0;
     SDL_QueryTexture(t->text.texts->texture, NULL, NULL, &texW, &texH);
@@ -26,14 +27,16 @@ void newText(TextManager* manager, const char* text, int x, int y)
     t->next = manager->head;
     manager->head = t;
 }
-void newText_complete(TextManager* manager, const char* text, int x, int y, int w, int h, SDL_Color* color)
+
+void newText_complete(TextManager* manager, const char* text, int x, int y, int w, int h, SDL_Color* color, alignment align)
 {
     text_link* t = (text_link*)memAlloc(sizeof(text_link));
-    initText(&t->text, manager->renderer, text, color, default_font);
+    initText(&t->text, manager->renderer, text, color, default_font, align);
     scaleText(&t->text, x, y, w, h);
     t->next = manager->head;
     manager->head = t;
 }
+
 void passText(TextManager* manager, Text* text)
 {
     text_link* t = (text_link*)memAlloc(sizeof(text_link));
@@ -41,23 +44,25 @@ void passText(TextManager* manager, Text* text)
     t->next = manager->head;
     manager->head = t;
 }
+
 void updateText_TM(TextManager* manager, const char* text_before, const char* text_update)
 {
     updateText(getText(manager, text_before), manager->renderer, text_update);
 }
+
 Text* getText(TextManager* manager, const char* text)
 {
     text_link* buffer = manager->head;
     while(buffer != NULL)
     {
-        printf("%s, %s\n", buffer->text.text, text);
-        if(strcmp(buffer->text.text, text) == 0)
+        if(strncmp(buffer->text.text, text, strlen(text)) == 0)
             return &buffer->text;
         buffer = buffer->next;
     }
     log_report(ERROR, "Text Manager: Couldn't find the text : %s", text);
     return NULL;
 }
+
 void renderTextManager(TextManager* manager)
 {
     text_link* buffer = manager->head;
@@ -67,6 +72,7 @@ void renderTextManager(TextManager* manager)
         buffer = buffer->next;
     }
 }
+
 void shutdownTextManager(TextManager* manager)
 {
     text_link* buffer1 = manager->head;

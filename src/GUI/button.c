@@ -1,5 +1,5 @@
 // Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
-// This file is a part of "Keep Running"
+// This file is a part of "Skir"
 // For conditions of distribution and use, see the LICENSE
 //
 // Author : kbz_8 (https://solo.to/kbz_8)
@@ -30,7 +30,7 @@ Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int
 
     SDL_Color white = { 255, 255, 255, 255 };
     button->text = memAlloc(sizeof(Text));
-    initText(button->text, button->renderer, text, &white, default_font);
+    initText(button->text, button->renderer, text, &white, default_font, LEFT);
 
     int rect_text_x = button->coords->x + (button->coords->w - button->text->texts->rect.w)/2;
     int rect_text_y = button->coords->y + (button->coords->h - button->text->texts->rect.h)/2 + 1;

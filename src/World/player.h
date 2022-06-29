@@ -1,5 +1,5 @@
 // Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
-// This file is a part of "Keep Running"
+// This file is a part of "Skir"
 // For conditions of distribution and use, see the LICENSE
 //
 // Author : kbz_8 (https://solo.to/kbz_8)
@@ -23,7 +23,7 @@ typedef struct
 
 void initPlayer(Player* player, SDL_Renderer* renderer, int x, int y);
 void renderPlayer(Player* player);
-void updatePlayer(Player* player, Inputs* inputs);
+void updatePlayer(Player* player, Inputs* inputs, bool isInsideHouse);
 void shutdownPlayer(Player* player);
 
 #endif // __PLAYER__

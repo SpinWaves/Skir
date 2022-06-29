@@ -1,5 +1,5 @@
 // Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
-// This file is a part of "Keep Running"
+// This file is a part of "Skir"
 // For conditions of distribution and use, see the LICENSE
 //
 // Author : kbz_8 (https://solo.to/kbz_8)
@@ -28,12 +28,14 @@ void initHouse(House* house, SDL_Renderer* renderer, int x, int y)
 		log_report(FATAL_ERROR, "House : unable to create texture : "MAIN_DIR"ressources/Assets/world/house_interior_1.png");
 	SDL_QueryTexture(texture, NULL, NULL, &w, &h);
 	house->indoor[0] = createSprite(renderer, texture, x, y, w * HOUSE_SCALE, h * HOUSE_SCALE);
+	house->indoor[0]->day_night_cycle = false;
 
 	texture = IMG_LoadTexture(renderer, MAIN_DIR"ressources/Assets/world/house_interior_2.png");
 	if(texture == NULL)
 		log_report(FATAL_ERROR, "House : unable to create texture : "MAIN_DIR"ressources/Assets/world/house_interior_2.png");
 	SDL_QueryTexture(texture, NULL, NULL, &w, &h);
 	house->indoor[1] = createSprite(renderer, texture, x, y, w * HOUSE_SCALE, h * HOUSE_SCALE);
+	house->indoor[1]->day_night_cycle = false;
 
 	texture = IMG_LoadTexture(renderer, MAIN_DIR"ressources/Assets/world/house_door.png");
 	if(texture == NULL)
@@ -41,6 +43,7 @@ void initHouse(House* house, SDL_Renderer* renderer, int x, int y)
 	SDL_QueryTexture(texture, NULL, NULL, &w, &h);
 	SDL_SetTextureAlphaMod(texture, 128);
 	house->indoor[2] = createSprite(renderer, texture, x, y, w * HOUSE_SCALE, h * HOUSE_SCALE);
+	house->indoor[2]->day_night_cycle = false;
 
 	house->door_trigger = newBoxCollider(0, 0, 17 * HOUSE_SCALE, 28 * HOUSE_SCALE, false);
 	house->bed_trigger = newBoxCollider(0, 0, 30 * HOUSE_SCALE, 8 * HOUSE_SCALE, false);
@@ -67,6 +70,7 @@ void renderHouse2(House* house)
 
 extern int fading;
 extern ColorRGB clearColor;
+extern float hours;
 
 void updateHouse(House* house, Inputs* inputs)
 {
@@ -89,7 +93,13 @@ void updateHouse(House* house, Inputs* inputs)
 		pm_checkCollisionsColliderWithID(house->bed_trigger, 0); // check collisions between the bed and the player
 
 		if((fading < 255 || getKey(inputs, SDL_SCANCODE_E, DOWN)) && (house->bed_trigger->left_collision || house->bed_trigger->right_collision || house->bed_trigger->top_collision || house->bed_trigger->bottom_collision))
-			fading = fading < -255 ? 255 : fading - 5;
+		{
+			if(hours < 8.0f)
+			{
+				fading = fading < -255 ? 255 : fading - 5;
+				hours = 8.0f;
+			}
+		}
 	}
 
 	house->door_trigger->x = mov_x + 1000 + 93 * HOUSE_SCALE;

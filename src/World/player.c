@@ -1,5 +1,5 @@
 // Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
-// This file is a part of "Keep Running"
+// This file is a part of "Skir"
 // For conditions of distribution and use, see the LICENSE
 //
 // Author : kbz_8 (https://solo.to/kbz_8)
@@ -100,8 +100,18 @@ static float speed = 0;
 
 extern int fading;
 
-void updatePlayer(Player* player, Inputs* inputs)
+void updatePlayer(Player* player, Inputs* inputs, bool isInsideHouse)
 {
+    for(int i = 0; i < max_va(3, ARRAY_SIZE(player->idle_sprites), ARRAY_SIZE(player->running_sprites), ARRAY_SIZE(player->jump_sprites)); i++)
+    {
+        if(i < ARRAY_SIZE(player->idle_sprites))
+            player->idle_sprites[i]->day_night_cycle = !isInsideHouse;
+        if(i < ARRAY_SIZE(player->running_sprites))
+            player->running_sprites[i]->day_night_cycle = !isInsideHouse;
+        if(i < ARRAY_SIZE(player->jump_sprites))
+            player->jump_sprites[i]->day_night_cycle = !isInsideHouse;
+    }
+
     if(!player->hide_box->bottom_collision && !noclip)
     {
         gravity += 0.2f;

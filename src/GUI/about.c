@@ -1,5 +1,5 @@
 // Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
-// This file is a part of "Keep Running"
+// This file is a part of "Skir"
 // For conditions of distribution and use, see the LICENSE
 //
 // Author : kbz_8 (https://solo.to/kbz_8)
@@ -24,33 +24,39 @@ void initAboutPage(SDL_Renderer* renderer, int width, int height)
     __about_page->is_called = false;
     __about_page->renderer = renderer;
     __about_page->text = memAlloc(sizeof(Text));
-    SDL_Color white = { 255, 255, 255};
-    initText(__about_page->text, renderer, get_config_value("about_text"), &white, default_font);
+    SDL_Color white = { 255, 255, 255 };
+    initText(__about_page->text, renderer, get_config_value("about_text"), &white, default_font, CENTER);
     setPosText(__about_page->text, 20, 300);
     __about_page->back = createButton(renderer, get_config_value("back"), width / 4, height / 8, width / 2, height / 10, 75, 75, 75);
     setFunctionCall(__about_page->back, hangUpAboutPage);
 }
+
 inline void callAboutPage()
 {
     __about_page->is_called = true;
 }
+
 inline void hangUpAboutPage()
 {
     __about_page->is_called = false;
 }
+
 inline bool isAboutPageCalled()
 {
     return __about_page->is_called;
 }
+
 void updateAboutPage(Inputs *in)
 {
     updateButton(__about_page->back, in);
 }
+
 void renderAboutPage()
 {
     renderText(__about_page->text, __about_page->renderer);
     renderButton(__about_page->back);
 }
+
 void shutdownAboutPage()
 {
     shutdownAboutPage();

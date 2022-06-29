@@ -1,5 +1,5 @@
 // Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
-// This file is a part of "Keep Running"
+// This file is a part of "Skir"
 // For conditions of distribution and use, see the LICENSE
 //
 // Author : kbz_8 (https://solo.to/kbz_8)
@@ -9,7 +9,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include <Utils/c_output.h>
+#include <Maths/maths.h>
+
+#include <Utils/utils.h>
 
 int width = 1480;
 int height = 720;
@@ -23,7 +25,7 @@ bool initApplication(Application *app)
         return false;
     }
 
-    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED/* | SDL_RENDERER_PRESENTVSYNC*/);
     if(app->renderer == NULL)
     {
         log_report(ERROR, "Something went wrong with the creation of the renderer");
@@ -35,7 +37,7 @@ bool initApplication(Application *app)
     initTextManager(&app->text_manager, app->renderer);
     initInput(&app->inputs);
     initFPS(&app->fps);
-    newText(&app->text_manager, "FPS: 0", 10, 10);
+    newText(&app->text_manager, "FPS: 0", 10, 10, LEFT);
 
     initPlayer(&app->player, app->renderer, width / 2, height / 2);
     initMap(&app->map, app->renderer);
@@ -57,7 +59,12 @@ static bool drawHideBoxes = false;
 
 int fading = 255;
 
-void update(Application *app)
+float day_light = 0.0f;
+float hours = 10.0f;
+
+extern ColorRGB clearColor;
+
+void update(Application* app)
 {
     updateFPS(&app->fps);
     if(!isMainMenuCalled())
@@ -100,13 +107,24 @@ void update(Application *app)
         if(!isMainMenuCalled())
         {
             pm_checkCollisions(app->renderer, drawHideBoxes);
-            updatePlayer(&app->player, &app->inputs);
+            updatePlayer(&app->player, &app->inputs, app->house.isInside);
             updateHouse(&app->house, &app->inputs);
             updateMap(&app->map, app->house.isInside);
             updateWaterPuddle(&app->puddle);
+
+            hours = hours >= 24.0 ? 0.0f : hours + 0.0025;
+            day_light = hours < 12.0f ? 12 * sin(0.25 * hours - 7.85) : -pow(hours, 0.048 * hours) + 0.8 * hours + 6.5;
+
+            if(!app->house.isInside)
+            {
+                clearColor.r = 21 + (day_light < -2.1f ? -2.1f : day_light) * 10;
+                clearColor.g = 66 + (day_light < -6.6f ? -6.6f : day_light) * 10;
+                clearColor.b = 134 + (day_light < -13.4f ? -13.4f : day_light) * 10;
+            }
         }
         else
             updateMainMenu(&app->inputs);
+        
         sprintf(newFPS, "FPS: %d", app->fps.out_fps);
         if(strcmp(oldFPS, newFPS) != 0)
         {

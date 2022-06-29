@@ -1,11 +1,13 @@
 // Copyright (C) 2021 - 2022 SpinWaves (https://github.com/SpinWaves)
-// This file is a part of "Keep Running"
+// This file is a part of "Skir"
 // For conditions of distribution and use, see the LICENSE
 //
 // Author : kbz_8 (https://solo.to/kbz_8)
 
 #include <Kernel/sprite.h>
 #include <Kernel/Memory/memory.h>
+
+extern float day_light;
 
 Sprite* createSprite(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y, int w, int h)
 {
@@ -29,6 +31,8 @@ Sprite* createSprite(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y,
     sprite->flip_horizontal = false;
     sprite->flip_vertical = false;
 
+    sprite->day_night_cycle = true;
+
     return sprite;
 }
 
@@ -42,6 +46,10 @@ void setCoords(Sprite *sprite, int x, int y, int w, int h)
 
 void renderSprite(Sprite* sprite)
 {
+    if(sprite->day_night_cycle)
+        SDL_SetTextureColorMod(sprite->texture, 128 + (day_light < -8.8 ? -88 : day_light * 10), 128 + (day_light < -8.8 ? -88 : day_light * 10), 255);
+    else
+        SDL_SetTextureColorMod(sprite->texture, 255, 255, 255);
     SDL_RenderCopy(sprite->renderer, sprite->texture, NULL, sprite->coords);
 }
 
@@ -53,6 +61,10 @@ void renderRotateSprite(Sprite* sprite)
     if(sprite->flip_vertical)
         flip = flip == SDL_FLIP_NONE ? SDL_FLIP_VERTICAL : SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL;
 
+    if(sprite->day_night_cycle)
+        SDL_SetTextureColorMod(sprite->texture, 128 + (day_light < -8.8 ? -88 : day_light * 10), 128 + (day_light < -8.8 ? -88 : day_light * 10), 255);
+    else
+        SDL_SetTextureColorMod(sprite->texture, 255, 255, 255);
     SDL_RenderCopyEx(sprite->renderer, sprite->texture, NULL, sprite->coords, sprite->angle, sprite->rotation_point, flip);
 }
 
