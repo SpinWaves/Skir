@@ -9,6 +9,7 @@
 #include <Utils/utils.h>
 #include <Maths/maths.h>
 #include <SDL2/SDL_image.h>
+#include <IO/system_files.h>
 
 extern float mov_x;
 extern float mov_y;
@@ -59,12 +60,17 @@ void renderHouse(House* house)
 		renderSprite(house->indoor[0]);
 }
 
+Text* text = NULL;
+static int text_countdown = 0;
+
 void renderHouse2(House* house)
 {
 	if(house->isInside)
 	{
 		renderSprite(house->indoor[1]);
 		renderSprite(house->indoor[2]);
+		if(text_countdown > 0 && text != NULL)
+			renderText(text, house->indoor[0]->renderer);
 	}
 }
 
@@ -99,7 +105,25 @@ void updateHouse(House* house, Inputs* inputs)
 				fading = fading < -255 ? 255 : fading - 5;
 				hours = 8.0f;
 			}
+			else
+			{
+				if(text == NULL)
+				{
+					SDL_Color white = { 255, 255, 255 };
+					text = memAlloc(sizeof(Text));
+					initText(text, house->indoor[0]->renderer, get_config_value("day_sleep"), &white, default_font, LEFT);
+				}
+				text_countdown = 1;
+			}
 		}
+	}
+
+	if(text_countdown > 0)
+	{
+		text_countdown++;
+		setPosText(text, mov_x + 1050, mov_y + 825);
+		if(text_countdown > 200)
+			text_countdown = 0;
 	}
 
 	house->door_trigger->x = mov_x + 1000 + 93 * HOUSE_SCALE;
@@ -137,4 +161,9 @@ void destroyHouse(House* house)
 	for(int i = 0; i < ARRAY_SIZE(house->indoor); i++)
 		destroySprite(house->indoor[i]);
 	memFree(house);
+	if(text != NULL)
+	{
+		deleteText(text);
+		memFree(text);
+	}
 }

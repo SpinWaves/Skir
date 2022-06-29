@@ -107,7 +107,6 @@ void scaleText(Text* t, int x, int y, int w, int h)
     t->x = x;
     t->y = y;
     lines_texture* buffer = t->texts;
-    lines_texture* prev_buffer = NULL;
     while(buffer != NULL)
     {
         switch(t->align)
@@ -115,14 +114,14 @@ void scaleText(Text* t, int x, int y, int w, int h)
             case LEFT: buffer->rect.x = x; break;
             case CENTER:
                 if(buffer != t->texts)
-                    buffer->rect.x = x + (prev_buffer->rect.w - buffer->rect.w) / 2;
+                    buffer->rect.x = x + (t->texts->rect.w - buffer->rect.w) / 2;
                 else
                     buffer->rect.x = x;
                 puts("test");
             break;
             case RIGHT:
                 if(buffer != t->texts)
-                    buffer->rect.x = x + prev_buffer->rect.w - buffer->rect.w;
+                    buffer->rect.x = x + (t->texts->rect.w - buffer->rect.w);
                 else
                     buffer->rect.x = x;
             break;
@@ -132,7 +131,6 @@ void scaleText(Text* t, int x, int y, int w, int h)
         buffer->rect.w = w;
         buffer->rect.h = h;
         __lines_jump++;
-        prev_buffer = buffer;
         buffer = buffer->next;
     }
     __lines_jump = 0;
@@ -145,7 +143,22 @@ void setPosText(Text* t, int x, int y)
     lines_texture* buffer = t->texts;
     while(buffer != NULL)
     {
-        buffer->rect.x = x;
+        switch(t->align)
+        {
+            case LEFT: buffer->rect.x = x; break;
+            case CENTER:
+                if(buffer != t->texts)
+                    buffer->rect.x = x + (t->texts->rect.w - buffer->rect.w) / 2;
+                else
+                    buffer->rect.x = x;
+            break;
+            case RIGHT:
+                if(buffer != t->texts)
+                    buffer->rect.x = x + (t->texts->rect.w - buffer->rect.w);
+                else
+                    buffer->rect.x = x;
+            break;
+        }
         buffer->rect.y = y + TTF_FontLineSkip(t->font) * __lines_jump;
         __lines_jump++;
         buffer = buffer->next;

@@ -25,8 +25,14 @@ void initAboutPage(SDL_Renderer* renderer, int width, int height)
     __about_page->renderer = renderer;
     __about_page->text = memAlloc(sizeof(Text));
     SDL_Color white = { 255, 255, 255 };
-    initText(__about_page->text, renderer, get_config_value("about_text"), &white, default_font, CENTER);
-    setPosText(__about_page->text, 20, 300);
+
+    TTF_Font* font = TTF_OpenFont(MAIN_DIR"ressources/fonts/OpenSans-Regular.ttf", 20);
+    if(font == NULL)
+        log_report(FATAL_ERROR, "About page: cannot open font");
+
+    initText(__about_page->text, renderer, get_config_value("about_text"), &white, font, CENTER);
+    setPosText(__about_page->text, (width / 2) - (__about_page->text->texts->rect.w / 2), 300);
+
     __about_page->back = createButton(renderer, get_config_value("back"), width / 4, height / 8, width / 2, height / 10, 75, 75, 75);
     setFunctionCall(__about_page->back, hangUpAboutPage);
 }
