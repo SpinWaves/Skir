@@ -16,9 +16,11 @@
 int width = 1480;
 int height = 720;
 
+bool print_fps = false;
+
 bool initApplication(Application *app)
 {
-    app->window = SDL_CreateWindow("Skir", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
+    app->window = SDL_CreateWindow("Skir", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_ALLOW_HIGHDPI);
     if(app->window == NULL)
     {
         log_report(ERROR, "Something went wrong with the creation of the window");
@@ -125,7 +127,11 @@ void update(Application* app)
         else
             updateMainMenu(&app->inputs);
         
-        sprintf(newFPS, "FPS: %d", app->fps.out_fps);
+        if(print_fps)
+            sprintf(newFPS, "FPS: %d", app->fps.out_fps);
+        else
+            sprintf(newFPS, " ");
+
         if(strcmp(oldFPS, newFPS) != 0)
         {
             updateText_TM(&app->text_manager, oldFPS, newFPS);

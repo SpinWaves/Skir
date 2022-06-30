@@ -16,6 +16,7 @@ void initConfigInfoManager()
 {
     __config_manager = NULL;
 }
+
 config_infos* exists(const char* key)
 {
     config_infos* buffer = __config_manager;
@@ -30,6 +31,7 @@ config_infos* exists(const char* key)
     }
     return NULL;
 }
+
 void openConfigFile(const char* path)
 {
     FILE* fp = fopen(path, "r");
@@ -96,13 +98,13 @@ void openConfigFile(const char* path)
     }
     fclose(fp);
 }
+
 const char* get_config_value(const char* key)
 {
     config_infos* buffer = exists(key);
-    if(buffer != NULL)
-        return buffer->val;
-    return NULL;
+    return buffer != NULL ? buffer->val : "error";
 }
+
 void shutdownConfigInfoManager()
 {
     config_infos* buffer = __config_manager;

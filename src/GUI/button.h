@@ -12,6 +12,7 @@
 #include <stdbool.h>
 
 #include <Kernel/text.h>
+#include <Kernel/sprite.h>
 #include <IO/inputs.h>
 
 typedef struct
@@ -23,9 +24,12 @@ typedef struct
     SDL_Color* color;
     Text* text;
     SDL_Renderer* renderer;
+    Sprite* sprite;
+    TTF_Font* font;
 } Button;
 
-Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, int r, int g, int b);
+Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, int r, int g, int b, int font_size);
+Button* createButtonTextured(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, Sprite* sprite, int font_size);
 void setFunctionCall(Button* button, void (*f)());
 bool isDown(Button* button);
 void renderButton(Button* button);

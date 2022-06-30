@@ -48,8 +48,6 @@ void renderSprite(Sprite* sprite)
 {
     if(sprite->day_night_cycle)
         SDL_SetTextureColorMod(sprite->texture, 128 + (day_light < -8.8 ? -88 : day_light * 10), 128 + (day_light < -8.8 ? -88 : day_light * 10), 255);
-    else
-        SDL_SetTextureColorMod(sprite->texture, 255, 255, 255);
     SDL_RenderCopy(sprite->renderer, sprite->texture, NULL, sprite->coords);
 }
 
@@ -63,8 +61,6 @@ void renderRotateSprite(Sprite* sprite)
 
     if(sprite->day_night_cycle)
         SDL_SetTextureColorMod(sprite->texture, 128 + (day_light < -8.8 ? -88 : day_light * 10), 128 + (day_light < -8.8 ? -88 : day_light * 10), 255);
-    else
-        SDL_SetTextureColorMod(sprite->texture, 255, 255, 255);
     SDL_RenderCopyEx(sprite->renderer, sprite->texture, NULL, sprite->coords, sprite->angle, sprite->rotation_point, flip);
 }
 

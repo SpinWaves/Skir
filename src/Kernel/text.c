@@ -117,7 +117,6 @@ void scaleText(Text* t, int x, int y, int w, int h)
                     buffer->rect.x = x + (t->texts->rect.w - buffer->rect.w) / 2;
                 else
                     buffer->rect.x = x;
-                puts("test");
             break;
             case RIGHT:
                 if(buffer != t->texts)

@@ -18,6 +18,8 @@
 
 ColorRGB clearColor = { 141, 186, 255 };
 
+Application app;
+
 int main(int argc, char** argv)
 {
     srand(time(NULL));
@@ -30,13 +32,12 @@ int main(int argc, char** argv)
     initPhysicsManager();
     initConfigInfoManager();
 
-    default_font = TTF_OpenFont(MAIN_DIR"ressources/fonts/OpenSans-Regular.ttf", 15);
+    default_font = TTF_OpenFont(MAIN_DIR"ressources/fonts/retro_gaming.ttf", 15);
     if(default_font == NULL)
         log_report(FATAL_ERROR, "Text Manager: cannot open default font");
     
-    openConfigFile(MAIN_DIR"Languages/fr.cfg");
+    openConfigFile(MAIN_DIR"Languages/en.cfg");
 
-    Application app;
     if(!initApplication(&app))
         log_report(FATAL_ERROR, "unable to create an application");
 
