@@ -7,12 +7,16 @@
 #ifndef __SYSTEM_FILES__
 #define __SYSTEM_FILES__
 
+#include <stdbool.h>
+
 typedef struct config_infos
 {
     char* key;
     char* val;
     struct config_infos* next;
 } config_infos;
+
+static bool are_config_files_updated = false;
 
 void initConfigInfoManager();
 void openConfigFile(const char* path);

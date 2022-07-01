@@ -111,7 +111,7 @@ void updateHouse(House* house, Inputs* inputs)
 				{
 					SDL_Color white = { 255, 255, 255 };
 					text = memAlloc(sizeof(Text));
-					initText(text, house->indoor[0]->renderer, get_config_value("day_sleep"), &white, default_font, LEFT);
+					initTextKey(text, house->indoor[0]->renderer, "day_sleep", &white, default_font, LEFT);
 				}
 				text_countdown = 1;
 			}

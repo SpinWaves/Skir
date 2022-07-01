@@ -33,13 +33,13 @@ void initAboutPage(SDL_Renderer* renderer, int width, int height)
     if(font == NULL)
         log_report(FATAL_ERROR, "About page: cannot open font");
 
-    initText(__about_page->text, renderer, get_config_value("about_text"), &white, font, CENTER);
+    initTextKey(__about_page->text, renderer, "about_text", &white, font, CENTER);
     setPosText(__about_page->text, (width / 2) - (__about_page->text->texts->rect.w / 2), 300);
 
 	SDL_Texture* texture = IMG_LoadTexture(renderer, MAIN_DIR"ressources/Assets/UI/plank_0.png");
 	if(texture == NULL)
 		log_report(FATAL_ERROR, "About page : unable to create texture : "MAIN_DIR"ressources/Assets/UI/plank_0.png");
-    __about_page->back = createButtonTextured(renderer, get_config_value("back"), width / 3, height - height / 4, width / 3, height / 10, createSprite(renderer, texture, 0, 0, 0, 0), 30);
+    __about_page->back = createButtonTextured(renderer, "back", width / 3, height - height / 4, width / 3, height / 10, createSprite(renderer, texture, 0, 0, 0, 0), 30, true);
     setFunctionCall(__about_page->back, hangUpAboutPage);
 
 	texture = IMG_LoadTexture(renderer, MAIN_DIR"ressources/Assets/UI/spinwaves.png");

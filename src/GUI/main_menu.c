@@ -53,7 +53,7 @@ void initMainMenu(SDL_Renderer* renderer, int width, int height)
     __menu->bg = memAlloc(sizeof(Sprite));
     __menu->renderer = renderer;
      __menu->version = memAlloc(sizeof(Text));
-    const char* buttons_texts[] = { get_config_value("play"), get_config_value("settings"), get_config_value("about"), get_config_value("quit") };
+    const char* buttons_texts[] = { "play", "settings", "about", "quit" };
     void (*buttons_tasks[])() = { play_button, settings_button, about_button, quit };
 
 	SDL_Texture* texture = IMG_LoadTexture(renderer, MAIN_DIR"ressources/Assets/UI/plank_0.png");
@@ -61,13 +61,13 @@ void initMainMenu(SDL_Renderer* renderer, int width, int height)
 		log_report(FATAL_ERROR, "Main menu : unable to create texture : "MAIN_DIR"ressources/Assets/UI/plank_0.png");
     for(int i = 0; i < ARRAY_SIZE(__menu->butts); i++)
     {
-        __menu->butts[i] = createButtonTextured(renderer, buttons_texts[i], 50, (height / 8) * (i + 1) + (height - 50 - (height / 8) * (ARRAY_SIZE(__menu->butts) + 1)), width / 3, height / 10, createSprite(renderer, texture, 0, 0, 0, 0), 30);
+        __menu->butts[i] = createButtonTextured(renderer, buttons_texts[i], 50, (height / 8) * (i + 1) + (height - 50 - (height / 8) * (ARRAY_SIZE(__menu->butts) + 1)), width / 3, height / 10, createSprite(renderer, texture, 0, 0, 0, 0), 30, true);
         __menu->butts[i]->sprite->angle = sin((i + 1) * 2);
         setFunctionCall(__menu->butts[i], buttons_tasks[i]);
     }
 
     SDL_Color white = { 255, 255, 255 };
-    initText(__menu->version, renderer, get_config_value("version"), &white, default_font, LEFT);
+    initTextKey(__menu->version, renderer, "version", &white, default_font, LEFT);
     setPosText(__menu->version, width - 30 - __menu->version->texts->rect.w, height - 30);
 
 	texture = IMG_LoadTexture(renderer, MAIN_DIR"ressources/Assets/UI/logo.png");

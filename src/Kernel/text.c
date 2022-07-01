@@ -8,6 +8,7 @@
 #include <Kernel/log.h>
 #include <Kernel/Memory/memory.h>
 #include <string.h>
+#include <IO/system_files.h>
 
 TTF_Font* default_font = NULL;
 
@@ -76,6 +77,44 @@ void initText(Text* t, SDL_Renderer* renderer, const char* text, SDL_Color* colo
     strcpy(t->text, text);
     t->font = font;
     t->color = *color;
+    t->key = NULL;
+    if(font == NULL)
+        log_report(FATAL_ERROR, "Text: invalid font");
+
+    char* finder = strchr(text, '\n');
+    if(finder == NULL)
+        t->texts = generate_texture(t, renderer, text);
+    else
+    {
+        int pos = -1;
+        char part[len];
+        memset(part, 0, len);
+        while(finder != NULL)
+        {
+            strncpy(part, text + pos + 1, (size_t)(finder - (text + pos) - 1));
+            add_line(t, generate_texture(t, renderer, part));
+            pos = (int)(finder - text);
+            memset(part, 0, len);
+            finder = strchr(text + pos + 1, '\n');
+            __lines_jump++;
+        }
+        strncpy(part, text + pos + 1, len - pos);
+        add_line(t, generate_texture(t, renderer, part));
+        __lines_jump = 0;
+    }
+}
+
+void initTextKey(Text* t, SDL_Renderer* renderer, const char* key, SDL_Color* color, TTF_Font* font, alignment align)
+{
+    const char* text = get_config_value(key);
+    int len = strlen(text);
+    t->align = align;
+    t->text = memAlloc(sizeof(char) * len);
+    t->text[len] = '\0';
+    strcpy(t->text, text);
+    t->font = font;
+    t->color = *color;
+    t->key = key;
     if(font == NULL)
         log_report(FATAL_ERROR, "Text: invalid font");
 
@@ -203,6 +242,8 @@ void updateText(Text* t, SDL_Renderer* renderer, const char* text)
 
 void renderText(Text* t, SDL_Renderer* renderer)
 {
+    if(are_config_files_updated && t->key != NULL)
+        updateText(t, renderer, get_config_value(t->key));
     lines_texture* buffer = t->texts;
     while(buffer != NULL)
     {

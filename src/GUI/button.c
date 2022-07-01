@@ -9,7 +9,7 @@
 #include <Kernel/text_manager.h>
 #include <Kernel/log.h>
 
-Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, int r, int g, int b, int font_size)
+Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, int r, int g, int b, int font_size, bool is_key)
 {
     Button* button = memAlloc(sizeof(Button));
     button->coords = memAlloc(sizeof(SDL_Rect));
@@ -35,7 +35,10 @@ Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int
         log_report(FATAL_ERROR, "Button : cannot open font");
     SDL_Color white = { 255, 255, 255, 255 };
     button->text = memAlloc(sizeof(Text));
-    initText(button->text, button->renderer, text, &white, button->font, LEFT);
+    if(is_key)
+        initTextKey(button->text, button->renderer, text, &white, button->font, LEFT);
+    else
+        initText(button->text, button->renderer, text, &white, button->font, LEFT);
 
     int rect_text_x = button->coords->x + (button->coords->w - button->text->texts->rect.w)/2;
     int rect_text_y = button->coords->y + (button->coords->h - button->text->texts->rect.h)/2 + 1;
@@ -46,7 +49,7 @@ Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int
     return button;
 }
 
-Button* createButtonTextured(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, Sprite* sprite, int font_size)
+Button* createButtonTextured(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, Sprite* sprite, int font_size, bool is_key)
 {
     Button* button = memAlloc(sizeof(Button));
     button->coords = memAlloc(sizeof(SDL_Rect));
@@ -67,7 +70,10 @@ Button* createButtonTextured(SDL_Renderer* renderer, const char* text, int x, in
         log_report(FATAL_ERROR, "Button : cannot open font");
     SDL_Color white = { 255, 255, 255, 255 };
     button->text = memAlloc(sizeof(Text));
-    initText(button->text, button->renderer, text, &white, button->font, LEFT);
+    if(is_key)
+        initTextKey(button->text, button->renderer, text, &white, button->font, LEFT);
+    else
+        initText(button->text, button->renderer, text, &white, button->font, LEFT);
 
     int rect_text_x = button->coords->x + (button->coords->w - button->text->texts->rect.w)/2;
     int rect_text_y = button->coords->y + (button->coords->h - button->text->texts->rect.h)/2 + 1;

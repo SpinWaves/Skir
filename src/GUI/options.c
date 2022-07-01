@@ -64,15 +64,15 @@ void initOptionsPage(SDL_Renderer* renderer, int width, int height)
 	texture = IMG_LoadTexture(renderer, MAIN_DIR"ressources/Assets/UI/plank_0.png");
 	if(texture == NULL)
 		log_report(FATAL_ERROR, "Options page : unable to create texture : "MAIN_DIR"ressources/Assets/UI/plank_0.png");
-    __options_page->back = createButtonTextured(renderer, get_config_value("back"), width / 3, height - height / 4, width / 3, height / 10, createSprite(renderer, texture, 0, 0, 0, 0), 30);
+    __options_page->back = createButtonTextured(renderer, "back", width / 3, height - height / 4, width / 3, height / 10, createSprite(renderer, texture, 0, 0, 0, 0), 30, true);
     setFunctionCall(__options_page->back, hangUpOptionsPage);
 
-    const char* buttons_texts[] = { get_config_value("lang"), get_config_value("print_fps") };
+    const char* buttons_texts[] = { "lang", "print_fps" };
     void (*buttons_tasks[])() = { lang_pop_up, printFPS };
 
     for(int i = 0; i < ARRAY_SIZE(__options_page->butts); i++)
     {
-        __options_page->butts[i] = createButtonTextured(renderer, buttons_texts[i], 50, 100 + (height / 8) * (i + 1), width / 3, height / 10, createSprite(renderer, texture, 50, 100 + (height / 8) * (i + 1), width / 3, height / 10), 30);
+        __options_page->butts[i] = createButtonTextured(renderer, buttons_texts[i], 50, 100 + (height / 8) * (i + 1), width / 3, height / 10, createSprite(renderer, texture, 50, 100 + (height / 8) * (i + 1), width / 3, height / 10), 30, true);
         __options_page->butts[i]->sprite->angle = sin((i + 1) * 2);
         setFunctionCall(__options_page->butts[i], buttons_tasks[i]);
     }
@@ -81,7 +81,7 @@ void initOptionsPage(SDL_Renderer* renderer, int width, int height)
 
     for(int i = 0; i < ARRAY_SIZE(__options_page->lang_butts); i++)
     {
-        __options_page->lang_butts[i] = createButtonTextured(renderer, lang_buttons_texts[i], 150 + width / 3, 30 + (height / 10) * (i + 1), 250, 50, createSprite(renderer, texture, 150 + width / 3, 30 + (height / 10) * (i + 1), 250, 50), 20);
+        __options_page->lang_butts[i] = createButtonTextured(renderer, lang_buttons_texts[i], 150 + width / 3, 30 + (height / 10) * (i + 1), 250, 50, createSprite(renderer, texture, 150 + width / 3, 30 + (height / 10) * (i + 1), 250, 50), 20, false);
         __options_page->lang_butts[i]->sprite->angle = sin((i + 1) * 2) * 2;
     }
 }
@@ -101,6 +101,11 @@ inline bool isOptionsPageCalled()
     return __options_page->is_called;
 }
 
+const char* langs[] = {
+    MAIN_DIR"Languages/en.cfg",
+    MAIN_DIR"Languages/fr.cfg",
+};
+
 void updateOptionsPage(Inputs *in)
 {
     updateButton(__options_page->back, in);
@@ -113,7 +118,10 @@ void updateOptionsPage(Inputs *in)
         {
             updateButton(__options_page->lang_butts[i], in);
             if(__options_page->lang_butts[i]->is_activated)
+            {
                 active_lang = i;
+                openConfigFile(langs[i]);
+            }
         }
     }
 }

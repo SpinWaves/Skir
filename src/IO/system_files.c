@@ -97,6 +97,7 @@ void openConfigFile(const char* path)
             __config_manager = inf;
     }
     fclose(fp);
+    are_config_files_updated = true;
 }
 
 const char* get_config_value(const char* key)

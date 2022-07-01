@@ -8,8 +8,11 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <SDL2/SDL_image.h>
 
 #include <Maths/maths.h>
+
+#include <IO/system_files.h>
 
 #include <Utils/utils.h>
 
@@ -52,6 +55,38 @@ bool initApplication(Application *app)
     initWaterPuddle(&app->puddle, 2228, 1625, 480, 120);
 
     app->run = true;
+
+	SDL_Texture* texture = IMG_LoadTexture(app->renderer, MAIN_DIR"ressources/Assets/UI/spinwaves.png");
+	if(texture == NULL)
+		log_report(FATAL_ERROR, "Main : unable to create texture : "MAIN_DIR"ressources/Assets/UI/spinwaves.png");
+    Sprite* logo = createSprite(app->renderer, texture, width / 2 - 170, height / 2 - 128, 340, 256);
+    logo->day_night_cycle = false;
+    float _fading = -255;
+    while(_fading < 255)
+    {
+        SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
+        SDL_RenderClear(app->renderer);
+        
+        renderSprite(logo);
+
+        SDL_Rect fadingRect = { 0, 0, width, height };
+        SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, m_abs((int)_fading > 255 ? 255 : (int)_fading));
+        SDL_RenderFillRect(app->renderer, &fadingRect);
+
+        updateFPS(&app->fps);
+        if(app->fps.make_update)
+        {
+            updateInput(&app->inputs);
+            _fading = _fading < 10.0 && _fading > -10.0 ? _fading + 1.0f : _fading + 1.75f;
+            if(app->inputs.quit)
+            {
+                app->run = false;
+                return true;
+            }
+        }
+
+        SDL_RenderPresent(app->renderer);
+    }
 
     return true;
 }
@@ -119,7 +154,7 @@ void update(Application* app)
             updateMap(&app->map, app->house.isInside);
             updateWaterPuddle(&app->puddle);
 
-            hours = hours >= 24.0 ? 0.0f : hours + 0.0025;
+            hours = hours >= 24.0 ? 0.0f : hours + 0.001;
             day_light = hours < 12.0f ? 12 * sin(0.25 * hours - 7.85) : -pow(hours, 0.048 * hours) + 0.8 * hours + 6.5;
 
             if(!app->house.isInside)
@@ -149,6 +184,8 @@ void update(Application* app)
             updateText_TM(&app->text_manager, oldTime, newTime);
             strcpy(oldTime, newTime);
         }
+
+        are_config_files_updated = false;
     }
 }
 

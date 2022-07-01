@@ -28,11 +28,13 @@ typedef struct
     int x;
     int y;
     alignment align;
+    char* key;
 } Text;
 
 extern TTF_Font* default_font;
 
 void initText(Text* t, SDL_Renderer* renderer, const char* text, SDL_Color* color, TTF_Font* font, alignment align);
+void initTextKey(Text* t, SDL_Renderer* renderer, const char* key, SDL_Color* color, TTF_Font* font, alignment align);
 void scaleText(Text* t, int x, int y, int w, int h);
 void setPosText(Text* t, int x, int y);
 void updateText(Text* t, SDL_Renderer* renderer, const char* text);

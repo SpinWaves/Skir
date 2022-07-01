@@ -28,8 +28,8 @@ typedef struct
     TTF_Font* font;
 } Button;
 
-Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, int r, int g, int b, int font_size);
-Button* createButtonTextured(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, Sprite* sprite, int font_size);
+Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, int r, int g, int b, int font_size, bool is_key);
+Button* createButtonTextured(SDL_Renderer* renderer, const char* text, int x, int y, int w, int h, Sprite* sprite, int font_size, bool is_key);
 void setFunctionCall(Button* button, void (*f)());
 bool isDown(Button* button);
 void renderButton(Button* button);
