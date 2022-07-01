@@ -41,6 +41,28 @@ int main(int argc, char** argv)
     if(!initApplication(&app))
         log_report(FATAL_ERROR, "unable to create an application");
 
+	SDL_Texture* texture = IMG_LoadTexture(app.renderer, MAIN_DIR"ressources/Assets/UI/spinwaves.png");
+	if(texture == NULL)
+		log_report(FATAL_ERROR, "Main : unable to create texture : "MAIN_DIR"ressources/Assets/UI/spinwaves.png");
+    Sprite* logo = createSprite(app.renderer, texture, width / 2 - 170, height / 2 - 128, 340, 256);
+    logo->day_night_cycle = false;
+
+    for(float fading = -255; fading < 255; fading += 0.15f)
+    {
+        SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 255);
+        SDL_RenderClear(app.renderer);
+        
+        renderSprite(logo);
+
+        SDL_Rect fadingRect = { 0, 0, width, height };
+        SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, m_abs((int)fading > 255 ? 255 : (int)fading));
+        SDL_RenderFillRect(app.renderer, &fadingRect);
+
+        fading = fading < 10.0 && fading > -10.0 ? fading : fading + 0.6f;
+
+        SDL_RenderPresent(app.renderer);
+    }
+
     while(app.run)
     {
         SDL_SetRenderDrawColor(app.renderer, clearColor.r, clearColor.g, clearColor.b, 255);

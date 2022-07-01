@@ -40,6 +40,7 @@ bool initApplication(Application *app)
     initInput(&app->inputs);
     initFPS(&app->fps);
     newText(&app->text_manager, "FPS: 0", 10, 10, LEFT);
+    newText(&app->text_manager, "0 AM", width - 75, 10, LEFT);
 
     initPlayer(&app->player, app->renderer, width / 2, height / 2);
     initMap(&app->map, app->renderer);
@@ -57,6 +58,10 @@ bool initApplication(Application *app)
 
 static char oldFPS[12] = "FPS: 0";
 static char newFPS[12];
+
+static char oldTime[5] = "0 AM";
+static char newTime[5];
+
 static bool drawHideBoxes = false;
 
 int fading = 255;
@@ -136,6 +141,13 @@ void update(Application* app)
         {
             updateText_TM(&app->text_manager, oldFPS, newFPS);
             strcpy(oldFPS, newFPS);
+        }
+
+        sprintf(newTime, "%d %cM", hours > 12 ? (int)(hours - 12) : (int)hours, hours > 12 ? 'P' : 'A');
+        if(strcmp(oldTime, newTime) != 0)
+        {
+            updateText_TM(&app->text_manager, oldTime, newTime);
+            strcpy(oldTime, newTime);
         }
     }
 }

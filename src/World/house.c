@@ -100,7 +100,7 @@ void updateHouse(House* house, Inputs* inputs)
 
 		if((fading < 255 || getKey(inputs, SDL_SCANCODE_E, DOWN)) && (house->bed_trigger->left_collision || house->bed_trigger->right_collision || house->bed_trigger->top_collision || house->bed_trigger->bottom_collision))
 		{
-			if(hours < 8.0f)
+			if(hours < 8.0f || hours > 19.0f)
 			{
 				fading = fading < -255 ? 255 : fading - 5;
 				hours = 8.0f;
