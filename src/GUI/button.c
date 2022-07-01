@@ -28,7 +28,7 @@ Button* createButton(SDL_Renderer* renderer, const char* text, int x, int y, int
     button->f = NULL;
     button->is_activated = false;
     button->trigger = false;
-
+    button->is_released = false;
 
     button->font = TTF_OpenFont(MAIN_DIR"ressources/fonts/retro_gaming.ttf", font_size);
     if(button->font == NULL)
@@ -64,6 +64,7 @@ Button* createButtonTextured(SDL_Renderer* renderer, const char* text, int x, in
     button->f = NULL;
     button->is_activated = false;
     button->trigger = false;
+    button->is_released = false;
 
     button->font = TTF_OpenFont(MAIN_DIR"ressources/fonts/retro_gaming.ttf", font_size);
     if(button->font == NULL)
@@ -145,6 +146,7 @@ void renderButton(Button* button)
 
 void updateButton(Button* button, Inputs* inputs)
 {
+    button->is_released = false;
     if (   getMouseY(inputs) > button->coords->y
         && getMouseY(inputs) <= button->coords->y + button->coords->h
         && getMouseX(inputs) > button->coords->x
@@ -159,6 +161,7 @@ void updateButton(Button* button, Inputs* inputs)
     {
         if(button->is_activated && button->f != NULL)
             button->f();
+        button->is_released = button->is_activated;
         button->is_activated = false;
     }
 

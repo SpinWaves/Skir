@@ -52,6 +52,7 @@ int main(int argc, char** argv)
     }
 
     shutdownApplication(&app);
+    destroyTextChain();
     shutdownConfigInfoManager();
     TTF_CloseFont(default_font);
     TTF_Quit();

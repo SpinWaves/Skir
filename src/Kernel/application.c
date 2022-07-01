@@ -12,8 +12,6 @@
 
 #include <Maths/maths.h>
 
-#include <IO/system_files.h>
-
 #include <Utils/utils.h>
 
 int width = 1480;
@@ -105,6 +103,7 @@ float day_light = 0.0f;
 float hours = 10.0f;
 
 extern ColorRGB clearColor;
+extern bool are_config_files_updated;
 
 void update(Application* app)
 {
@@ -184,8 +183,6 @@ void update(Application* app)
             updateText_TM(&app->text_manager, oldTime, newTime);
             strcpy(oldTime, newTime);
         }
-
-        are_config_files_updated = false;
     }
 }
 

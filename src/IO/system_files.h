@@ -16,8 +16,6 @@ typedef struct config_infos
     struct config_infos* next;
 } config_infos;
 
-static bool are_config_files_updated = false;
-
 void initConfigInfoManager();
 void openConfigFile(const char* path);
 const char* get_config_value(const char* key);

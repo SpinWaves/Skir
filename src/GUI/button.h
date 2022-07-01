@@ -19,6 +19,7 @@ typedef struct
 {
     SDL_Rect* coords;
     bool is_activated;
+    bool is_released;
     bool trigger;
     void (*f)();
     SDL_Color* color;

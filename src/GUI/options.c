@@ -117,7 +117,7 @@ void updateOptionsPage(Inputs *in)
         for(int i = 0; i < ARRAY_SIZE(__options_page->lang_butts); i++)
         {
             updateButton(__options_page->lang_butts[i], in);
-            if(__options_page->lang_butts[i]->is_activated)
+            if(__options_page->lang_butts[i]->is_released)
             {
                 active_lang = i;
                 openConfigFile(langs[i]);

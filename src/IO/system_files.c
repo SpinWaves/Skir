@@ -32,6 +32,9 @@ config_infos* exists(const char* key)
     return NULL;
 }
 
+extern Text_chain* head;
+extern Application app;
+
 void openConfigFile(const char* path)
 {
     FILE* fp = fopen(path, "r");
@@ -88,6 +91,7 @@ void openConfigFile(const char* path)
 
         if((buffer = exists(inf->key)) != NULL)
         {
+            printf("%s - %s\n", buffer->val, inf->val);
             memFree(buffer->val);
             buffer->val = inf->val;
             memFree(inf->key);
@@ -97,7 +101,14 @@ void openConfigFile(const char* path)
             __config_manager = inf;
     }
     fclose(fp);
-    are_config_files_updated = true;
+
+    Text_chain* text_link = head;
+    while(text_link != NULL)
+    {
+        if(text_link->text->key != NULL)
+            updateText(text_link->text, app.renderer, get_config_value(text_link->text->key));
+        text_link = text_link->next;
+    }
 }
 
 const char* get_config_value(const char* key)

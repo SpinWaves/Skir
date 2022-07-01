@@ -12,6 +12,8 @@
 
 TTF_Font* default_font = NULL;
 
+Text_chain* head = NULL;
+
 lines_texture* generate_texture(Text* t, SDL_Renderer* renderer, const char* text)
 {
     if(t == NULL)
@@ -102,6 +104,11 @@ void initText(Text* t, SDL_Renderer* renderer, const char* text, SDL_Color* colo
         add_line(t, generate_texture(t, renderer, part));
         __lines_jump = 0;
     }
+
+    Text_chain* link = memAlloc(sizeof(Text_chain));
+    link->text = t;
+    link->next = head;
+    head = link;
 }
 
 void initTextKey(Text* t, SDL_Renderer* renderer, const char* key, SDL_Color* color, TTF_Font* font, alignment align)
@@ -139,6 +146,11 @@ void initTextKey(Text* t, SDL_Renderer* renderer, const char* key, SDL_Color* co
         add_line(t, generate_texture(t, renderer, part));
         __lines_jump = 0;
     }
+
+    Text_chain* link = memAlloc(sizeof(Text_chain));
+    link->text = t;
+    link->next = head;
+    head = link;
 }
 
 void scaleText(Text* t, int x, int y, int w, int h)
@@ -242,8 +254,6 @@ void updateText(Text* t, SDL_Renderer* renderer, const char* text)
 
 void renderText(Text* t, SDL_Renderer* renderer)
 {
-    if(are_config_files_updated && t->key != NULL)
-        updateText(t, renderer, get_config_value(t->key));
     lines_texture* buffer = t->texts;
     while(buffer != NULL)
     {
@@ -263,5 +273,20 @@ void deleteText(Text* t)
         SDL_DestroyTexture(buffer->texture);
         memFree(buffer);
         buffer = double_buffer;
+    }
+}
+
+void destroyTextChain()
+{
+    Text_chain* buffer = head;
+    Text_chain* buffer2 = NULL;
+    if(buffer != NULL)
+        buffer2 = buffer->next;
+    while(buffer != NULL)
+    {
+        memFree(buffer);
+        buffer = buffer2;
+        if(buffer != NULL)
+            buffer2 = buffer->next;
     }
 }
