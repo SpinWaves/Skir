@@ -101,7 +101,7 @@ inline bool isOptionsPageCalled()
     return __options_page->is_called;
 }
 
-const char* langs[] = {
+static const char* langs[] = {
     MAIN_DIR"Languages/en.cfg",
     MAIN_DIR"Languages/fr.cfg",
 };
